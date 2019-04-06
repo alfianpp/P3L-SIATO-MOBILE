@@ -12,6 +12,19 @@
             android:title="Home" />
     </group>
 
+    <item android:title="Pengelolaan Data">
+        <menu>
+            <group
+                android:id="@+id/pengelolaan_data"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_data_spareparts"
+                    android:icon="@drawable/ic_database"
+                    android:title="Spareparts" />
+            </group>
+        </menu>
+    </item>
+
     <group
         android:id="@+id/account_menu"
         android:checkableBehavior="single">

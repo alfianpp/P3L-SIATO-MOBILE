@@ -86,13 +86,31 @@ public class MainActivity extends AppCompatActivity
 
     public void changeFragment(int id) {
         Fragment fragment = null;
+        String title = null;
 
         switch (id) {
+            case R.id.nav_home:
+                //fragment = new DashboardFragment();
+                title = "SIATO";
+                break;
+
+            case R.id.nav_data_spareparts:
+                fragment = new KelolaSparepartsFragment();
+                title = "Kelola Data Spareparts";
+                break;
+
+            case 1:
+                fragment = new TambahUbahSparepartsFragment();
+                title = "Tambah Spareparts";
+                break;
+
             case R.id.nav_login:
                 fragment = new LoginFragment();
+                title = "Login";
                 break;
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        getSupportActionBar().setTitle(title);
     }
 }
