@@ -99,9 +99,27 @@ public class MainActivity extends AppCompatActivity
                 title = "Kelola Data Spareparts";
                 break;
 
+            case R.id.nav_data_supplier:
+                fragment = new KelolaSupplierFragment();
+                title = "Kelola Data Supplier";
+                break;
+
+            case R.id.nav_data_pengadaan_barang:
+                fragment = new KelolaPengadaanBarangFragment();
+                title = "Kelola Data Supplier";
+                break;
+
             case 1:
                 fragment = new TambahUbahSparepartsFragment();
                 title = "Tambah Spareparts";
+                break;
+            case 2:
+                fragment = new TambahUbahSupplierFragment();
+                title = "Tambah Supplier";
+                break;
+            case 3:
+                fragment = new TambahUbahPengadaanBarangFragment();
+                title = "Tambah Supplier";
                 break;
 
             case R.id.nav_login:

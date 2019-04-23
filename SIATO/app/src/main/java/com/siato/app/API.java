@@ -1,5 +1,7 @@
 package com.siato.app;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -60,4 +62,71 @@ public interface API {
     @FormUrlEncoded
     @POST("auth/pegawai")
     Call<APIResponse<Pegawai>> login(@Field("username") String username, @Field("password") String password);
+
+
+    // --- CRUD SUPPLIER
+
+    @FormUrlEncoded
+    @POST("data/supplier/index")
+    Call<APIResponse<List<Supplier>>> getAllSupplier(@Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @POST("data/supplier")
+    Call<APIResponse> createSupplier(
+            @Path("id") String id,
+            @Field("nama") String nama,
+            @Field("alamat") String alamat,
+            @Field("nama_sales") String nama_sales,
+            @Field("nomor_telepon_sales") String nomor_telepon_sales,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @POST("data/supplier/{id}")
+    Call<APIResponse<Supplier>> showSupplier(@Path("id") Integer id, @Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @PUT("data/supplier/{id}")
+    Call<APIResponse> updateSupplier(
+            @Path("id") Integer id,
+            @Field("nama") String nama,
+            @Field("alamat") String alamat,
+            @Field("nama_sales") String nama_sales,
+            @Field("nomor_telepon_sales") String nomor_telepon_sales,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @DELETE("data/spareparts/{id}")
+    Call<APIResponse> deleteSupplier(@Path("id") Integer id, @Field("api_key") String api_key);
+
+    // --- CRUD PENGADAAN BARANG
+
+    @FormUrlEncoded
+    @POST("data/pengadaanBarang/index")
+    Call<APIResponse<List<PengadaanBarang>>> getAllPengadaanBarang(@Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @POST("data/pengadaanBarang")
+    Call<APIResponse> createPengadaanBarang(
+            @Path("id") Integer id,
+            @Field("id_supplier") Integer id_supplier,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @POST("data/pengadaanBarang/{id}")
+    Call<APIResponse<PengadaanBarang>> showPengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @PUT("data/pengadaanBarang/{id}")
+    Call<APIResponse> updatePengadaanBarang(
+            @Path("id") Integer id,
+            @Field("id_supplier") Integer id_supplier,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @DELETE("data/pengadaanBarang/{id}")
+    Call<APIResponse> deletePengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
 }
