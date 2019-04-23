@@ -21,6 +21,14 @@
                     android:id="@+id/nav_data_spareparts"
                     android:icon="@drawable/ic_database"
                     android:title="Spareparts" />
+                <item
+                    android:id="@+id/nav_data_supplier"
+                    android:icon="@drawable/ic_database"
+                    android:title="Supplier" />
+                <item
+                    android:id="@+id/nav_data_pengadaan_barang"
+                    android:icon="@drawable/ic_database"
+                    android:title="Pengadaan Barang" />
             </group>
         </menu>
     </item>
