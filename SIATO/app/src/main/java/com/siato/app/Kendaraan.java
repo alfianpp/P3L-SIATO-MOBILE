@@ -1,47 +1,31 @@
 package com.siato.app;
 
 public class Kendaraan {
-    private String nomor_kendaraan;
+    private String nomor_polisi;
     private String merk;
     private String tipe;
-    private String pemilik;
+    private String id_pemilik;
 
-    public Kendaraan(String nomor_kendaraan, String merk, String tipe, String pemilik) {
-        this.nomor_kendaraan = nomor_kendaraan;
+    public Kendaraan(String nomor_polisi, String merk, String tipe, String id_pemilik) {
+        this.nomor_polisi = nomor_polisi;
         this.merk = merk;
         this.tipe = tipe;
-        this.pemilik = pemilik;
+        this.id_pemilik = id_pemilik;
     }
 
-    public String getNomor_kendaraan() {
-        return nomor_kendaraan;
-    }
-
-    public void setNomor_kendaraan(String nomor_kendaraan) {
-        this.nomor_kendaraan = nomor_kendaraan;
+    public String getNomorPolisi() {
+        return nomor_polisi;
     }
 
     public String getMerk() {
         return merk;
     }
 
-    public void setMerk(String merk) {
-        this.merk = merk;
-    }
-
     public String getTipe() {
         return tipe;
     }
 
-    public void setTipe(String tipe) {
-        this.tipe = tipe;
-    }
-
-    public String getPemilik() {
-        return pemilik;
-    }
-
-    public void setPemilik(String pemilik) {
-        this.pemilik = pemilik;
+    public String getIDPemilik() {
+        return id_pemilik;
     }
 }

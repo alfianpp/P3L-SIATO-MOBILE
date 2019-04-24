@@ -27,6 +27,10 @@
                     android:icon="@drawable/ic_database"
                     android:title="Supplier" />
                 <item
+                    android:id="@+id/nav_data_kendaraan"
+                    android:icon="@drawable/ic_database"
+                    android:title="Kendaraan" />
+                <item
                     android:id="@+id/nav_data_pengadaan_barang"
                     android:icon="@drawable/ic_database"
                     android:title="Pengadaan Barang" />

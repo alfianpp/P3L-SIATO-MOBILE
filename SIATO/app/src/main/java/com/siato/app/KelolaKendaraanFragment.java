@@ -48,7 +48,7 @@ public class KelolaKendaraanFragment extends Fragment{
         btnTambahUbahKendaraan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).changeFragment(3);
+                ((MainActivity)getActivity()).changeFragment(4);
             }
         });
 
