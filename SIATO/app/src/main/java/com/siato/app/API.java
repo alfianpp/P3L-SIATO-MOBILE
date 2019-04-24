@@ -88,7 +88,6 @@ public interface API {
     @FormUrlEncoded
     @PUT("data/supplier/{id}")
     Call<APIResponse> updateSupplier(
-            @Path("id") Integer id,
             @Field("nama") String nama,
             @Field("alamat") String alamat,
             @Field("nama_sales") String nama_sales,
@@ -100,6 +99,40 @@ public interface API {
     @DELETE("data/spareparts/{id}")
     Call<APIResponse> deleteSupplier(@Path("id") Integer id, @Field("api_key") String api_key);
 
+    // --- CRUD KENDARAAN
+
+    @FormUrlEncoded
+    @POST("data/kendaraan/index")
+    Call<APIResponse<List<Kendaraan>>> getAllKendaraan(@Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @POST("data/kendaraan")
+    Call<APIResponse> createKendaraan(
+            @Path("nomor_polisi") String nomor_polisi,
+            @Field("merk") String merk,
+            @Field("tipe") String tipe,
+            @Field("pemilik") String pemilik,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @POST("data/kendaraan/{id}")
+    Call<APIResponse<Kendaraan>> showKendaraan(@Path("nomor_polisi") String nomor_polisi, @Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @PUT("data/kendaraan/{id}")
+    Call<APIResponse> updateKendaraan(
+            @Path("nomor_polisi") String nomor_polisi,
+            @Field("merk") String merk,
+            @Field("tipe") String tipe,
+            @Field("pemilik") String pemilik,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @DELETE("data/kendaraan/{id}")
+    Call<APIResponse> deleteKendaraan(@Path("nomor_polisi") String nomor_polisi, @Field("api_key") String api_key);
+
     // --- CRUD PENGADAAN BARANG
 
     @FormUrlEncoded
@@ -109,8 +142,10 @@ public interface API {
     @FormUrlEncoded
     @POST("data/pengadaanBarang")
     Call<APIResponse> createPengadaanBarang(
-            @Path("id") Integer id,
             @Field("id_supplier") Integer id_supplier,
+            @Field("total") Double total,
+            @Field("status") Integer status,
+            @Field("tgl_transaksi") String tgl_transaksi,
             @Field("api_key") String api_key
     );
 
@@ -121,12 +156,48 @@ public interface API {
     @FormUrlEncoded
     @PUT("data/pengadaanBarang/{id}")
     Call<APIResponse> updatePengadaanBarang(
-            @Path("id") Integer id,
             @Field("id_supplier") Integer id_supplier,
+            @Field("total") Double total,
+            @Field("status") Integer status,
+            @Field("tgl_transaksi") String tgl_transaksi,
             @Field("api_key") String api_key
     );
 
     @FormUrlEncoded
     @DELETE("data/pengadaanBarang/{id}")
     Call<APIResponse> deletePengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
+
+    // --- CRUD DETIL PENGADAAN BARANG
+
+//    @FormUrlEncoded
+//    @POST("data/detailPengadaanBarang/index")
+//    Call<APIResponse<List<DetailPengadaanBarang>>> getAllDetailPengadaanBarang(@Field("api_key") String api_key);
+//
+//    @FormUrlEncoded
+//    @POST("data/detailPengadaanBarang")
+//    Call<APIResponse> createPengadaanBarang(
+//            @Field("id_supplier") Integer id_supplier,
+//            @Field("total") Double total,
+//            @Field("status") Integer status,
+//            @Field("tgl_transaksi") String tgl_transaksi,
+//            @Field("api_key") String api_key
+//    );
+//
+//    @FormUrlEncoded
+//    @POST("data/pengadaanBarang/{id}")
+//    Call<APIResponse<PengadaanBarang>> showPengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
+//
+//    @FormUrlEncoded
+//    @PUT("data/pengadaanBarang/{id}")
+//    Call<APIResponse> updatePengadaanBarang(
+//            @Field("id_supplier") Integer id_supplier,
+//            @Field("total") Double total,
+//            @Field("status") Integer status,
+//            @Field("tgl_transaksi") String tgl_transaksi,
+//            @Field("api_key") String api_key
+//    );
+//
+//    @FormUrlEncoded
+//    @DELETE("data/pengadaanBarang/{id}")
+//    Call<APIResponse> deletePengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
 }

@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,11 +36,9 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
     private ArrayList<Integer> Names = new ArrayList<Integer>();
     private Spinner SpinIdSupplier;
     //private TextInputEditText idSupplier;
-    private TextInputEditText etId;
-    private TextInputEditText etTotal;
-    private TextInputEditText etStatus;
-//    private String Status
-    private TextInputEditText etTgl;
+    private Double etTotal;
+    private Integer etStatus;
+    private Date etTgl;
     private Button btnTambahUbah;
 
 
@@ -49,10 +48,9 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
 
         SpinIdSupplier = view.findViewById(DropDownIdSupplier);
         btnTambahUbah = view.findViewById(R.id.btnTambahUbahPengadaanBarang);
-        etId = null;
-        etTotal= null;
-        etTgl=null;
-        etStatus = null;
+        etTotal = Double.valueOf("");
+        etTgl = Date.valueOf("");
+        etStatus = 1;
 
 
         API service =  RetrofitClientInstance.getRetrofitInstance().create(API.class);

@@ -18,7 +18,6 @@ import retrofit2.Response;
 
 
 public class TambahUbahSupplierFragment extends Fragment {
-    private TextInputEditText etId;
     private TextInputEditText etNama;
     private TextInputEditText etAlamat;
     private TextInputEditText etNamaSales;
