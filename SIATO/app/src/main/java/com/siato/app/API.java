@@ -86,8 +86,9 @@ public interface API {
     Call<APIResponse<Supplier>> showSupplier(@Path("id") Integer id, @Field("api_key") String api_key);
 
     @FormUrlEncoded
-    @PUT("data/supplier/{id}")
+    @HTTP(method = "PUT", path = "data/supplier/{id}", hasBody = true)
     Call<APIResponse> updateSupplier(
+            @Path("id") Integer id,
             @Field("nama") String nama,
             @Field("alamat") String alamat,
             @Field("nama_sales") String nama_sales,
@@ -96,7 +97,7 @@ public interface API {
     );
 
     @FormUrlEncoded
-    @DELETE("data/spareparts/{id}")
+    @HTTP(method = "DELETE", path = "data/supplier/{id}", hasBody = true)
     Call<APIResponse> deleteSupplier(@Path("id") Integer id, @Field("api_key") String api_key);
 
     // --- CRUD KENDARAAN

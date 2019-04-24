@@ -109,7 +109,7 @@ public class KelolaSupplierFragment extends Fragment {
                         .setPositiveButton("Ubah", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Fragment fragment = new TambahUbahSparepartsFragment();
+                                Fragment fragment = new TambahUbahSupplierFragment();
                                 Bundle b = new Bundle();
                                 b.putParcelable("tes", selected);
                                 fragment.setArguments(b);

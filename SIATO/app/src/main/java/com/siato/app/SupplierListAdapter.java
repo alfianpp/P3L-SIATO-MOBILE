@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapter.SupplierViewHolder> {
+public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapter.SupplierViewHolder> implements Filterable {
     private Context context;
     private List<Supplier> supplierList;
     private List<Supplier> supplierListFiltered;
@@ -50,7 +51,7 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
 
     @Override
     public void onBindViewHolder(SupplierViewHolder holder, int position) {
-        final Supplier current = supplierList.get(position);
+        final Supplier current = supplierListFiltered.get(position);
 
         holder.tvNamaSupplier.setText(current.getNama());
         holder.tvAlamatSupplier.setText(current.getAlamat());
@@ -60,13 +61,12 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
 
     @Override
     public int getItemCount() {
-        return supplierList.size();
+        return supplierListFiltered.size();
     }
 
     public Supplier getItem(int position) {
         return supplierListFiltered.get(position);
     }
-
 
     public Filter getFilter() {
         return new Filter() {

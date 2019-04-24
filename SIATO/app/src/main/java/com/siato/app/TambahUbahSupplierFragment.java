@@ -18,6 +18,8 @@ import retrofit2.Response;
 
 
 public class TambahUbahSupplierFragment extends Fragment {
+    private String ACTION = "TAMBAH";
+    private Integer idSupplier = null;
     private TextInputEditText etNama;
     private TextInputEditText etAlamat;
     private TextInputEditText etNamaSales;
@@ -34,30 +36,69 @@ public class TambahUbahSupplierFragment extends Fragment {
         etNomorTelepon = view.findViewById(R.id.etSupplierNomorTelepon);
         btnTambahUbah = view.findViewById(R.id.btnSupplierTambahUbah);
 
+        if(getArguments() != null && getArguments().getParcelable("tes") != null) {
+            ACTION = "UBAH";
+            Supplier supplier = getArguments().getParcelable("tes");
+            idSupplier = supplier.getId();
+            etNama.setText(supplier.getNama());
+            etAlamat.setText(supplier.getAlamat());
+            etNamaSales.setText(supplier.getNama_sales());
+            etNomorTelepon.setText(supplier.getNomor_telepon_sales());
+            btnTambahUbah.setText("Ubah");
+        }
+
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 API service = RetrofitClientInstance.getRetrofitInstance().create(API.class);
-                Call<APIResponse> call = service.createSupplier(
-                        etNama.getText().toString(),
-                        etAlamat.getText().toString(),
-                        etNamaSales.getText().toString(),
-                        etNomorTelepon.getText().toString(),
-                        ((MainActivity)getActivity()).logged_in_user.getApiKey()
-                );
-                call.enqueue(new Callback<APIResponse>() {
-                    @Override
-                    public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                        APIResponse<Pegawai> apiResponse = response.body();
+                switch (ACTION) {
+                    case "TAMBAH":
+                        Call<APIResponse> create = service.createSupplier(
+                                etNama.getText().toString(),
+                                etAlamat.getText().toString(),
+                                etNamaSales.getText().toString(),
+                                etNomorTelepon.getText().toString(),
+                                ((MainActivity)getActivity()).logged_in_user.getApiKey()
+                        );
+                        create.enqueue(new Callback<APIResponse>() {
+                            @Override
+                            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                                APIResponse<Pegawai> apiResponse = response.body();
 
-                        Toast.makeText(getContext(),apiResponse.getMessage(),Toast.LENGTH_SHORT).show();
-                    }
+                                Toast.makeText(getContext(),apiResponse.getMessage(),Toast.LENGTH_SHORT).show();
+                            }
 
-                    @Override
-                    public void onFailure(Call<APIResponse> call, Throwable t) {
-                        Toast.makeText(getActivity(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                            @Override
+                            public void onFailure(Call<APIResponse> call, Throwable t) {
+                                Toast.makeText(getActivity(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+
+                    case "UBAH":
+                        Call<APIResponse> update = service.updateSupplier(
+                                idSupplier,
+                                etNama.getText().toString(),
+                                etAlamat.getText().toString(),
+                                etNamaSales.getText().toString(),
+                                etNomorTelepon.getText().toString(),
+                                ((MainActivity)getActivity()).logged_in_user.getApiKey()
+                        );
+                        update.enqueue(new Callback<APIResponse>() {
+                            @Override
+                            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                                APIResponse<Pegawai> apiResponse = response.body();
+
+                                Toast.makeText(getContext(),apiResponse.getMessage(),Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(Call<APIResponse> call, Throwable t) {
+                                Toast.makeText(getActivity(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                }
             }
         });
 
