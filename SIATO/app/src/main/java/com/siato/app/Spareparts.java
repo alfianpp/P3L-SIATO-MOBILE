@@ -1,6 +1,9 @@
 package com.siato.app;
 
-public class Spareparts {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Spareparts implements Parcelable {
     private String kode;
     private String nama;
     private String merk;
@@ -64,4 +67,49 @@ public class Spareparts {
     public String getURLGambar() {
         return url_gambar;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.kode);
+        dest.writeString(this.nama);
+        dest.writeString(this.merk);
+        dest.writeString(this.tipe);
+        dest.writeString(this.kode_peletakan);
+        dest.writeValue(this.harga_beli);
+        dest.writeValue(this.harga_jual);
+        dest.writeValue(this.stok);
+        dest.writeValue(this.stok_minimal);
+        dest.writeString(this.url_gambar);
+    }
+
+    protected Spareparts(Parcel in) {
+        this.kode = in.readString();
+        this.nama = in.readString();
+        this.merk = in.readString();
+        this.tipe = in.readString();
+        this.kode_peletakan = in.readString();
+        this.harga_beli = (Double) in.readValue(Double.class.getClassLoader());
+        this.harga_jual = (Double) in.readValue(Double.class.getClassLoader());
+        this.stok = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.stok_minimal = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.url_gambar = in.readString();
+    }
+
+    public static final Parcelable.Creator<Spareparts> CREATOR = new Parcelable.Creator<Spareparts>() {
+        @Override
+        public Spareparts createFromParcel(Parcel source) {
+            return new Spareparts(source);
+        }
+
+        @Override
+        public Spareparts[] newArray(int size) {
+            return new Spareparts[size];
+        }
+    };
 }

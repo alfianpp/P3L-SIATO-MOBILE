@@ -17,6 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TambahUbahSparepartsFragment extends Fragment {
+    private String ACTION = "TAMBAH";
     private TextInputEditText etKode;
     private TextInputEditText etNama;
     private TextInputEditText etMerk;
@@ -44,35 +45,81 @@ public class TambahUbahSparepartsFragment extends Fragment {
         etStokMinimal = view.findViewById(R.id.etSparepartsStokMinimal);
         btnTambahUbah = view.findViewById(R.id.btnSparepartsTambahUbah);
 
+        if(getArguments() != null && getArguments().getParcelable("tes") != null) {
+            ACTION = "UBAH";
+            Spareparts spareparts = getArguments().getParcelable("tes");
+            etKode.setText(spareparts.getKode());
+            etNama.setText(spareparts.getNama());
+            etMerk.setText(spareparts.getMerk());
+            etTipe.setText(spareparts.getTipe());
+            etKodePeletakan.setText(spareparts.getKodePeletakan());
+            etHargaJual.setText(String.valueOf(spareparts.getHargaJual()));
+            etHargaBeli.setText(String.valueOf(spareparts.getHargaBeli()));
+            etStok.setText(String.valueOf(spareparts.getStok()));
+            etStokMinimal.setText(String.valueOf(spareparts.getStokMinimal()));
+            btnTambahUbah.setText("Ubah");
+        }
+
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 API service = RetrofitClientInstance.getRetrofitInstance().create(API.class);
-                Call<APIResponse> call = service.createSpareparts(
-                        etKode.getText().toString(),
-                        etNama.getText().toString(),
-                        etMerk.getText().toString(),
-                        etTipe.getText().toString(),
-                        etKodePeletakan.getText().toString(),
-                        etHargaJual.getText().toString(),
-                        etHargaBeli.getText().toString(),
-                        etStok.getText().toString(),
-                        etStokMinimal.getText().toString(),
-                        ((MainActivity)getActivity()).logged_in_user.getApiKey()
+                switch (ACTION){
+                    case "TAMBAH":
+                        Call<APIResponse> create = service.createSpareparts(
+                                etKode.getText().toString(),
+                                etNama.getText().toString(),
+                                etMerk.getText().toString(),
+                                etTipe.getText().toString(),
+                                etKodePeletakan.getText().toString(),
+                                etHargaJual.getText().toString(),
+                                etHargaBeli.getText().toString(),
+                                etStok.getText().toString(),
+                                etStokMinimal.getText().toString(),
+                                ((MainActivity)getActivity()).logged_in_user.getApiKey()
                         );
-                call.enqueue(new Callback<APIResponse>() {
-                    @Override
-                    public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                        APIResponse<Pegawai> apiResponse = response.body();
+                        create.enqueue(new Callback<APIResponse>() {
+                            @Override
+                            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                                APIResponse<Pegawai> apiResponse = response.body();
 
-                        Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                                Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
 
-                    @Override
-                    public void onFailure(Call<APIResponse> call, Throwable t) {
-                        Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                            @Override
+                            public void onFailure(Call<APIResponse> call, Throwable t) {
+                                Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+
+                    case "UBAH":
+                        Call<APIResponse> update = service.updateSpareparts(
+                                etKode.getText().toString(),
+                                etNama.getText().toString(),
+                                etMerk.getText().toString(),
+                                etTipe.getText().toString(),
+                                etKodePeletakan.getText().toString(),
+                                etHargaJual.getText().toString(),
+                                etHargaBeli.getText().toString(),
+                                etStokMinimal.getText().toString(),
+                                ((MainActivity)getActivity()).logged_in_user.getApiKey()
+                        );
+                        update.enqueue(new Callback<APIResponse>() {
+                            @Override
+                            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                                APIResponse<Pegawai> apiResponse = response.body();
+
+                                Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(Call<APIResponse> call, Throwable t) {
+                                Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                }
             }
         });
 

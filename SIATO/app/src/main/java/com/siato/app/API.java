@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -40,7 +41,7 @@ public interface API {
     Call<APIResponse<Spareparts>> showSpareparts(@Path("kode") String kode, @Field("api_key") String api_key);
 
     @FormUrlEncoded
-    @PUT("data/spareparts/{kode}")
+    @HTTP(method = "PUT", path = "data/spareparts/{kode}", hasBody = true)
     Call<APIResponse> updateSpareparts(
             @Path("kode") String kode,
             @Field("nama") String nama,
@@ -54,7 +55,7 @@ public interface API {
     );
 
     @FormUrlEncoded
-    @DELETE("data/spareparts/{kode}")
+    @HTTP(method = "DELETE", path = "data/spareparts/{kode}", hasBody = true)
     Call<APIResponse> deleteSpareparts(@Path("kode") String kode, @Field("api_key") String api_key);
 
 
