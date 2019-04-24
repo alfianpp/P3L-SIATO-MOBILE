@@ -1,8 +1,11 @@
 package com.siato.app;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.w3c.dom.Text;
 
-class Supplier {
+class Supplier implements Parcelable {
     private Integer id;
     private String nama;
     private String alamat;
@@ -17,7 +20,7 @@ class Supplier {
         this.nomor_telepon_sales = nomor_telepon_sales;
     }
 
-    public Supplier() {
+    public Supplier(Parcel source) {
 
     }
 
@@ -60,4 +63,29 @@ class Supplier {
     public void setNomor_telepon_sales(String nomor_telepon_sales) {
         this.nomor_telepon_sales = nomor_telepon_sales;
     }
+
+
+    public int describeContents() {
+        return 0;
+    }
+
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.alamat);
+        dest.writeString(this.nama);
+        dest.writeString(this.nama_sales);
+        dest.writeString(this.nomor_telepon_sales);
+    }
+
+    public static final Parcelable.Creator<Supplier> CREATOR = new Parcelable.Creator<Supplier>() {
+        @Override
+        public Supplier createFromParcel(Parcel source) {
+            return new Supplier(source);
+        }
+
+        @Override
+        public Supplier[] newArray(int size) {
+            return new Supplier[size];
+        }
+    };
 }

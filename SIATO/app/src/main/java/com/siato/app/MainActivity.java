@@ -120,10 +120,10 @@ public class MainActivity extends AppCompatActivity
                 fragment = new TambahUbahSupplierFragment();
                 title = "Tambah Supplier";
                 break;
-            case 3:
-                fragment = new TambahUbahPengadaanBarangFragment();
-                title = "Tambah Supplier";
-                break;
+//            case 3:
+//                fragment = new TambahUbahPengadaanBarangFragment();
+//                title = "Tambah Supplier";
+//                break;
 
             case R.id.nav_login:
                 fragment = new LoginFragment();
