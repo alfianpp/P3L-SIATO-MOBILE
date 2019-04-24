@@ -125,10 +125,10 @@ public class MainActivity extends AppCompatActivity
                 fragment = new TambahUbahSupplierFragment();
                 title = "Tambah Supplier";
                 break;
-            case 3:
-                fragment = new TambahUbahPengadaanBarangFragment();
-                title = "Tambah Supplier";
-                break;
+//            case 3:
+//                fragment = new TambahUbahPengadaanBarangFragment();
+//                title = "Tambah Supplier";
+//                break;
 
             case 4:
                 fragment = new TambahUbahKendaraanFragment();
