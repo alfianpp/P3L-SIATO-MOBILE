@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,11 +36,9 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
     private ArrayList<Integer> Names = new ArrayList<Integer>();
     private Spinner SpinIdSupplier;
     //private TextInputEditText idSupplier;
-    private TextInputEditText etId;
-    private TextInputEditText etTotal;
-    private TextInputEditText etStatus;
-//    private String Status
-    private TextInputEditText etTgl;
+    private Double etTotal;
+    private Integer etStatus;
+    private Date etTgl;
     private Button btnTambahUbah;
 
 
@@ -49,10 +48,9 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
 
         SpinIdSupplier = view.findViewById(DropDownIdSupplier);
         btnTambahUbah = view.findViewById(R.id.btnTambahUbahPengadaanBarang);
-        etId = null;
-        etTotal= null;
-        etTgl=null;
-        etStatus = null;
+        etTotal = Double.valueOf("");
+        etTgl = Date.valueOf("");
+        etStatus = 1;
 
 
         API service =  RetrofitClientInstance.getRetrofitInstance().create(API.class);
@@ -74,12 +72,11 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 API service = RetrofitClientInstance.getRetrofitInstance().create(API.class);
-                Call<APIResponse> call = service.createSupplier(
-                        etId.getText().toString(),
-                        SpinIdSupplier.toString(),
-                        etTotal.getText().toString(),
-                        etStatus.getText().toString(),
-                        etTgl.getText().toString(),
+                Call<APIResponse> call = service.createPengadaanBarang(
+                        Integer.valueOf(SpinIdSupplier.toString()),
+                        etTotal.doubleValue(),
+                        etStatus.intValue(),
+                        etTgl.toString(),
                         ((MainActivity)getActivity()).logged_in_user.getApiKey()
                 );
                 call.enqueue(new Callback<APIResponse>() {
