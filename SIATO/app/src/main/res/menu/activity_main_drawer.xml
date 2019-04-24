@@ -7,12 +7,13 @@
         android:id="@+id/main_menu"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_dashboard"
             android:icon="@drawable/ic_home"
             android:title="Home" />
     </group>
 
-    <item android:title="Pengelolaan Data">
+    <item android:title="Pengelolaan Data"
+        android:id="@+id/coba">
         <menu>
             <group
                 android:id="@+id/pengelolaan_data"

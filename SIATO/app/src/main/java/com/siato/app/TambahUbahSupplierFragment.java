@@ -33,14 +33,13 @@ public class TambahUbahSupplierFragment extends Fragment {
         etAlamat = view.findViewById(R.id.etSupplierAlamat);
         etNamaSales = view.findViewById(R.id.etSupplierNamaSales);
         etNomorTelepon = view.findViewById(R.id.etSupplierNomorTelepon);
-        btnTambahUbah = view.findViewById(R.id.btnTambahUbahSupplier);
+        btnTambahUbah = view.findViewById(R.id.btnSupplierTambahUbah);
 
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 API service = RetrofitClientInstance.getRetrofitInstance().create(API.class);
                 Call<APIResponse> call = service.createSupplier(
-                        etId.getText().toString(),
                         etNama.getText().toString(),
                         etAlamat.getText().toString(),
                         etNamaSales.getText().toString(),

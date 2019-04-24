@@ -2,11 +2,6 @@ package com.siato.app;
 
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import android.view.View;
-
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.view.GravityCompat;
@@ -24,6 +19,8 @@ public class MainActivity extends AppCompatActivity
 
     public Pegawai logged_in_user;
 
+    private Menu drawerMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +36,12 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        drawerMenu = navigationView.getMenu();
+
+        logged_inDrawer(false);
+
+        backToDashboard();
     }
 
     @Override
@@ -89,8 +92,8 @@ public class MainActivity extends AppCompatActivity
         String title = null;
 
         switch (id) {
-            case R.id.nav_home:
-                //fragment = new DashboardFragment();
+            case R.id.nav_dashboard:
+                fragment = new DashboardFragment();
                 title = "SIATO";
                 break;
 
@@ -126,10 +129,27 @@ public class MainActivity extends AppCompatActivity
                 fragment = new LoginFragment();
                 title = "Login";
                 break;
+
+            case R.id.nav_logout:
+                fragment = new DashboardFragment();
+                title = "SIATO";
+                logged_inDrawer(false);
+                break;
         }
 
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         getSupportActionBar().setTitle(title);
+    }
+
+    public void backToDashboard() {
+        changeFragment(R.id.nav_dashboard);
+        drawerMenu.findItem(R.id.nav_dashboard).setChecked(true);
+    }
+
+    public void logged_inDrawer(Boolean b) {
+        drawerMenu.findItem(R.id.coba).setVisible(b);
+        drawerMenu.findItem(R.id.nav_login).setVisible(!b);
+        drawerMenu.findItem(R.id.nav_logout).setVisible(b);
     }
 }

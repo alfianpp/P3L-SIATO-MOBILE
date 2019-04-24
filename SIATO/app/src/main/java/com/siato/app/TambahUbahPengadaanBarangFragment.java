@@ -75,7 +75,6 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
             public void onClick(View v) {
                 API service = RetrofitClientInstance.getRetrofitInstance().create(API.class);
                 Call<APIResponse> call = service.createSupplier(
-                        etId.getText().toString(),
                         SpinIdSupplier.toString(),
                         etTotal.getText().toString(),
                         etStatus.getText().toString(),

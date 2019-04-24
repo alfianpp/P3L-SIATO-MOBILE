@@ -74,7 +74,6 @@ public interface API {
     @FormUrlEncoded
     @POST("data/supplier")
     Call<APIResponse> createSupplier(
-            @Path("id") String id,
             @Field("nama") String nama,
             @Field("alamat") String alamat,
             @Field("nama_sales") String nama_sales,

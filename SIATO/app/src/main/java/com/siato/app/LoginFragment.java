@@ -45,10 +45,10 @@ public class LoginFragment extends Fragment {
 
                         if(!apiResponse.getError()) {
                             ((MainActivity)getActivity()).logged_in_user = apiResponse.getData();
+                            ((MainActivity)getActivity()).logged_inDrawer(true);
+                            ((MainActivity)getActivity()).backToDashboard();
                         }
-                        else {
-                            Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                        Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
