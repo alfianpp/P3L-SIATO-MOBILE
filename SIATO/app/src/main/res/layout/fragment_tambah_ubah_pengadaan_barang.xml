@@ -27,12 +27,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Spinner
-                    android:id="@+id/DropDownIdSupplier"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etIdSupplier"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="Supplier"
-                    android:spinnerMode="dropdown" />
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button

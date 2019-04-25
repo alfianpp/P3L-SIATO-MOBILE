@@ -1,6 +1,6 @@
 package com.siato.app;
 
-import org.w3c.dom.Text;
+import com.siato.app.POJO.PengadaanBarang;
 
 import java.util.List;
 
@@ -137,68 +137,25 @@ public interface API {
     // --- CRUD PENGADAAN BARANG
 
     @FormUrlEncoded
-    @POST("data/pengadaanBarang/index")
+    @POST("transaksi/pengadaan/index")
     Call<APIResponse<List<PengadaanBarang>>> getAllPengadaanBarang(@Field("api_key") String api_key);
 
     @FormUrlEncoded
-    @POST("data/pengadaanBarang")
+    @POST("transaksi/pengadaan/data")
     Call<APIResponse> createPengadaanBarang(
-            @Field("id_supplier") Integer id_supplier,
-            @Field("total") Double total,
-            @Field("status") Integer status,
-            @Field("tgl_transaksi") String tgl_transaksi,
+            @Field("id_supplier") String id_supplier,
             @Field("api_key") String api_key
     );
 
     @FormUrlEncoded
-    @POST("data/pengadaanBarang/{id}")
-    Call<APIResponse<PengadaanBarang>> showPengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
-
-    @FormUrlEncoded
-    @PUT("data/pengadaanBarang/{id}")
+    @HTTP(method = "PUT", path = "transaksi/pengadaan/{id}", hasBody = true)
     Call<APIResponse> updatePengadaanBarang(
-            @Field("id_supplier") Integer id_supplier,
-            @Field("total") Double total,
-            @Field("status") Integer status,
-            @Field("tgl_transaksi") String tgl_transaksi,
+            @Path("id") Integer id,
+            @Field("id_supplier") String id_supplier,
             @Field("api_key") String api_key
     );
 
     @FormUrlEncoded
-    @DELETE("data/pengadaanBarang/{id}")
+    @HTTP(method = "DELETE", path = "transaksi/pengadaan/{id}", hasBody = true)
     Call<APIResponse> deletePengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
-
-    // --- CRUD DETIL PENGADAAN BARANG
-
-//    @FormUrlEncoded
-//    @POST("data/detailPengadaanBarang/index")
-//    Call<APIResponse<List<DetailPengadaanBarang>>> getAllDetailPengadaanBarang(@Field("api_key") String api_key);
-//
-//    @FormUrlEncoded
-//    @POST("data/detailPengadaanBarang")
-//    Call<APIResponse> createPengadaanBarang(
-//            @Field("id_supplier") Integer id_supplier,
-//            @Field("total") Double total,
-//            @Field("status") Integer status,
-//            @Field("tgl_transaksi") String tgl_transaksi,
-//            @Field("api_key") String api_key
-//    );
-//
-//    @FormUrlEncoded
-//    @POST("data/pengadaanBarang/{id}")
-//    Call<APIResponse<PengadaanBarang>> showPengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
-//
-//    @FormUrlEncoded
-//    @PUT("data/pengadaanBarang/{id}")
-//    Call<APIResponse> updatePengadaanBarang(
-//            @Field("id_supplier") Integer id_supplier,
-//            @Field("total") Double total,
-//            @Field("status") Integer status,
-//            @Field("tgl_transaksi") String tgl_transaksi,
-//            @Field("api_key") String api_key
-//    );
-//
-//    @FormUrlEncoded
-//    @DELETE("data/pengadaanBarang/{id}")
-//    Call<APIResponse> deletePengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
 }
