@@ -14,6 +14,8 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.siato.app.POJO.Spareparts;
+
 public class SparepartsListAdapter extends RecyclerView.Adapter<SparepartsListAdapter.SparepartsViewHolder> implements Filterable {
     private Context context;
     private List<Spareparts> sparepartsList;

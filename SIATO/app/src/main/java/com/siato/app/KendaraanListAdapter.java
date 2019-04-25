@@ -4,10 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.siato.app.POJO.Kendaraan;
 
 import java.util.List;
 
@@ -50,5 +51,9 @@ public class KendaraanListAdapter extends RecyclerView.Adapter<KendaraanListAdap
     @Override
     public int getItemCount() {
         return kendaraanList.size();
+    }
+
+    public Kendaraan getItem(int position) {
+        return kendaraanList.get(position);
     }
 }

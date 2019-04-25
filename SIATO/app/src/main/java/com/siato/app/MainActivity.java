@@ -3,6 +3,8 @@ package com.siato.app;
 import android.os.Bundle;
 
 import com.google.android.material.navigation.NavigationView;
+import com.siato.app.Fragment.KelolaKonsumenFragment;
+import com.siato.app.Fragment.TambahUbahKonsumenFragment;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -107,32 +109,19 @@ public class MainActivity extends AppCompatActivity
                 title = "Kelola Data Supplier";
                 break;
 
+            case R.id.nav_data_konsumen:
+                fragment = new KelolaKonsumenFragment();
+                title = "Kelola Data Konsumen";
+                break;
+
             case R.id.nav_data_kendaraan:
                 fragment = new KelolaKendaraanFragment();
                 title = "Kelola Data Kendaraan";
                 break;
 
-            case R.id.nav_data_pengadaan_barang:
+            case R.id.nav_transaksi_pengadaan_barang:
                 fragment = new KelolaPengadaanBarangFragment();
                 title = "Kelola Data Supplier";
-                break;
-
-            case 1:
-                fragment = new TambahUbahSparepartsFragment();
-                title = "Tambah Spareparts";
-                break;
-            case 2:
-                fragment = new TambahUbahSupplierFragment();
-                title = "Tambah Supplier";
-                break;
-//            case 3:
-//                fragment = new TambahUbahPengadaanBarangFragment();
-//                title = "Tambah Supplier";
-//                break;
-
-            case 4:
-                fragment = new TambahUbahKendaraanFragment();
-                title = "Tambah Kendaraan";
                 break;
 
             case R.id.nav_login:
@@ -145,8 +134,26 @@ public class MainActivity extends AppCompatActivity
                 title = "SIATO";
                 logged_inDrawer(false);
                 break;
-        }
 
+            case 1:
+                fragment = new TambahUbahSparepartsFragment();
+                title = "Tambah Spareparts";
+                break;
+            case 2:
+                fragment = new TambahUbahSupplierFragment();
+                title = "Tambah Supplier";
+                break;
+
+            case 3:
+                fragment = new TambahUbahKonsumenFragment();
+                title = "Tambah Supplier";
+                break;
+
+            case 4:
+                fragment = new TambahUbahKendaraanFragment();
+                title = "Tambah Kendaraan";
+                break;
+        }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
         getSupportActionBar().setTitle(title);
@@ -158,8 +165,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void logged_inDrawer(Boolean b) {
-        drawerMenu.findItem(R.id.coba).setVisible(b);
+        drawerMenu.findItem(R.id.pengelolaan_data_menu).setVisible(b);
+        drawerMenu.findItem(R.id.transaksi_menu).setVisible(b);
         drawerMenu.findItem(R.id.nav_login).setVisible(!b);
         drawerMenu.findItem(R.id.nav_logout).setVisible(b);
+    }
+
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 }

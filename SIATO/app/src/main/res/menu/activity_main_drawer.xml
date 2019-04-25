@@ -13,7 +13,7 @@
     </group>
 
     <item android:title="Pengelolaan Data"
-        android:id="@+id/coba">
+        android:id="@+id/pengelolaan_data_menu">
         <menu>
             <group
                 android:id="@+id/pengelolaan_data"
@@ -27,13 +27,31 @@
                     android:icon="@drawable/ic_database"
                     android:title="Supplier" />
                 <item
+                    android:id="@+id/nav_data_konsumen"
+                    android:icon="@drawable/ic_database"
+                    android:title="Konsumen" />
+                <item
                     android:id="@+id/nav_data_kendaraan"
                     android:icon="@drawable/ic_database"
                     android:title="Kendaraan" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="Transaksi"
+        android:id="@+id/transaksi_menu">
+        <menu>
+            <group
+                android:id="@+id/transaksi"
+                android:checkableBehavior="single">
                 <item
-                    android:id="@+id/nav_data_pengadaan_barang"
+                    android:id="@+id/nav_transaksi_pengadaan_barang"
                     android:icon="@drawable/ic_database"
                     android:title="Pengadaan Barang" />
+                <item
+                    android:id="@+id/nav_transaksi_penjualan"
+                    android:icon="@drawable/ic_database"
+                    android:title="Penjualan" />
             </group>
         </menu>
     </item>

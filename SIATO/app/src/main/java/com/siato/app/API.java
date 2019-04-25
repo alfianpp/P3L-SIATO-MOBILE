@@ -1,6 +1,8 @@
 package com.siato.app;
 
-import org.w3c.dom.Text;
+import com.siato.app.POJO.Kendaraan;
+import com.siato.app.POJO.Konsumen;
+import com.siato.app.POJO.Spareparts;
 
 import java.util.List;
 
@@ -38,7 +40,7 @@ public interface API {
 
     @FormUrlEncoded
     @POST("data/spareparts/{kode}")
-    Call<APIResponse<Spareparts>> showSpareparts(@Path("kode") String kode, @Field("api_key") String api_key);
+    Call<APIResponse<Spareparts>> getSpareparts(@Path("kode") String kode, @Field("api_key") String api_key);
 
     @FormUrlEncoded
     @HTTP(method = "PUT", path = "data/spareparts/{kode}", hasBody = true)
@@ -83,7 +85,7 @@ public interface API {
 
     @FormUrlEncoded
     @POST("data/supplier/{id}")
-    Call<APIResponse<Supplier>> showSupplier(@Path("id") Integer id, @Field("api_key") String api_key);
+    Call<APIResponse<Supplier>> getSupplier(@Path("id") Integer id, @Field("api_key") String api_key);
 
     @FormUrlEncoded
     @HTTP(method = "PUT", path = "data/supplier/{id}", hasBody = true)
@@ -100,6 +102,41 @@ public interface API {
     @HTTP(method = "DELETE", path = "data/supplier/{id}", hasBody = true)
     Call<APIResponse> deleteSupplier(@Path("id") Integer id, @Field("api_key") String api_key);
 
+
+    // --- CRUD KONSUMEN
+
+    @FormUrlEncoded
+    @POST("data/konsumen/index")
+    Call<APIResponse<List<Konsumen>>> getAllKonsumen(@Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @POST("data/konsumen")
+    Call<APIResponse> createKonsumen(
+            @Field("nama") String nama,
+            @Field("nomor_telepon") String nomor_telepon,
+            @Field("alamat") String alamat,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @POST("data/konsumen/{id}")
+    Call<APIResponse<Konsumen>> getKonsumen(@Path("id") Integer id, @Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @HTTP(method = "PUT", path = "data/konsumen/{id}", hasBody = true)
+    Call<APIResponse> updateKonsumen(
+            @Path("id") Integer id,
+            @Field("nama") String nama,
+            @Field("nomor_telepon") String nomor_telepon,
+            @Field("alamat") String alamat,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "data/konsumen/{id}", hasBody = true)
+    Call<APIResponse> deleteKonsumen(@Path("id") Integer id, @Field("api_key") String api_key);
+
+
     // --- CRUD KENDARAAN
 
     @FormUrlEncoded
@@ -109,29 +146,29 @@ public interface API {
     @FormUrlEncoded
     @POST("data/kendaraan")
     Call<APIResponse> createKendaraan(
-            @Path("nomor_polisi") String nomor_polisi,
+            @Field("nomor_polisi") String nomor_polisi,
             @Field("merk") String merk,
             @Field("tipe") String tipe,
-            @Field("pemilik") String pemilik,
+            @Field("id_pemilik") String id_pemilik,
             @Field("api_key") String api_key
     );
 
     @FormUrlEncoded
-    @POST("data/kendaraan/{id}")
-    Call<APIResponse<Kendaraan>> showKendaraan(@Path("nomor_polisi") String nomor_polisi, @Field("api_key") String api_key);
+    @POST("data/kendaraan/{nomor_polisi}")
+    Call<APIResponse<Kendaraan>> getKendaraan(@Path("nomor_polisi") String nomor_polisi, @Field("api_key") String api_key);
 
     @FormUrlEncoded
-    @PUT("data/kendaraan/{id}")
+    @PUT("data/kendaraan/{nomor_polisi}")
     Call<APIResponse> updateKendaraan(
             @Path("nomor_polisi") String nomor_polisi,
             @Field("merk") String merk,
             @Field("tipe") String tipe,
-            @Field("pemilik") String pemilik,
+            @Field("id_pemilik") String id_pemilik,
             @Field("api_key") String api_key
     );
 
     @FormUrlEncoded
-    @DELETE("data/kendaraan/{id}")
+    @DELETE("data/kendaraan/{nomor_polisi}")
     Call<APIResponse> deleteKendaraan(@Path("nomor_polisi") String nomor_polisi, @Field("api_key") String api_key);
 
     // --- CRUD PENGADAAN BARANG

@@ -1,4 +1,4 @@
-package com.siato.app;
+package com.siato.app.POJO;
 
 import android.os.Parcel;
 import android.os.Parcelable;
