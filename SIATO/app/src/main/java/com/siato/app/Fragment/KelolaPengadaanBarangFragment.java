@@ -1,17 +1,7 @@
-package com.siato.app;
+package com.siato.app.Fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,51 +10,48 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.siato.app.POJO.Spareparts;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.siato.app.API;
+import com.siato.app.APIResponse;
+import com.siato.app.ListAdapter.PengadaanBarangListAdapter;
+import com.siato.app.MainActivity;
+import com.siato.app.POJO.PengadaanBarang;
+import com.siato.app.R;
+import com.siato.app.RecyclerViewClickListener;
+import com.siato.app.RecyclerViewTouchListener;
+import com.siato.app.RetrofitClientInstance;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class KelolaSparepartsFragment extends Fragment {
+public class KelolaPengadaanBarangFragment extends Fragment {
     private View view;
-    private API service = RetrofitClientInstance.getRetrofitInstance().create(API.class);
-    private SparepartsListAdapter adapter = null;
+    private API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+    private PengadaanBarangListAdapter adapter = null;
     private RecyclerView recyclerView;
-    private EditText etSearch;
-    private Button btnTambahUbahSpareparts;
+    private Button btnTambahPengadaanBarang;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_kelola_spareparts, container, false);
+        view = inflater.inflate(R.layout.fragment_kelola_pengadaan_barang, container, false);
 
-        etSearch = view.findViewById(R.id.etSearchSpareparts);
-        btnTambahUbahSpareparts = view.findViewById(R.id.btnTambahUbahSpareparts);
+        btnTambahPengadaanBarang = view.findViewById(R.id.btnTambahPengadaanBarang);
 
         refreshList();
 
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        btnTambahUbahSpareparts.setOnClickListener(new View.OnClickListener() {
+        btnTambahPengadaanBarang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).changeFragment(1);
+                ((MainActivity)getActivity()).changeFragment(5);
             }
         });
 
@@ -72,27 +59,27 @@ public class KelolaSparepartsFragment extends Fragment {
     }
 
     private void refreshList() {
-        Call<APIResponse<List<Spareparts>>> call = service.getAllSpareparts(((MainActivity)getActivity()).logged_in_user.getApiKey());
-        call.enqueue(new Callback<APIResponse<List<Spareparts>>>() {
+        Call<APIResponse<List<PengadaanBarang>>> call = APIService.getAllPengadaanBarang(((MainActivity)getActivity()).logged_in_user.getApiKey());
+        call.enqueue(new Callback<APIResponse<List<PengadaanBarang>>>() {
             @Override
-            public void onResponse(Call<APIResponse<List<Spareparts>>> call, Response<APIResponse<List<Spareparts>>> response) {
-                APIResponse<List<Spareparts>> apiResponse = response.body();
+            public void onResponse(Call<APIResponse<List<PengadaanBarang>>> call, Response<APIResponse<List<PengadaanBarang>>> response) {
+                APIResponse<List<PengadaanBarang>> apiResponse = response.body();
 
                 if(!apiResponse.getError()) {
-                    generateDataList(apiResponse.getData());
+                    generateDataList(apiResponse.getData(), view);
                 }
             }
 
             @Override
-            public void onFailure(Call<APIResponse<List<Spareparts>>> call, Throwable t) {
+            public void onFailure(Call<APIResponse<List<PengadaanBarang>>> call, Throwable t) {
                 Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void generateDataList(List<Spareparts> sparepartsList) {
-        recyclerView = view.findViewById(R.id.recyclerview_spareparts);
-        adapter = new SparepartsListAdapter(getContext(), sparepartsList);
+    private void generateDataList(List<PengadaanBarang> pengadaanBarangList, View view) {
+        recyclerView = view.findViewById(R.id.rvListPengadaanBarang);
+        adapter = new PengadaanBarangListAdapter(getContext(), pengadaanBarangList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -106,18 +93,16 @@ public class KelolaSparepartsFragment extends Fragment {
             @Override
             public void onLongClick(final View view, int position) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                final Spareparts selected = adapter.getItem(position);
+                final PengadaanBarang selected = adapter.getItem(position);
                 mBuilder.setTitle("Pilih Aksi")
                         .setPositiveButton("Ubah", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Fragment fragment = new TambahUbahSparepartsFragment();
+                                Fragment fragment = new TambahUbahPengadaanBarangFragment();
                                 Bundle b = new Bundle();
-                                b.putParcelable("tes", selected);
+                                b.putParcelable("pengadaan_barang", selected);
                                 fragment.setArguments(b);
-                                String title = "Ubah Data Spareparts";
                                 ((MainActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-                                ((MainActivity)getActivity()).getSupportActionBar().setTitle(title);
                             }
                         })
                         .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
@@ -130,12 +115,12 @@ public class KelolaSparepartsFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                                mBuilder.setTitle("Hapus Spareparts")
-                                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus spareparts ini?")
+                                mBuilder.setTitle("Hapus Transaksi")
+                                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus transaksi pengadaan barang ini?")
                                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
-                                                Call<APIResponse> call = service.deleteSpareparts(selected.getKode(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
+                                                Call<APIResponse> call = APIService.deletePengadaanBarang(selected.getId(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
                                                 call.enqueue(new Callback<APIResponse>() {
                                                     @Override
                                                     public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {

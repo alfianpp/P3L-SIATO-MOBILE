@@ -68,7 +68,6 @@ public class Spareparts implements Parcelable {
         return url_gambar;
     }
 
-
     @Override
     public int describeContents() {
         return 0;

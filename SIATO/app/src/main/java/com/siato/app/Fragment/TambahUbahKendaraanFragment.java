@@ -15,7 +15,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.siato.app.API;
 import com.siato.app.APIResponse;
 import com.siato.app.MainActivity;
-import com.siato.app.POJO.Konsumen;
+import com.siato.app.POJO.Kendaraan;
 import com.siato.app.R;
 import com.siato.app.RetrofitClientInstance;
 
@@ -23,32 +23,34 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TambahUbahKonsumenFragment extends Fragment {
+
+public class TambahUbahKendaraanFragment extends Fragment {
     private String ACTION = "TAMBAH";
-    private Integer IDKonsumen = null;
-    private TextInputEditText etNama;
-    private TextInputEditText etNomorTelepon;
-    private TextInputEditText etAlamat;
+    private TextInputEditText etNomorPolisi;
+    private TextInputEditText etMerk;
+    private TextInputEditText etTipe;
+    private TextInputEditText etPemilik;
     private Button btnTambahUbah;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tambah_ubah_konsumen, container, false);
+        View view = inflater.inflate(R.layout.fragment_tambah_ubah_kendaraan, container, false);
 
-        etNama = view.findViewById(R.id.etKonsumenNama);
-        etNomorTelepon = view.findViewById(R.id.etKonsumenNomorTelepon);
-        etAlamat = view.findViewById(R.id.etKonsumenAlamat);
-        btnTambahUbah = view.findViewById(R.id.btnTambahUbahKonsumen);
+        etNomorPolisi = view.findViewById(R.id.etKendaraanNomorPolisi);
+        etMerk = view.findViewById(R.id.etKendaraanMerk);
+        etTipe = view.findViewById(R.id.etKendaraanTipe);
+        etPemilik = view.findViewById(R.id.etKendaraanPemilik);
+        btnTambahUbah = view.findViewById(R.id.btnTambahUbahKendaraan);
 
-        if(getArguments() != null && getArguments().getParcelable("konsumen") != null) {
+        if(getArguments() != null && getArguments().getParcelable("kendaraan") != null) {
             ACTION = "UBAH";
-            ((MainActivity)getActivity()).setActionBarTitle("Ubah Konsumen");
-            Konsumen konsumen = getArguments().getParcelable("konsumen");
-            IDKonsumen = konsumen.getID();
-            etNama.setText(konsumen.getNama());
-            etNomorTelepon.setText(konsumen.getNomorTelepon());
-            etAlamat.setText(konsumen.getAlamat());
+            ((MainActivity)getActivity()).setActionBarTitle("Ubah Kendaraan");
+            Kendaraan kendaraan = getArguments().getParcelable("kendaraan");
+            etNomorPolisi.setText(kendaraan.getNomorPolisi());
+            etMerk.setText(kendaraan.getMerk());
+            etTipe.setText(kendaraan.getTipe());
+            etPemilik.setText(String.valueOf(kendaraan.getPemilik().getId()));
             btnTambahUbah.setText("Ubah");
         }
 
@@ -56,12 +58,13 @@ public class TambahUbahKonsumenFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
-                switch (ACTION){
+                switch (ACTION) {
                     case "TAMBAH":
-                        Call<APIResponse> create = APIService.createKonsumen(
-                                etNama.getText().toString(),
-                                etNomorTelepon.getText().toString(),
-                                etAlamat.getText().toString(),
+                        Call<APIResponse> create = APIService.createKendaraan(
+                                etNomorPolisi.getText().toString(),
+                                etMerk.getText().toString(),
+                                etTipe.getText().toString(),
+                                etPemilik.getText().toString(),
                                 ((MainActivity)getActivity()).logged_in_user.getApiKey()
                         );
                         create.enqueue(new Callback<APIResponse>() {
@@ -70,7 +73,7 @@ public class TambahUbahKonsumenFragment extends Fragment {
                                 APIResponse apiResponse = response.body();
 
                                 if(!apiResponse.getError()) {
-                                    ((MainActivity)getActivity()).changeFragment(R.id.nav_data_konsumen);
+                                    ((MainActivity)getActivity()).changeFragment(R.id.nav_data_kendaraan);
                                 }
 
                                 Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
@@ -84,11 +87,11 @@ public class TambahUbahKonsumenFragment extends Fragment {
                         break;
 
                     case "UBAH":
-                        Call<APIResponse> update = APIService.updateKonsumen(
-                                IDKonsumen,
-                                etNama.getText().toString(),
-                                etNomorTelepon.getText().toString(),
-                                etAlamat.getText().toString(),
+                        Call<APIResponse> update = APIService.updateKendaraan(
+                                etNomorPolisi.getText().toString(),
+                                etMerk.getText().toString(),
+                                etTipe.getText().toString(),
+                                etPemilik.getText().toString(),
                                 ((MainActivity)getActivity()).logged_in_user.getApiKey()
                         );
                         update.enqueue(new Callback<APIResponse>() {
@@ -97,7 +100,7 @@ public class TambahUbahKonsumenFragment extends Fragment {
                                 APIResponse apiResponse = response.body();
 
                                 if(!apiResponse.getError()) {
-                                    ((MainActivity)getActivity()).changeFragment(R.id.nav_data_konsumen);
+                                    ((MainActivity)getActivity()).changeFragment(R.id.nav_data_kendaraan);
                                 }
 
                                 Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();

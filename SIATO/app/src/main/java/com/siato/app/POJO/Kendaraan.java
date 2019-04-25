@@ -3,17 +3,19 @@ package com.siato.app.POJO;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.siato.app.POJO.Partially.Konsumen;
+
 public class Kendaraan implements Parcelable {
     private String nomor_polisi;
     private String merk;
     private String tipe;
-    private String id_pemilik;
+    private Konsumen pemilik;
 
-    public Kendaraan(String nomor_polisi, String merk, String tipe, String id_pemilik) {
+    public Kendaraan(String nomor_polisi, String merk, String tipe, Konsumen pemilik) {
         this.nomor_polisi = nomor_polisi;
         this.merk = merk;
         this.tipe = tipe;
-        this.id_pemilik = id_pemilik;
+        this.pemilik = pemilik;
     }
 
     public String getNomorPolisi() {
@@ -28,10 +30,9 @@ public class Kendaraan implements Parcelable {
         return tipe;
     }
 
-    public String getIDPemilik() {
-        return id_pemilik;
+    public Konsumen getPemilik() {
+        return pemilik;
     }
-
 
     @Override
     public int describeContents() {
@@ -43,14 +44,14 @@ public class Kendaraan implements Parcelable {
         dest.writeString(this.nomor_polisi);
         dest.writeString(this.merk);
         dest.writeString(this.tipe);
-        dest.writeString(this.id_pemilik);
+        dest.writeParcelable(this.pemilik, flags);
     }
 
     protected Kendaraan(Parcel in) {
         this.nomor_polisi = in.readString();
         this.merk = in.readString();
         this.tipe = in.readString();
-        this.id_pemilik = in.readString();
+        this.pemilik = in.readParcelable(Konsumen.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<Kendaraan> CREATOR = new Parcelable.Creator<Kendaraan>() {

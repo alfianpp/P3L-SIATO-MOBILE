@@ -1,4 +1,4 @@
-package com.siato.app;
+package com.siato.app.POJO;
 
 public class Pegawai {
     private Integer id;

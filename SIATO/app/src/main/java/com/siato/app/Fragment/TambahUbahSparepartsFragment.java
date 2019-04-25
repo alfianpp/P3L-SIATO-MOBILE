@@ -1,4 +1,4 @@
-package com.siato.app;
+package com.siato.app.Fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,7 +8,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.siato.app.API;
+import com.siato.app.APIResponse;
+import com.siato.app.MainActivity;
 import com.siato.app.POJO.Spareparts;
+import com.siato.app.POJO.Pegawai;
+import com.siato.app.R;
+import com.siato.app.RetrofitClientInstance;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,18 +50,19 @@ public class TambahUbahSparepartsFragment extends Fragment {
         etHargaBeli = view.findViewById(R.id.etSparepartsHargaBeli);
         etStok = view.findViewById(R.id.etSparepartsStok);
         etStokMinimal = view.findViewById(R.id.etSparepartsStokMinimal);
-        btnTambahUbah = view.findViewById(R.id.btnSparepartsTambahUbah);
+        btnTambahUbah = view.findViewById(R.id.btnTambahUbahSpareparts);
 
-        if(getArguments() != null && getArguments().getParcelable("tes") != null) {
+        if(getArguments() != null && getArguments().getParcelable("spareparts") != null) {
             ACTION = "UBAH";
-            Spareparts spareparts = getArguments().getParcelable("tes");
+            ((MainActivity)getActivity()).setActionBarTitle("Ubah Spareparts");
+            Spareparts spareparts = getArguments().getParcelable("spareparts");
             etKode.setText(spareparts.getKode());
             etNama.setText(spareparts.getNama());
             etMerk.setText(spareparts.getMerk());
             etTipe.setText(spareparts.getTipe());
             etKodePeletakan.setText(spareparts.getKodePeletakan());
-            etHargaJual.setText(String.valueOf(spareparts.getHargaJual()));
-            etHargaBeli.setText(String.valueOf(spareparts.getHargaBeli()));
+            etHargaJual.setText(String.valueOf(spareparts.getHargaJual()).replace(".0", ""));
+            etHargaBeli.setText(String.valueOf(spareparts.getHargaBeli()).replace(".0", ""));
             etStok.setText(String.valueOf(spareparts.getStok()));
             etStokMinimal.setText(String.valueOf(spareparts.getStokMinimal()));
             btnTambahUbah.setText("Ubah");
@@ -64,10 +71,10 @@ public class TambahUbahSparepartsFragment extends Fragment {
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                API service = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+                API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
                 switch (ACTION){
                     case "TAMBAH":
-                        Call<APIResponse> create = service.createSpareparts(
+                        Call<APIResponse> create = APIService.createSpareparts(
                                 etKode.getText().toString(),
                                 etNama.getText().toString(),
                                 etMerk.getText().toString(),
@@ -82,7 +89,11 @@ public class TambahUbahSparepartsFragment extends Fragment {
                         create.enqueue(new Callback<APIResponse>() {
                             @Override
                             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                                APIResponse<Pegawai> apiResponse = response.body();
+                                APIResponse apiResponse = response.body();
+
+                                if(!apiResponse.getError()) {
+                                    ((MainActivity)getActivity()).changeFragment(R.id.nav_data_spareparts);
+                                }
 
                                 Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -95,7 +106,7 @@ public class TambahUbahSparepartsFragment extends Fragment {
                         break;
 
                     case "UBAH":
-                        Call<APIResponse> update = service.updateSpareparts(
+                        Call<APIResponse> update = APIService.updateSpareparts(
                                 etKode.getText().toString(),
                                 etNama.getText().toString(),
                                 etMerk.getText().toString(),
@@ -109,7 +120,11 @@ public class TambahUbahSparepartsFragment extends Fragment {
                         update.enqueue(new Callback<APIResponse>() {
                             @Override
                             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                                APIResponse<Pegawai> apiResponse = response.body();
+                                APIResponse apiResponse = response.body();
+
+                                if(!apiResponse.getError()) {
+                                    ((MainActivity)getActivity()).changeFragment(R.id.nav_data_spareparts);
+                                }
 
                                 Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                             }

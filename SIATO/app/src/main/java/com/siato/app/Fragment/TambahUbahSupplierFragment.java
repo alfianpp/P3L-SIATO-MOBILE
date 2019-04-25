@@ -1,4 +1,4 @@
-package com.siato.app;
+package com.siato.app.Fragment;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -9,6 +9,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.siato.app.API;
+import com.siato.app.APIResponse;
+import com.siato.app.MainActivity;
+import com.siato.app.POJO.Supplier;
+import com.siato.app.R;
+import com.siato.app.RetrofitClientInstance;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +25,7 @@ import retrofit2.Response;
 
 public class TambahUbahSupplierFragment extends Fragment {
     private String ACTION = "TAMBAH";
-    private Integer idSupplier = null;
+    private Integer IDSupplier = null;
     private TextInputEditText etNama;
     private TextInputEditText etAlamat;
     private TextInputEditText etNamaSales;
@@ -33,17 +39,18 @@ public class TambahUbahSupplierFragment extends Fragment {
         etNama = view.findViewById(R.id.etSupplierNama);
         etAlamat = view.findViewById(R.id.etSupplierAlamat);
         etNamaSales = view.findViewById(R.id.etSupplierNamaSales);
-        etNomorTelepon = view.findViewById(R.id.etSupplierNomorTelepon);
-        btnTambahUbah = view.findViewById(R.id.btnSupplierTambahUbah);
+        etNomorTelepon = view.findViewById(R.id.etSupplierNomorTeleponSales);
+        btnTambahUbah = view.findViewById(R.id.btnTambahUbahSupplier);
 
-        if(getArguments() != null && getArguments().getParcelable("tes") != null) {
+        if(getArguments() != null && getArguments().getParcelable("supplier") != null) {
             ACTION = "UBAH";
-            Supplier supplier = getArguments().getParcelable("tes");
-            idSupplier = supplier.getId();
+            ((MainActivity)getActivity()).setActionBarTitle("Ubah Supplier");
+            Supplier supplier = getArguments().getParcelable("supplier");
+            IDSupplier = supplier.getId();
             etNama.setText(supplier.getNama());
             etAlamat.setText(supplier.getAlamat());
-            etNamaSales.setText(supplier.getNama_sales());
-            etNomorTelepon.setText(supplier.getNomor_telepon_sales());
+            etNamaSales.setText(supplier.getNamaSales());
+            etNomorTelepon.setText(supplier.getNomorTeleponSales());
             btnTambahUbah.setText("Ubah");
         }
 
@@ -63,7 +70,11 @@ public class TambahUbahSupplierFragment extends Fragment {
                         create.enqueue(new Callback<APIResponse>() {
                             @Override
                             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                                APIResponse<Pegawai> apiResponse = response.body();
+                                APIResponse apiResponse = response.body();
+
+                                if(!apiResponse.getError()) {
+                                    ((MainActivity)getActivity()).changeFragment(R.id.nav_data_supplier);
+                                }
 
                                 Toast.makeText(getContext(),apiResponse.getMessage(),Toast.LENGTH_SHORT).show();
                             }
@@ -77,7 +88,7 @@ public class TambahUbahSupplierFragment extends Fragment {
 
                     case "UBAH":
                         Call<APIResponse> update = service.updateSupplier(
-                                idSupplier,
+                                IDSupplier,
                                 etNama.getText().toString(),
                                 etAlamat.getText().toString(),
                                 etNamaSales.getText().toString(),
@@ -87,7 +98,11 @@ public class TambahUbahSupplierFragment extends Fragment {
                         update.enqueue(new Callback<APIResponse>() {
                             @Override
                             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                                APIResponse<Pegawai> apiResponse = response.body();
+                                APIResponse apiResponse = response.body();
+
+                                if(!apiResponse.getError()) {
+                                    ((MainActivity)getActivity()).changeFragment(R.id.nav_data_supplier);
+                                }
 
                                 Toast.makeText(getContext(),apiResponse.getMessage(),Toast.LENGTH_SHORT).show();
                             }

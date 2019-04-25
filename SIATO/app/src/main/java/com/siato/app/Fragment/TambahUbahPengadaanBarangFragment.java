@@ -1,4 +1,4 @@
-package com.siato.app;
+package com.siato.app.Fragment;
 
 import android.os.Bundle;
 
@@ -9,29 +9,24 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
+import com.siato.app.API;
+import com.siato.app.APIResponse;
+import com.siato.app.MainActivity;
+import com.siato.app.POJO.PengadaanBarang;
+import com.siato.app.R;
+import com.siato.app.RetrofitClientInstance;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class TambahUbahPengadaanBarangFragment extends Fragment {
     private String ACTION = "TAMBAH";
-    private Integer idPengadaan = null;
+    private Integer IDPengadaanBarang = null;
     private TextInputEditText etIdS;
     private Button btnTambahUbah;
 
@@ -40,29 +35,35 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tambah_ubah_pengadaan_barang, container, false);
 
         etIdS = view.findViewById(R.id.etIdSupplier);
-        btnTambahUbah = view.findViewById(R.id.btnPengBarangTambahUbah);
+        btnTambahUbah = view.findViewById(R.id.btnTambahUbahPengadaanBarang);
 
-        if(getArguments() != null && getArguments().getParcelable("tes") != null) {
+        if(getArguments() != null && getArguments().getParcelable("pengadaan_barang") != null) {
             ACTION = "UBAH";
-            Supplier supplier = getArguments().getParcelable("tes");
-            idPengadaan = supplier.getId();
+            ((MainActivity)getActivity()).setActionBarTitle("Ubah Transaksi");
+            PengadaanBarang pengadaanBarang = getArguments().getParcelable("pengadaan_barang");
+            IDPengadaanBarang = pengadaanBarang.getId();
+            etIdS.setText(String.valueOf(pengadaanBarang.getId()));
             btnTambahUbah.setText("Ubah");
         }
 
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                API service = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+                API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
                 switch (ACTION) {
                     case "TAMBAH":
-                    Call<APIResponse> create = service.createPengadaanBarang(
+                    Call<APIResponse> create = APIService.createPengadaanBarang(
                             etIdS.getText().toString(),
                             ((MainActivity) getActivity()).logged_in_user.getApiKey()
                     );
                     create.enqueue(new Callback<APIResponse>() {
                         @Override
                         public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                            APIResponse<Pegawai> apiResponse = response.body();
+                            APIResponse apiResponse = response.body();
+
+                            if(!apiResponse.getError()) {
+                                ((MainActivity)getActivity()).changeFragment(R.id.nav_transaksi_pengadaan_barang);
+                            }
 
                             Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -75,15 +76,19 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
                     break;
 
                     case "UBAH":
-                        Call<APIResponse> update = service.updatePengadaanBarang(
-                                idPengadaan,
+                        Call<APIResponse> update = APIService.updatePengadaanBarang(
+                                IDPengadaanBarang,
                                 etIdS.getText().toString(),
                                 ((MainActivity) getActivity()).logged_in_user.getApiKey()
                         );
                         update.enqueue(new Callback<APIResponse>() {
                             @Override
                             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                                APIResponse<Pegawai> apiResponse = response.body();
+                                APIResponse apiResponse = response.body();
+
+                                if(!apiResponse.getError()) {
+                                    ((MainActivity)getActivity()).changeFragment(R.id.nav_transaksi_pengadaan_barang);
+                                }
 
                                 Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                             }

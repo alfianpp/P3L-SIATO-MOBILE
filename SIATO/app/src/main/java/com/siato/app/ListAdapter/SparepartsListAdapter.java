@@ -1,4 +1,4 @@
-package com.siato.app;
+package com.siato.app.ListAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.siato.app.POJO.Spareparts;
+import com.siato.app.R;
 
 public class SparepartsListAdapter extends RecyclerView.Adapter<SparepartsListAdapter.SparepartsViewHolder> implements Filterable {
     private Context context;

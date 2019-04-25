@@ -3,8 +3,19 @@ package com.siato.app;
 import android.os.Bundle;
 
 import com.google.android.material.navigation.NavigationView;
+import com.siato.app.Fragment.DashboardFragment;
+import com.siato.app.Fragment.KelolaKendaraanFragment;
 import com.siato.app.Fragment.KelolaKonsumenFragment;
+import com.siato.app.Fragment.KelolaPengadaanBarangFragment;
+import com.siato.app.Fragment.KelolaSparepartsFragment;
+import com.siato.app.Fragment.KelolaSupplierFragment;
+import com.siato.app.Fragment.LoginFragment;
+import com.siato.app.Fragment.TambahUbahKendaraanFragment;
 import com.siato.app.Fragment.TambahUbahKonsumenFragment;
+import com.siato.app.Fragment.TambahUbahPengadaanBarangFragment;
+import com.siato.app.Fragment.TambahUbahSparepartsFragment;
+import com.siato.app.Fragment.TambahUbahSupplierFragment;
+import com.siato.app.POJO.Pegawai;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -121,8 +132,13 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_transaksi_pengadaan_barang:
                 fragment = new KelolaPengadaanBarangFragment();
-                title = "Kelola Data Supplier";
+                title = "Kelola Pengadaan Barang";
                 break;
+
+//            case R.id.nav_transaksi_penjualan:
+//                fragment = new KelolaPenjualanFragment();
+//                title = "Kelola Penjualan";
+//                break;
 
             case R.id.nav_login:
                 fragment = new LoginFragment();
@@ -146,17 +162,27 @@ public class MainActivity extends AppCompatActivity
 
             case 3:
                 fragment = new TambahUbahKonsumenFragment();
-                title = "Tambah Supplier";
+                title = "Tambah Konsumen";
                 break;
 
             case 4:
                 fragment = new TambahUbahKendaraanFragment();
                 title = "Tambah Kendaraan";
                 break;
+
+            case 5:
+                fragment = new TambahUbahPengadaanBarangFragment();
+                title = "Tambah Pengadaan Barang";
+                break;
+
+//            case 6:
+//                fragment = new TambahUbahPenjualanFragment();
+//                title = "Tambah Penjualan";
+//                break;
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-        getSupportActionBar().setTitle(title);
+        setActionBarTitle(title);
     }
 
     public void backToDashboard() {

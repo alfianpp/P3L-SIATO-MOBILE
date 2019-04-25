@@ -1,4 +1,4 @@
-package com.siato.app;
+package com.siato.app.ListAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,6 +13,9 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.siato.app.POJO.Supplier;
+import com.siato.app.R;
 
 public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapter.SupplierViewHolder> implements Filterable {
     private Context context;
@@ -36,7 +39,7 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
             tvNamaSupplier = itemView.findViewById(R.id.tvSupplierNama);
             tvAlamatSupplier = itemView.findViewById(R.id.tvSupplierAlamat);
             tvNamaSalesSupplier = itemView.findViewById(R.id.tvSupplierNamaSales);
-            tvNomorTeleponSupplier = itemView.findViewById(R.id.tvSupplierNomorTelepon);
+            tvNomorTeleponSupplier = itemView.findViewById(R.id.tvSupplierNomorTeleponSales);
         }
     }
 
@@ -55,8 +58,8 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
 
         holder.tvNamaSupplier.setText(current.getNama());
         holder.tvAlamatSupplier.setText(current.getAlamat());
-        holder.tvNamaSalesSupplier.setText(current.getNama_sales());
-        holder.tvNomorTeleponSupplier.setText(current.getNomor_telepon_sales());
+        holder.tvNamaSalesSupplier.setText(current.getNamaSales());
+        holder.tvNomorTeleponSupplier.setText(current.getNomorTeleponSales());
     }
 
     @Override

@@ -1,11 +1,9 @@
-package com.siato.app;
+package com.siato.app.POJO;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.w3c.dom.Text;
-
-class Supplier implements Parcelable {
+public class Supplier implements Parcelable {
     private Integer id;
     private String nama;
     private String alamat;
@@ -20,10 +18,6 @@ class Supplier implements Parcelable {
         this.nomor_telepon_sales = nomor_telepon_sales;
     }
 
-    public Supplier(Parcel source) {
-
-    }
-
     public Integer getId() {
         return id;
     }
@@ -36,45 +30,34 @@ class Supplier implements Parcelable {
         return alamat;
     }
 
-    public String getNama_sales() {
+    public String getNamaSales() {
         return nama_sales;
     }
 
-    public String getNomor_telepon_sales() {
+    public String getNomorTeleponSales() {
         return nomor_telepon_sales;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setNama(String nama) {
-        this.nama = nama;
-    }
-
-    public void setAlamat(String alamat) {
-        this.alamat = alamat;
-    }
-
-    public void setNama_sales(String nama_sales) {
-        this.nama_sales = nama_sales;
-    }
-
-    public void setNomor_telepon_sales(String nomor_telepon_sales) {
-        this.nomor_telepon_sales = nomor_telepon_sales;
-    }
-
-
+    @Override
     public int describeContents() {
         return 0;
     }
 
-
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.alamat);
+        dest.writeValue(this.id);
         dest.writeString(this.nama);
+        dest.writeString(this.alamat);
         dest.writeString(this.nama_sales);
         dest.writeString(this.nomor_telepon_sales);
+    }
+
+    protected Supplier(Parcel in) {
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.nama = in.readString();
+        this.alamat = in.readString();
+        this.nama_sales = in.readString();
+        this.nomor_telepon_sales = in.readString();
     }
 
     public static final Parcelable.Creator<Supplier> CREATOR = new Parcelable.Creator<Supplier>() {

@@ -1,4 +1,4 @@
-package com.siato.app;
+package com.siato.app.Fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -20,7 +20,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.siato.app.API;
+import com.siato.app.APIResponse;
+import com.siato.app.ListAdapter.KendaraanListAdapter;
+import com.siato.app.MainActivity;
 import com.siato.app.POJO.Kendaraan;
+import com.siato.app.R;
+import com.siato.app.RecyclerViewClickListener;
+import com.siato.app.RecyclerViewTouchListener;
+import com.siato.app.RetrofitClientInstance;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,19 +36,19 @@ import retrofit2.Response;
 
 public class KelolaKendaraanFragment extends Fragment{
     private View view;
+    private API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
     private KendaraanListAdapter adapter = null;
-    private API service = RetrofitClientInstance.getRetrofitInstance().create(API.class);
     private RecyclerView recyclerView;
     private EditText etSearch;
-    private Button btnTambahUbahKendaraan;
+    private Button btnTambahKendaraan;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_kelola_kendaraan, container, false);
 
-        etSearch = view.findViewById(R.id.etSearchSupplier);
-        btnTambahUbahKendaraan = view.findViewById(R.id.btnTambahUbahKendaraan);
+        etSearch = view.findViewById(R.id.etSearchKendaraan);
+        btnTambahKendaraan = view.findViewById(R.id.btnTambahKendaraan);
 
         refreshList();
 
@@ -52,7 +60,7 @@ public class KelolaKendaraanFragment extends Fragment{
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //adapter.getFilter().filter(s);
+                adapter.getFilter().filter(s);
             }
 
             @Override
@@ -61,17 +69,17 @@ public class KelolaKendaraanFragment extends Fragment{
             }
         });
 
-        btnTambahUbahKendaraan.setOnClickListener(new View.OnClickListener() {
+        btnTambahKendaraan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).changeFragment(2);
+                ((MainActivity)getActivity()).changeFragment(4);
             }
         });
 
         return view;
     }
     private void refreshList() {
-        Call<APIResponse<List<Kendaraan>>> call = service.getAllKendaraan(((MainActivity)getActivity()).logged_in_user.getApiKey());
+        Call<APIResponse<List<Kendaraan>>> call = APIService.getAllKendaraan(((MainActivity)getActivity()).logged_in_user.getApiKey());
         call.enqueue(new Callback<APIResponse<List<Kendaraan>>>() {
             @Override
             public void onResponse(Call<APIResponse<List<Kendaraan>>> call, Response<APIResponse<List<Kendaraan>>> response) {
@@ -89,7 +97,7 @@ public class KelolaKendaraanFragment extends Fragment{
         });
     }
     private void generateDataList(List<Kendaraan> kendaraanList) {
-        recyclerView = view.findViewById(R.id.recyclerview_kendaraan);
+        recyclerView = view.findViewById(R.id.rvListKendaraan);
         adapter = new KendaraanListAdapter(getContext(), kendaraanList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -111,11 +119,9 @@ public class KelolaKendaraanFragment extends Fragment{
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Fragment fragment = new TambahUbahKendaraanFragment();
                                 Bundle b = new Bundle();
-                                b.putParcelable("tes", selected);
+                                b.putParcelable("kendaraan", selected);
                                 fragment.setArguments(b);
-                                String title = "Ubah Data Kendaraan";
                                 ((MainActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-                                ((MainActivity)getActivity()).getSupportActionBar().setTitle(title);
                             }
                         })
                         .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
@@ -133,7 +139,7 @@ public class KelolaKendaraanFragment extends Fragment{
                                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
-                                                Call<APIResponse> call = service.deleteKendaraan(selected.getNomorPolisi(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
+                                                Call<APIResponse> call = APIService.deleteKendaraan(selected.getNomorPolisi(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
                                                 call.enqueue(new Callback<APIResponse>() {
                                                     @Override
                                                     public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {

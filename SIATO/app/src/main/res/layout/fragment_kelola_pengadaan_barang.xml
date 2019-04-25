@@ -5,13 +5,13 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/btnTambahUbahPengadaanBarang"
+        android:id="@+id/btnTambahPengadaanBarang"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tambah" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_pengadaanBarang"
+        android:id="@+id/rvListPengadaanBarang"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/view_pengadaan_barang" />

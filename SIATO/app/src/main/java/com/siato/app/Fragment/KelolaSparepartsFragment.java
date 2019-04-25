@@ -1,4 +1,4 @@
-package com.siato.app;
+package com.siato.app.Fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -20,27 +20,35 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.siato.app.API;
+import com.siato.app.APIResponse;
+import com.siato.app.ListAdapter.SparepartsListAdapter;
+import com.siato.app.MainActivity;
+import com.siato.app.POJO.Spareparts;
+import com.siato.app.R;
+import com.siato.app.RecyclerViewClickListener;
+import com.siato.app.RecyclerViewTouchListener;
+import com.siato.app.RetrofitClientInstance;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class KelolaSupplierFragment extends Fragment {
+public class KelolaSparepartsFragment extends Fragment {
     private View view;
-    private SupplierListAdapter adapter = null;
-    private API service = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+    private API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+    private SparepartsListAdapter adapter = null;
     private RecyclerView recyclerView;
     private EditText etSearch;
-    private Button btnTambahUbahSupplier;
+    private Button btnTambah;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_kelola_supplier, container, false);
+        view = inflater.inflate(R.layout.fragment_kelola_spareparts, container, false);
 
-        etSearch = view.findViewById(R.id.etSearchSupplier);
-        btnTambahUbahSupplier = view.findViewById(R.id.btnTambahUbahSupplier);
+        etSearch = view.findViewById(R.id.etSearchSpareparts);
+        btnTambah = view.findViewById(R.id.btnTambahSpareparts);
 
         refreshList();
 
@@ -61,21 +69,22 @@ public class KelolaSupplierFragment extends Fragment {
             }
         });
 
-        btnTambahUbahSupplier.setOnClickListener(new View.OnClickListener() {
+        btnTambah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).changeFragment(2);
+                ((MainActivity)getActivity()).changeFragment(1);
             }
         });
 
         return view;
     }
+
     private void refreshList() {
-        Call<APIResponse<List<Supplier>>> call = service.getAllSupplier(((MainActivity)getActivity()).logged_in_user.getApiKey());
-        call.enqueue(new Callback<APIResponse<List<Supplier>>>() {
+        Call<APIResponse<List<Spareparts>>> call = APIService.getAllSpareparts(((MainActivity)getActivity()).logged_in_user.getApiKey());
+        call.enqueue(new Callback<APIResponse<List<Spareparts>>>() {
             @Override
-            public void onResponse(Call<APIResponse<List<Supplier>>> call, Response<APIResponse<List<Supplier>>> response) {
-                APIResponse<List<Supplier>> apiResponse = response.body();
+            public void onResponse(Call<APIResponse<List<Spareparts>>> call, Response<APIResponse<List<Spareparts>>> response) {
+                APIResponse<List<Spareparts>> apiResponse = response.body();
 
                 if(!apiResponse.getError()) {
                     generateDataList(apiResponse.getData());
@@ -83,14 +92,15 @@ public class KelolaSupplierFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<APIResponse<List<Supplier>>> call, Throwable t) {
+            public void onFailure(Call<APIResponse<List<Spareparts>>> call, Throwable t) {
                 Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-    private void generateDataList(List<Supplier> supplierList) {
-        recyclerView = view.findViewById(R.id.recyclerview_supplier);
-        adapter = new SupplierListAdapter(getContext(), supplierList);
+
+    private void generateDataList(List<Spareparts> sparepartsList) {
+        recyclerView = view.findViewById(R.id.rvListSpareparts);
+        adapter = new SparepartsListAdapter(getContext(), sparepartsList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -104,18 +114,16 @@ public class KelolaSupplierFragment extends Fragment {
             @Override
             public void onLongClick(final View view, int position) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                final Supplier selected = adapter.getItem(position);
+                final Spareparts selected = adapter.getItem(position);
                 mBuilder.setTitle("Pilih Aksi")
                         .setPositiveButton("Ubah", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Fragment fragment = new TambahUbahSupplierFragment();
+                                Fragment fragment = new TambahUbahSparepartsFragment();
                                 Bundle b = new Bundle();
-                                b.putParcelable("tes", selected);
+                                b.putParcelable("spareparts", selected);
                                 fragment.setArguments(b);
-                                String title = "Ubah Data Supplier";
                                 ((MainActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-                                ((MainActivity)getActivity()).getSupportActionBar().setTitle(title);
                             }
                         })
                         .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
@@ -128,12 +136,12 @@ public class KelolaSupplierFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                                mBuilder.setTitle("Hapus Supplier")
-                                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus supplier ini?")
+                                mBuilder.setTitle("Hapus Spareparts")
+                                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus spareparts ini?")
                                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
-                                                Call<APIResponse> call = service.deleteSupplier(selected.getId(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
+                                                Call<APIResponse> call = APIService.deleteSpareparts(selected.getKode(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
                                                 call.enqueue(new Callback<APIResponse>() {
                                                     @Override
                                                     public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
@@ -165,4 +173,3 @@ public class KelolaSupplierFragment extends Fragment {
         }));
     }
 }
-

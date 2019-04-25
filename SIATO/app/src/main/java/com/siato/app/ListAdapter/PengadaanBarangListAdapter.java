@@ -1,4 +1,4 @@
-package com.siato.app;
+package com.siato.app.ListAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,11 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.siato.app.POJO.PengadaanBarang;
+import com.siato.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBarangListAdapter.PengadaanBarangViewHolder> implements Filterable
+public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBarangListAdapter.PengadaanBarangViewHolder>
 {
     private Context context;
     private List<PengadaanBarang> pengadaanBarangList;
@@ -25,15 +26,17 @@ public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBa
     public PengadaanBarangListAdapter(Context context, List<PengadaanBarang> pengadaanBarangList) {
         this.context = context;
         this.pengadaanBarangList = pengadaanBarangList;
-        this.pengadaanBarangList = pengadaanBarangListFiltered;
+        this.pengadaanBarangListFiltered = pengadaanBarangList;
     }
 
     public class PengadaanBarangViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvIdSupplier;
+        private final TextView tvNamaSupplier;
+        private final TextView tvTanggalTransaksi;
 
         public PengadaanBarangViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvIdSupplier = itemView.findViewById(R.id.tvPengadaanBrgIdSupplier);
+            tvNamaSupplier = itemView.findViewById(R.id.tvPengadaanNamaSupplier);
+            tvTanggalTransaksi = itemView.findViewById(R.id.tvPengadaanTanggalTransaksi);
         }
     }
 
@@ -49,8 +52,8 @@ public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBa
     public void onBindViewHolder(@NonNull PengadaanBarangViewHolder holder, int position) {
         final PengadaanBarang current = pengadaanBarangListFiltered.get(position);
 
-       holder.tvIdSupplier.setText(current.getId());
-
+        holder.tvNamaSupplier.setText(current.getSupplier().getNama());
+        holder.tvTanggalTransaksi.setText(current.getTglTransaksi());
     }
 
     @Override
@@ -60,37 +63,5 @@ public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBa
 
     public PengadaanBarang getItem(int position) {
         return pengadaanBarangListFiltered.get(position);
-    }
-
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                String charString = constraint.toString();
-                if(charString.isEmpty()) {
-                    pengadaanBarangListFiltered = pengadaanBarangList;
-                }
-                else {
-                    List<PengadaanBarang> filteredList = new ArrayList<>();
-                    for(PengadaanBarang row : pengadaanBarangList) {
-                        if(row.getSupplier().getNama().toLowerCase().contains(charString.toLowerCase())) {
-                            filteredList.add(row);
-                        }
-                    }
-
-                    pengadaanBarangListFiltered = filteredList;
-                }
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = pengadaanBarangListFiltered;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                pengadaanBarangListFiltered = (ArrayList<PengadaanBarang>) results.values;
-                notifyDataSetChanged();
-            }
-        };
     }
 }

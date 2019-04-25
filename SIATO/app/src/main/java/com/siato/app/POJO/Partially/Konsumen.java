@@ -3,11 +3,11 @@ package com.siato.app.POJO.Partially;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Supplier implements Parcelable {
+public class Konsumen implements Parcelable {
     private Integer id;
     private String nama;
 
-    public Supplier(Integer id, String nama) {
+    public Konsumen(Integer id, String nama) {
         this.id = id;
         this.nama = nama;
     }
@@ -31,20 +31,20 @@ public class Supplier implements Parcelable {
         dest.writeString(this.nama);
     }
 
-    protected Supplier(Parcel in) {
+    protected Konsumen(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.nama = in.readString();
     }
 
-    public static final Parcelable.Creator<Supplier> CREATOR = new Parcelable.Creator<Supplier>() {
+    public static final Parcelable.Creator<Konsumen> CREATOR = new Parcelable.Creator<Konsumen>() {
         @Override
-        public Supplier createFromParcel(Parcel source) {
-            return new Supplier(source);
+        public Konsumen createFromParcel(Parcel source) {
+            return new Konsumen(source);
         }
 
         @Override
-        public Supplier[] newArray(int size) {
-            return new Supplier[size];
+        public Konsumen[] newArray(int size) {
+            return new Konsumen[size];
         }
     };
 }

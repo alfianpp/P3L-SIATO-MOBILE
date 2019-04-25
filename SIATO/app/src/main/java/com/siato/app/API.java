@@ -2,18 +2,18 @@ package com.siato.app;
 
 import com.siato.app.POJO.Kendaraan;
 import com.siato.app.POJO.Konsumen;
+import com.siato.app.POJO.Pegawai;
 import com.siato.app.POJO.Spareparts;
 import com.siato.app.POJO.PengadaanBarang;
+import com.siato.app.POJO.Supplier;
 
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.HTTP;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface API {
@@ -159,7 +159,7 @@ public interface API {
     Call<APIResponse<Kendaraan>> getKendaraan(@Path("nomor_polisi") String nomor_polisi, @Field("api_key") String api_key);
 
     @FormUrlEncoded
-    @PUT("data/kendaraan/{nomor_polisi}")
+    @HTTP(method = "PUT", path = "data/kendaraan/{nomor_polisi}", hasBody = true)
     Call<APIResponse> updateKendaraan(
             @Path("nomor_polisi") String nomor_polisi,
             @Field("merk") String merk,
@@ -169,8 +169,9 @@ public interface API {
     );
 
     @FormUrlEncoded
-    @DELETE("data/kendaraan/{nomor_polisi}")
+    @HTTP(method = "DELETE", path = "data/kendaraan/{nomor_polisi}", hasBody = true)
     Call<APIResponse> deleteKendaraan(@Path("nomor_polisi") String nomor_polisi, @Field("api_key") String api_key);
+
 
     // --- CRUD PENGADAAN BARANG
 
@@ -186,7 +187,11 @@ public interface API {
     );
 
     @FormUrlEncoded
-    @HTTP(method = "PUT", path = "transaksi/pengadaan/{id}", hasBody = true)
+    @POST("transaksi/pengadaan/{id}")
+    Call<APIResponse<PengadaanBarang>> getPengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @HTTP(method = "PUT", path = "transaksi/pengadaan/data/{id}", hasBody = true)
     Call<APIResponse> updatePengadaanBarang(
             @Path("id") Integer id,
             @Field("id_supplier") String id_supplier,
@@ -194,6 +199,6 @@ public interface API {
     );
 
     @FormUrlEncoded
-    @HTTP(method = "DELETE", path = "transaksi/pengadaan/{id}", hasBody = true)
+    @HTTP(method = "DELETE", path = "transaksi/pengadaan/data/{id}", hasBody = true)
     Call<APIResponse> deletePengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
 }
