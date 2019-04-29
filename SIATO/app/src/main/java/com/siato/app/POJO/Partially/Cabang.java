@@ -3,15 +3,13 @@ package com.siato.app.POJO.Partially;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Konsumen implements Parcelable {
+public class Cabang implements Parcelable {
     private Integer id;
     private String nama;
-    private String noTlp;
 
-    public Konsumen(Integer id, String nama, String noTlp) {
+    public Cabang(Integer id, String nama) {
         this.id = id;
         this.nama = nama;
-        this.noTlp = noTlp;
     }
 
     public Integer getId() {
@@ -22,37 +20,31 @@ public class Konsumen implements Parcelable {
         return nama;
     }
 
-    public String getNoTlp() {
-        return noTlp;
-    }
-
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flag) {
         dest.writeValue(this.id);
         dest.writeString(this.nama);
-        dest.writeString(this.noTlp);
     }
 
-    protected Konsumen(Parcel in) {
+    protected  Cabang (Parcel in){
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.nama = in.readString();
-        this.noTlp = in.readString();
     }
 
-    public static final Parcelable.Creator<Konsumen> CREATOR = new Parcelable.Creator<Konsumen>() {
+    public static final Parcelable.Creator<Cabang> CREATOR = new Parcelable.Creator<Cabang>(){
         @Override
-        public Konsumen createFromParcel(Parcel source) {
-            return new Konsumen(source);
+        public Cabang createFromParcel(Parcel source) {
+            return new Cabang(source);
         }
 
         @Override
-        public Konsumen[] newArray(int size) {
-            return new Konsumen[size];
+        public Cabang[] newArray(int size) {
+            return new Cabang[size];
         }
     };
 }

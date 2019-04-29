@@ -3,6 +3,7 @@ package com.siato.app;
 import com.siato.app.POJO.Kendaraan;
 import com.siato.app.POJO.Konsumen;
 import com.siato.app.POJO.Pegawai;
+import com.siato.app.POJO.Penjualan;
 import com.siato.app.POJO.Spareparts;
 import com.siato.app.POJO.PengadaanBarang;
 import com.siato.app.POJO.Supplier;
@@ -201,4 +202,45 @@ public interface API {
     @FormUrlEncoded
     @HTTP(method = "DELETE", path = "transaksi/pengadaan/data/{id}", hasBody = true)
     Call<APIResponse> deletePengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
+
+    // --- CRUD PENJUALAN
+
+    @FormUrlEncoded
+    @POST("transaksi/penjualan/index")
+    Call<APIResponse<List<Penjualan>>> getAllPenjualan(@Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @POST("transaksi/penjualan/data")
+    Call<APIResponse> createPenjualan(
+            @Field("id_cabang") String id_cabang,
+            @Field("jenis") String jenis,
+            @Field("id_konsumen") String id_konsumen,
+            @Field("diskon") Double diskon,
+            @Field("uang_diterima") Double uang_diterima,
+            @Field("id_cs") Integer id_cs,
+            @Field("id_kasir") Integer id_kasir,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @POST("transaksi/penjualan/{id}")
+    Call<APIResponse<Penjualan>> getPenjualan(@Path("id") Integer id, @Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @HTTP(method = "PUT", path = "transaksi/penjualna/data/{id}", hasBody = true)
+    Call<APIResponse> updatePenjualan(
+            @Path("id") Integer id,
+            @Field("id_cabang") String id_cabang,
+            @Field("jenis") String jenis,
+            @Field("id_konsumen") String id_konsumen,
+            @Field("diskon") Double diskon,
+            @Field("uang_diterima") Double uang_diterima,
+            @Field("id_cs") Integer id_cs,
+            @Field("id_kasir") Integer id_kasir,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "transaksi/penjualan/data/{id}", hasBody = true)
+    Call<APIResponse> deletePenjualan(@Path("id") Integer id, @Field("api_key") String api_key);
 }
