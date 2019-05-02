@@ -10,10 +10,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.siato.app.API;
@@ -37,16 +40,33 @@ public class KelolaPengadaanBarangFragment extends Fragment {
     private API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
     private PengadaanBarangListAdapter adapter = null;
     private RecyclerView recyclerView;
+    private EditText etSearch;
     private Button btnTambahPengadaanBarang;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_kelola_pengadaan_barang, container, false);
-
+        etSearch = view.findViewById(R.id.etSearchPengadaan);
         btnTambahPengadaanBarang = view.findViewById(R.id.btnTambahPengadaanBarang);
 
         refreshList();
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         btnTambahPengadaanBarang.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +107,7 @@ public class KelolaPengadaanBarangFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getContext(), recyclerView, new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-
+                ((MainActivity)getActivity()).changeFragment(7);
             }
 
             @Override
