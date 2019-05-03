@@ -6,14 +6,14 @@ import android.os.Parcelable;
 import com.siato.app.POJO.Partially.DetilPenjualan;
 import com.siato.app.POJO.Partially.Spareparts;
 
-public class DetilPenjualanSparepart implements Parcelable {
+public class DetailPenjualanSpareparts implements Parcelable {
     private Integer id;
     private DetilPenjualan detilPenjualan;
     private Spareparts spareparts;
     private Integer jumlah;
     private Double harga;
 
-    public DetilPenjualanSparepart(Integer id, DetilPenjualan detilPenjualan, Spareparts spareparts, Integer jumlah, Double harga) {
+    public DetailPenjualanSpareparts(Integer id, DetilPenjualan detilPenjualan, Spareparts spareparts, Integer jumlah, Double harga) {
         this.id = id;
         this.detilPenjualan = detilPenjualan;
         this.spareparts = spareparts;
@@ -55,7 +55,7 @@ public class DetilPenjualanSparepart implements Parcelable {
         dest.writeValue(this.harga);
     }
 
-    protected DetilPenjualanSparepart(Parcel in) {
+    protected DetailPenjualanSpareparts(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.detilPenjualan = in.readParcelable(DetilPenjualan.class.getClassLoader());
         this.spareparts = in.readParcelable(Spareparts.class.getClassLoader());
@@ -63,15 +63,15 @@ public class DetilPenjualanSparepart implements Parcelable {
         this.harga = (Double) in.readValue(Double.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<DetilPenjualanSparepart> CREATOR = new Parcelable.Creator<DetilPenjualanSparepart>() {
+    public static final Parcelable.Creator<DetailPenjualanSpareparts> CREATOR = new Parcelable.Creator<DetailPenjualanSpareparts>() {
         @Override
-        public DetilPenjualanSparepart createFromParcel(Parcel source) {
-            return new DetilPenjualanSparepart(source);
+        public DetailPenjualanSpareparts createFromParcel(Parcel source) {
+            return new DetailPenjualanSpareparts(source);
         }
 
         @Override
-        public DetilPenjualanSparepart[] newArray(int size) {
-            return new DetilPenjualanSparepart[size];
+        public DetailPenjualanSpareparts[] newArray(int size) {
+            return new DetailPenjualanSpareparts[size];
         }
     };
 }

@@ -2,24 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="@drawable/recyclerview_background"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <TextView
-        android:id="@+id/tvDetilPenjualanSparepartNama"
+        android:id="@+id/tvDetilPengadaanNamaBarang"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/tvDetilPenjualanSparepartMerk"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/tvDetilPenjualanSparepartJumlah"
+        android:id="@+id/tvDetilPengadaanJumlahPesan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/tvDetilPenjualanSparepartHarga"
+        android:id="@+id/tvDetilPengadaanJumlahDatang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvDetilPengadaanHarga"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

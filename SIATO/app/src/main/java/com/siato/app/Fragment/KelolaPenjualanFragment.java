@@ -93,7 +93,11 @@ public class KelolaPenjualanFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getContext(), recyclerView, new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-
+                Fragment fragment = new KelolaDetailPenjualanFragment();
+                Bundle b = new Bundle();
+                b.putInt("id_penjualan", adapter.getItem(position).getId());
+                fragment.setArguments(b);
+                ((MainActivity)getActivity()).showFragment(fragment, KelolaDetailPenjualanFragment.TAG);
             }
 
             @Override

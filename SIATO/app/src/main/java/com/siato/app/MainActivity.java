@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.google.android.material.navigation.NavigationView;
 import com.siato.app.Fragment.DashboardFragment;
-import com.siato.app.Fragment.KelolaDetilPengadaanFragment;
 import com.siato.app.Fragment.KelolaKendaraanFragment;
 import com.siato.app.Fragment.KelolaKonsumenFragment;
 import com.siato.app.Fragment.KelolaPengadaanBarangFragment;
@@ -12,8 +11,8 @@ import com.siato.app.Fragment.KelolaPenjualanFragment;
 import com.siato.app.Fragment.KelolaSparepartsFragment;
 import com.siato.app.Fragment.KelolaSupplierFragment;
 import com.siato.app.Fragment.LoginFragment;
-import com.siato.app.Fragment.TamabahUbahPenjualanFragment;
-import com.siato.app.Fragment.TambahUbahDetilPengadaanFragment;
+import com.siato.app.Fragment.StokSparepartsFragment;
+import com.siato.app.Fragment.TambahUbahDetailPengadaanBarangFragment;
 import com.siato.app.Fragment.TambahUbahKendaraanFragment;
 import com.siato.app.Fragment.TambahUbahKonsumenFragment;
 import com.siato.app.Fragment.TambahUbahPengadaanBarangFragment;
@@ -212,6 +211,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentTAG = KelolaKendaraanFragment.TAG;
                 break;
 
+            case R.id.nav_stok_spareparts:
+                fragment = new StokSparepartsFragment();
+                fragmentTAG = StokSparepartsFragment.TAG;
+                break;
+
             case R.id.nav_transaksi_pengadaan_barang:
                 fragment = new KelolaPengadaanBarangFragment();
                 fragmentTAG = KelolaPengadaanBarangFragment.TAG;
@@ -261,20 +265,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new TambahUbahPenjualanFragment();
                 fragmentTAG = TambahUbahPenjualanFragment.TAG;
                 break;
-            case 6:
-                fragment = new TamabahUbahPenjualanFragment();
-                title = "Tambah Penjualan";
-                break;
 
             case 7:
-                fragment = new KelolaDetilPengadaanFragment();
-                title = "Kelola Detil Pengadaan Barang";
+                fragment = new TambahUbahDetailPengadaanBarangFragment();
+                fragmentTAG = TambahUbahDetailPengadaanBarangFragment.TAG;
                 break;
 
-            case 8:
-                fragment = new TambahUbahDetilPengadaanFragment();
-                title = "Tambah Detil Pengadaan Barang";
-                break;
+//            case 8:
+//                fragment = new TambahUbahDetailPenjualan();
+//                fragmentTAG = TambahUbahDetailPenjualan.TAG;
+//                break;
         }
 
         showFragment(fragment, fragmentTAG);

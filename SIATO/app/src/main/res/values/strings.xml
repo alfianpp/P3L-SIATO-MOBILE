@@ -15,6 +15,7 @@
     <string name="kelola_konsumen">Kelola Konsumen</string>
     <string name="kelola_kendaraan">Kelola Kendaraan</string>
     <string name="transaksi_pengadaan_barang">Pengadaan Barang</string>
+    <string name="transaksi_detail_pengadaan_barang">Detail Pengadaan Barang</string>
     <string name="transaksi_penjualan">Penjualan</string>
 
     <string name="data_spareparts">Data Spareparts</string>

@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvListSpareparts"
+        android:id="@+id/rvListStokSpareparts"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -35,6 +35,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etSearchStok"
-        tools:listitem="@layout/view_stok" />
+        tools:listitem="@layout/view_stok_spareparts" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

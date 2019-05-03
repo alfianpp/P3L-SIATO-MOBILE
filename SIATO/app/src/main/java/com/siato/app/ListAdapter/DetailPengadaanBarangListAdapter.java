@@ -10,26 +10,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.siato.app.POJO.DetilPengadaanBarang;
+import com.siato.app.POJO.DetailPengadaanBarang;
 import com.siato.app.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetilPengadaanBarangListAdapter extends RecyclerView.Adapter<DetilPengadaanBarangListAdapter.DetilPengadaanBarangViewHolder>
+public class DetailPengadaanBarangListAdapter extends RecyclerView.Adapter<DetailPengadaanBarangListAdapter.DetilPengadaanBarangViewHolder>
 {
     private Context context;
-    private List<DetilPengadaanBarang> detilPengadaanBarangList;
-    private List<DetilPengadaanBarang> detilPengadaanBarangListFiltered;
+    private List<DetailPengadaanBarang> detailPengadaanBarangList;
+    private List<DetailPengadaanBarang> detailPengadaanBarangListFiltered;
 
-    public DetilPengadaanBarangListAdapter(Context context, List<DetilPengadaanBarang> detilPengadaanBarangList) {
+    public DetailPengadaanBarangListAdapter(Context context, List<DetailPengadaanBarang> detailPengadaanBarangList) {
         this.context = context;
-        this.detilPengadaanBarangList = detilPengadaanBarangList;
-        this.detilPengadaanBarangListFiltered = detilPengadaanBarangList;
+        this.detailPengadaanBarangList = detailPengadaanBarangList;
+        this.detailPengadaanBarangListFiltered = detailPengadaanBarangList;
     }
 
     public class DetilPengadaanBarangViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvNamaSupplier;
         private final TextView tvNamaBarang;
         private final TextView tvJumlahPesan;
         private final TextView tvJumlahDatang;
@@ -37,7 +36,6 @@ public class DetilPengadaanBarangListAdapter extends RecyclerView.Adapter<DetilP
 
         public DetilPengadaanBarangViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvNamaSupplier = itemView.findViewById(R.id.tvDetilPengadaanNamaSupplier);
             tvNamaBarang = itemView.findViewById(R.id.tvDetilPengadaanNamaBarang);
             tvJumlahPesan = itemView.findViewById(R.id.tvDetilPengadaanJumlahPesan);
             tvJumlahDatang = itemView.findViewById(R.id.tvDetilPengadaanJumlahDatang);
@@ -50,28 +48,27 @@ public class DetilPengadaanBarangListAdapter extends RecyclerView.Adapter<DetilP
     @Override
     public DetilPengadaanBarangViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View itemView = layoutInflater.inflate(R.layout.view_pengadaan_barang_detil, parent, false);
+        View itemView = layoutInflater.inflate(R.layout.view_detail_pengadaan_barang, parent, false);
         return new DetilPengadaanBarangViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull DetilPengadaanBarangViewHolder holder, int position) {
-        final DetilPengadaanBarang current = detilPengadaanBarangListFiltered.get(position);
+        final DetailPengadaanBarang current = detailPengadaanBarangListFiltered.get(position);
 
-        holder.tvNamaSupplier.setText(current.getPengadaanBarang().getSupplier().getNama());
         holder.tvNamaBarang.setText(current.getSpareparts().getNama());
-        holder.tvJumlahPesan.setText(current.getJmlPesan());
-        holder.tvJumlahDatang.setText(current.getJmlDatang());
-        holder.tvHarga.setText(current.getSpareparts().getNama());
+        holder.tvJumlahPesan.setText(String.valueOf(current.getJumlahPesan()));
+        holder.tvJumlahDatang.setText(String.valueOf(current.getJumlahDatang()));
+        holder.tvHarga.setText(String.valueOf(current.getHarga()));
     }
 
     @Override
     public int getItemCount() {
-        return detilPengadaanBarangListFiltered.size();
+        return detailPengadaanBarangListFiltered.size();
     }
 
-    public DetilPengadaanBarang getItem(int position) {
-        return detilPengadaanBarangListFiltered.get(position);
+    public DetailPengadaanBarang getItem(int position) {
+        return detailPengadaanBarangListFiltered.get(position);
     }
     public Filter getFilter() {
         return new Filter() {
@@ -79,26 +76,26 @@ public class DetilPengadaanBarangListAdapter extends RecyclerView.Adapter<DetilP
             protected FilterResults performFiltering(CharSequence constraint) {
                 String charString = constraint.toString();
                 if(charString.isEmpty()) {
-                    detilPengadaanBarangListFiltered = detilPengadaanBarangList;
+                    detailPengadaanBarangListFiltered = detailPengadaanBarangList;
                 }
                 else {
-                    List<DetilPengadaanBarang> filteredList = new ArrayList<>();
-                    for(DetilPengadaanBarang row : detilPengadaanBarangList) {
+                    List<DetailPengadaanBarang> filteredList = new ArrayList<>();
+                    for(DetailPengadaanBarang row : detailPengadaanBarangList) {
                         if(row.getSpareparts().getNama().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
                     }
 
-                    detilPengadaanBarangListFiltered = filteredList;
+                    detailPengadaanBarangListFiltered = filteredList;
                 }
                 FilterResults filterResults = new FilterResults();
-                filterResults.values = detilPengadaanBarangListFiltered;
+                filterResults.values = detailPengadaanBarangListFiltered;
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                detilPengadaanBarangListFiltered = (ArrayList<DetilPengadaanBarang>) results.values;
+                detailPengadaanBarangListFiltered = (ArrayList<DetailPengadaanBarang>) results.values;
                 notifyDataSetChanged();
             }
         };

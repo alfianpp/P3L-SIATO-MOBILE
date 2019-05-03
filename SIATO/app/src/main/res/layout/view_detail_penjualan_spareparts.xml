@@ -2,20 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="@drawable/recyclerview_background"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <TextView
-        android:id="@+id/tvDetilPenjualanKonsumen"
+        android:id="@+id/tvDetailPenjualanSpareparts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/tvDetilPenjualanNoTelepon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/tvDetilPenjualanTanggal"
+        android:id="@+id/tvDetailPenjualanJumlahSpareparts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

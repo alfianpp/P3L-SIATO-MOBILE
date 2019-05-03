@@ -17,25 +17,27 @@ import com.siato.app.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StokListAdapter extends RecyclerView.Adapter<StokListAdapter.StokViewHolder> implements Filterable {
+public class StokSparepartsListAdapter extends RecyclerView.Adapter<StokSparepartsListAdapter.StokViewHolder> implements Filterable {
     private Context context;
-    private List<Spareparts> StokList;
-    private List<Spareparts> StokListFiltered;
+    private List<Spareparts> StokSparepartsList;
+    private List<Spareparts> StokSparepartsListFiltered;
 
-    public StokListAdapter(Context context, List<Spareparts> StokList) {
+    public StokSparepartsListAdapter(Context context, List<Spareparts> StokSparepartsList) {
         this.context = context;
-        this.StokList = StokList;
-        this.StokListFiltered = StokList;
+        this.StokSparepartsList = StokSparepartsList;
+        this.StokSparepartsListFiltered = StokSparepartsList;
     }
 
     public class StokViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvNamaStok;
-        private final TextView tvJmlStok;
+        private final TextView tvNamaSpareparts;
+        private final TextView tvStokSpareparts;
+        private final TextView tvStokMinimalSpareparts;
 
         public StokViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvNamaStok = itemView.findViewById(R.id.tvStokNama);
-            tvJmlStok = itemView.findViewById(R.id.tvJumlahStok);
+            tvNamaSpareparts = itemView.findViewById(R.id.tvStokSparepartsNama);
+            tvStokSpareparts = itemView.findViewById(R.id.tvStokSparepartsStok);
+            tvStokMinimalSpareparts = itemView.findViewById(R.id.tvStokSparepartsStokMinimal);
         }
     }
 
@@ -43,25 +45,26 @@ public class StokListAdapter extends RecyclerView.Adapter<StokListAdapter.StokVi
     @Override
     public StokViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View itemView = layoutInflater.inflate(R.layout.view_stok, parent, false);
-        return new StokListAdapter.StokViewHolder(itemView);
+        View itemView = layoutInflater.inflate(R.layout.view_stok_spareparts, parent, false);
+        return new StokSparepartsListAdapter.StokViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull StokViewHolder holder, int position) {
-        final Spareparts current = StokListFiltered.get(position);
+        final Spareparts current = StokSparepartsListFiltered.get(position);
 
-        holder.tvNamaStok.setText(current.getNama());
-        holder.tvJmlStok.setText(current.getStok());
+        holder.tvNamaSpareparts.setText(current.getNama());
+        holder.tvStokSpareparts.setText(String.valueOf(current.getStok()));
+        holder.tvStokMinimalSpareparts.setText(String.valueOf(current.getStokMinimal()));
     }
 
     @Override
     public int getItemCount() {
-        return StokListFiltered.size();
+        return StokSparepartsListFiltered.size();
     }
 
     public Spareparts getItem(int position) {
-        return StokListFiltered.get(position);
+        return StokSparepartsListFiltered.get(position);
     }
 
     @Override
@@ -71,26 +74,26 @@ public class StokListAdapter extends RecyclerView.Adapter<StokListAdapter.StokVi
             protected FilterResults performFiltering(CharSequence constraint) {
                 String charString = constraint.toString();
                 if(charString.isEmpty()) {
-                    StokListFiltered = StokList;
+                    StokSparepartsListFiltered = StokSparepartsList;
                 }
                 else {
                     List<Spareparts> filteredList = new ArrayList<>();
-                    for(Spareparts row : StokList) {
+                    for(Spareparts row : StokSparepartsList) {
                         if(row.getNama().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
                     }
 
-                    StokListFiltered = filteredList;
+                    StokSparepartsListFiltered = filteredList;
                 }
                 FilterResults filterResults = new FilterResults();
-                filterResults.values = StokListFiltered;
+                filterResults.values = StokSparepartsListFiltered;
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                StokListFiltered = (ArrayList<Spareparts>) results.values;
+                StokSparepartsListFiltered = (ArrayList<Spareparts>) results.values;
                 notifyDataSetChanged();
             }
         };

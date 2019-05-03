@@ -1,30 +1,25 @@
 package com.siato.app.Fragment;
 
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.siato.app.API;
 import com.siato.app.APIResponse;
-import com.siato.app.ListAdapter.PengadaanBarangListAdapter;
+import com.siato.app.ListAdapter.DetailPenjualanListAdapter;
 import com.siato.app.MainActivity;
-import com.siato.app.POJO.PengadaanBarang;
+import com.siato.app.POJO.DetailPenjualan;
 import com.siato.app.R;
 import com.siato.app.RecyclerViewClickListener;
 import com.siato.app.RecyclerViewTouchListener;
@@ -36,17 +31,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class KelolaPengadaanBarangFragment extends Fragment {
-    public static final String TAG = KelolaPengadaanBarangFragment.class.getSimpleName();
+
+public class KelolaDetailPenjualanFragment extends Fragment {
+    public static final String TAG = KelolaDetailPenjualanFragment.class.getSimpleName();
     private View view;
     private API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
-    private PengadaanBarangListAdapter adapter = null;
+    private DetailPenjualanListAdapter adapter = null;
     private RecyclerView recyclerView;
     private FloatingActionButton btnTambah;
+    private Integer IDPenjualan = null;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_kelola, container, false);
 
         LinearLayout searchLayout = view.findViewById(R.id.searchLayout);
@@ -54,24 +50,33 @@ public class KelolaPengadaanBarangFragment extends Fragment {
 
         searchLayout.setVisibility(View.GONE);
 
+        if(getArguments() != null) {
+            IDPenjualan = getArguments().getInt("id_penjualan");
+        }
+
         refreshList();
 
         btnTambah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).changeFragment(5);
+                Fragment fragment = new TambahUbahDetailPenjualanFragment();
+                Bundle b = new Bundle();
+                b.putBoolean("ubah_detail_penjualan", false);
+                b.putInt("id_penjualan", IDPenjualan);
+                fragment.setArguments(b);
+                ((MainActivity)getActivity()).showFragment(fragment, TambahUbahDetailPenjualanFragment.TAG);
             }
         });
 
-        return view;
+       return view;
     }
 
     private void refreshList() {
-        Call<APIResponse<List<PengadaanBarang>>> call = APIService.getAllPengadaanBarang(((MainActivity)getActivity()).logged_in_user.getApiKey());
-        call.enqueue(new Callback<APIResponse<List<PengadaanBarang>>>() {
+        Call<APIResponse<List<DetailPenjualan>>> call = APIService.getAllDetailPenjualan(IDPenjualan, ((MainActivity)getActivity()).logged_in_user.getApiKey());
+        call.enqueue(new Callback<APIResponse<List<DetailPenjualan>>>() {
             @Override
-            public void onResponse(Call<APIResponse<List<PengadaanBarang>>> call, Response<APIResponse<List<PengadaanBarang>>> response) {
-                APIResponse<List<PengadaanBarang>> apiResponse = response.body();
+            public void onResponse(Call<APIResponse<List<DetailPenjualan>>> call, Response<APIResponse<List<DetailPenjualan>>> response) {
+                APIResponse<List<DetailPenjualan>> apiResponse = response.body();
 
                 if(!apiResponse.getError()) {
                     generateDataList(apiResponse.getData(), view);
@@ -79,15 +84,15 @@ public class KelolaPengadaanBarangFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<APIResponse<List<PengadaanBarang>>> call, Throwable t) {
+            public void onFailure(Call<APIResponse<List<DetailPenjualan>>> call, Throwable t) {
                 Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void generateDataList(List<PengadaanBarang> pengadaanBarangList, View view) {
+    private void generateDataList(List<DetailPenjualan> detailPenjualan, View view) {
         recyclerView = view.findViewById(R.id.rvList);
-        adapter = new PengadaanBarangListAdapter(getContext(), pengadaanBarangList);
+        adapter = new DetailPenjualanListAdapter(getContext(), detailPenjualan);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
@@ -96,26 +101,23 @@ public class KelolaPengadaanBarangFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getContext(), recyclerView, new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Fragment fragment = new KelolaDetailPengadaanBarangFragment();
-                Bundle b = new Bundle();
-                b.putInt("id_pengadaan_barang", adapter.getItem(position).getId());
-                fragment.setArguments(b);
-                ((MainActivity)getActivity()).showFragment(fragment, KelolaDetailPengadaanBarangFragment.TAG);
+
             }
 
             @Override
             public void onLongClick(final View view, int position) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                final PengadaanBarang selected = adapter.getItem(position);
+                final DetailPenjualan selected = adapter.getItem(position);
                 mBuilder.setTitle("Pilih Aksi")
                         .setPositiveButton("Ubah", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Fragment fragment = new TambahUbahPengadaanBarangFragment();
+                                Fragment fragment = new TambahUbahDetailPenjualanFragment();
                                 Bundle b = new Bundle();
-                                b.putParcelable("pengadaan_barang", selected);
+                                b.putBoolean("ubah_detail_penjualan", true);
+                                b.putParcelable("detail_penjualan", selected);
                                 fragment.setArguments(b);
-                                ((MainActivity)getActivity()).showFragment(fragment, TambahUbahPengadaanBarangFragment.TAG);
+                                ((MainActivity) getActivity()).showFragment(fragment, TambahUbahDetailPenjualanFragment.TAG);
                             }
                         })
                         .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
@@ -128,12 +130,12 @@ public class KelolaPengadaanBarangFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                                mBuilder.setTitle("Hapus Transaksi")
-                                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus transaksi pengadaan barang ini?")
+                                mBuilder.setTitle("Hapus Detail")
+                                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus detail penjualan ini?")
                                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
-                                                Call<APIResponse> call = APIService.deletePengadaanBarang(selected.getId(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
+                                                Call<APIResponse> call = APIService.deleteDetailPenjualan(selected.getId(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
                                                 call.enqueue(new Callback<APIResponse>() {
                                                     @Override
                                                     public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
@@ -170,6 +172,6 @@ public class KelolaPengadaanBarangFragment extends Fragment {
         super.onResume();
 
         ((MainActivity) getActivity()).getSupportActionBar()
-                .setTitle(R.string.transaksi_pengadaan_barang);
+                .setTitle(R.string.transaksi_detail_pengadaan_barang);
     }
 }
