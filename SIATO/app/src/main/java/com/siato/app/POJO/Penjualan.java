@@ -10,30 +10,30 @@ import com.siato.app.POJO.Partially.Pegawai;
 public class Penjualan implements Parcelable {
     private Integer id;
     private Cabang cabang;
-    private String Jenis;
+    private String jenis;
     private Konsumen konsumen;
     private Double subtotal;
     private Double diskon;
     private Double total;
     private Double uang_diterima;
-    private Pegawai pegawai;
-    private Integer id_kasir;
+    private Pegawai cs;
+    private Pegawai kasir;
     private Integer status;
-    private String tglTransaksi;
+    private String tgl_transaksi;
 
-    public Penjualan(Integer id, Cabang cabang, String jenis, Konsumen konsumen, Double subtotal, Double diskon, Double total, Double uang_diterima, Pegawai pegawai, Integer id_kasir, Integer status, String tglTransaksi) {
+    public Penjualan(Integer id, Cabang cabang, String jenis, Konsumen konsumen, Double subtotal, Double diskon, Double total, Double uang_diterima, Pegawai cs, Pegawai kasir, Integer status, String tgl_transaksi) {
         this.id = id;
         this.cabang = cabang;
-        Jenis = jenis;
+        this.jenis = jenis;
         this.konsumen = konsumen;
         this.subtotal = subtotal;
         this.diskon = diskon;
         this.total = total;
         this.uang_diterima = uang_diterima;
-        this.pegawai = pegawai;
-        this.id_kasir = id_kasir;
+        this.cs = cs;
+        this.kasir = kasir;
         this.status = status;
-        this.tglTransaksi = tglTransaksi;
+        this.tgl_transaksi = tgl_transaksi;
     }
 
     public Integer getId() {
@@ -45,7 +45,7 @@ public class Penjualan implements Parcelable {
     }
 
     public String getJenis() {
-        return Jenis;
+        return jenis;
     }
 
     public Konsumen getKonsumen() {
@@ -64,16 +64,16 @@ public class Penjualan implements Parcelable {
         return total;
     }
 
-    public Double getUang_diterima() {
+    public Double getUangDiterima() {
         return uang_diterima;
     }
 
-    public Pegawai getPegawai() {
-        return pegawai;
+    public Pegawai getCs() {
+        return cs;
     }
 
-    public Integer getId_kasir() {
-        return id_kasir;
+    public Pegawai getKasir() {
+        return kasir;
     }
 
     public Integer getStatus() {
@@ -81,8 +81,9 @@ public class Penjualan implements Parcelable {
     }
 
     public String getTglTransaksi() {
-        return tglTransaksi;
+        return tgl_transaksi;
     }
+
 
     @Override
     public int describeContents() {
@@ -90,32 +91,34 @@ public class Penjualan implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flag) {
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
-        dest.writeParcelable(this.cabang,flag);
-        dest.writeString(this.Jenis);
-        dest.writeParcelable(this.konsumen,flag);
+        dest.writeParcelable(this.cabang, flags);
+        dest.writeString(this.jenis);
+        dest.writeParcelable(this.konsumen, flags);
         dest.writeValue(this.subtotal);
+        dest.writeValue(this.diskon);
         dest.writeValue(this.total);
         dest.writeValue(this.uang_diterima);
-        dest.writeParcelable(this.pegawai,flag);
-        dest.writeValue(this.id_kasir);
+        dest.writeParcelable(this.cs, flags);
+        dest.writeParcelable(this.kasir, flags);
         dest.writeValue(this.status);
-        dest.writeString(this.tglTransaksi);
+        dest.writeString(this.tgl_transaksi);
     }
 
     protected Penjualan(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.cabang = in.readParcelable(Cabang.class.getClassLoader());
-        this.Jenis = in.readString();
+        this.jenis = in.readString();
         this.konsumen = in.readParcelable(Konsumen.class.getClassLoader());
         this.subtotal = (Double) in.readValue(Double.class.getClassLoader());
+        this.diskon = (Double) in.readValue(Double.class.getClassLoader());
         this.total = (Double) in.readValue(Double.class.getClassLoader());
         this.uang_diterima = (Double) in.readValue(Double.class.getClassLoader());
-        this.pegawai = in.readParcelable(Pegawai.class.getClassLoader());
+        this.cs = in.readParcelable(Pegawai.class.getClassLoader());
+        this.kasir = in.readParcelable(Pegawai.class.getClassLoader());
         this.status = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.id_kasir = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.tglTransaksi = in.readString();
+        this.tgl_transaksi = in.readString();
     }
 
     public static final Parcelable.Creator<Penjualan> CREATOR = new Parcelable.Creator<Penjualan>() {

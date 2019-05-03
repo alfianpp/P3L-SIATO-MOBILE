@@ -25,6 +25,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TambahUbahPengadaanBarangFragment extends Fragment {
+    public static final String TAG = TambahUbahPengadaanBarangFragment.class.getSimpleName();
     private String ACTION = "TAMBAH";
     private Integer IDPengadaanBarang = null;
     private TextInputEditText etIdS;
@@ -39,7 +40,6 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
 
         if(getArguments() != null && getArguments().getParcelable("pengadaan_barang") != null) {
             ACTION = "UBAH";
-            ((MainActivity)getActivity()).setActionBarTitle("Ubah Transaksi");
             PengadaanBarang pengadaanBarang = getArguments().getParcelable("pengadaan_barang");
             IDPengadaanBarang = pengadaanBarang.getId();
             etIdS.setText(String.valueOf(pengadaanBarang.getId()));
@@ -106,35 +106,11 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
         return view;
     }
 
-//    private void SpinData(List<Supplier> response) {
-//       try {
-//           JSONObject object = new JSONObject(String.valueOf(response));
-//           if (object.optString("status").equals("true")){
-//               supplierArrayList = new ArrayList<>();
-//               JSONArray dataArray = object.getJSONArray("data");
-//
-//               for(int i = 0; i < dataArray.length(); i++){
-//
-//                   Supplier supplier = new Supplier();
-//                   JSONObject dataObj = dataArray.getJSONObject(i);
-//
-//                   supplier.setId(dataObj.getInt("id"));
-//                   supplier.setNama(dataObj.getString("nama"));
-//                   supplier.setAlamat(dataObj.getString("alamat"));
-//                   supplier.setNama_sales(dataObj.getString("nama_sales"));
-//                   supplier.setNomor_telepon_sales(dataObj.getString("nomor_telepon_sales"));
-//
-//                   supplierArrayList.add(supplier);
-//               }
-//               for (int i = 0; i < supplierArrayList.size(); i++){
-//                   Names.add(supplierArrayList.get(i).getId().intValue());
-//               }
-//               ArrayAdapter<Integer> spinnerArrayAdapter = new ArrayAdapter<Integer>((MainActivity)getActivity(),android.R.layout.simple_spinner_item, Names);
-//               spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//               SpinIdSupplier.setAdapter(spinnerArrayAdapter);
-//           }
-//       } catch (JSONException e) {
-//           e.printStackTrace();
-//       }
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ((MainActivity) getActivity()).getSupportActionBar()
+                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + getResources().getString(R.string.data_pengadaan_barang));
+    }
 }

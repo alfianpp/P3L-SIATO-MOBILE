@@ -188,7 +188,7 @@ public interface API {
     );
 
     @FormUrlEncoded
-    @POST("transaksi/pengadaan/{id}")
+    @POST("transaksi/pengadaan/data/{id}")
     Call<APIResponse<PengadaanBarang>> getPengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
 
     @FormUrlEncoded
@@ -215,28 +215,19 @@ public interface API {
             @Field("id_cabang") String id_cabang,
             @Field("jenis") String jenis,
             @Field("id_konsumen") String id_konsumen,
-            @Field("diskon") Double diskon,
-            @Field("uang_diterima") Double uang_diterima,
-            @Field("id_cs") Integer id_cs,
-            @Field("id_kasir") Integer id_kasir,
             @Field("api_key") String api_key
     );
 
     @FormUrlEncoded
-    @POST("transaksi/penjualan/{id}")
+    @POST("transaksi/penjualan/data/{id}")
     Call<APIResponse<Penjualan>> getPenjualan(@Path("id") Integer id, @Field("api_key") String api_key);
 
     @FormUrlEncoded
-    @HTTP(method = "PUT", path = "transaksi/penjualna/data/{id}", hasBody = true)
+    @HTTP(method = "PUT", path = "transaksi/penjualan/data/{id}", hasBody = true)
     Call<APIResponse> updatePenjualan(
             @Path("id") Integer id,
             @Field("id_cabang") String id_cabang,
             @Field("jenis") String jenis,
-            @Field("id_konsumen") String id_konsumen,
-            @Field("diskon") Double diskon,
-            @Field("uang_diterima") Double uang_diterima,
-            @Field("id_cs") Integer id_cs,
-            @Field("id_kasir") Integer id_kasir,
             @Field("api_key") String api_key
     );
 

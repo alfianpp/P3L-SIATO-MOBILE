@@ -67,16 +67,40 @@
                     android:hint="Tipe" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <TextView
+                android:id="@+id/textView2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:text="Peletakan"
+                android:textSize="12sp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSparepartsKodePeletakan"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spSparepartsPeletakanLetak"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Kode Peletakan" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <Spinner
+                    android:id="@+id/spSparepartsPeletakanRuang"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:id="@+id/etSparepartsPeletakanNomorUrut"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="Nomor Urut"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

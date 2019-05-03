@@ -25,6 +25,7 @@ import retrofit2.Response;
 
 
 public class TambahUbahKendaraanFragment extends Fragment {
+    public static final String TAG = TambahUbahKendaraanFragment.class.getSimpleName();
     private String ACTION = "TAMBAH";
     private TextInputEditText etNomorPolisi;
     private TextInputEditText etMerk;
@@ -45,7 +46,6 @@ public class TambahUbahKendaraanFragment extends Fragment {
 
         if(getArguments() != null && getArguments().getParcelable("kendaraan") != null) {
             ACTION = "UBAH";
-            ((MainActivity)getActivity()).setActionBarTitle("Ubah Kendaraan");
             Kendaraan kendaraan = getArguments().getParcelable("kendaraan");
             etNomorPolisi.setText(kendaraan.getNomorPolisi());
             etMerk.setText(kendaraan.getMerk());
@@ -117,5 +117,13 @@ public class TambahUbahKendaraanFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ((MainActivity) getActivity()).getSupportActionBar()
+                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + getResources().getString(R.string.data_kendaraan));
     }
 }

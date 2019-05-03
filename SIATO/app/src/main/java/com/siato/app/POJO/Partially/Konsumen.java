@@ -6,12 +6,10 @@ import android.os.Parcelable;
 public class Konsumen implements Parcelable {
     private Integer id;
     private String nama;
-    private String noTlp;
 
-    public Konsumen(Integer id, String nama, String noTlp) {
+    public Konsumen(Integer id, String nama) {
         this.id = id;
         this.nama = nama;
-        this.noTlp = noTlp;
     }
 
     public Integer getId() {
@@ -22,9 +20,6 @@ public class Konsumen implements Parcelable {
         return nama;
     }
 
-    public String getNoTlp() {
-        return noTlp;
-    }
 
     @Override
     public int describeContents() {
@@ -35,13 +30,11 @@ public class Konsumen implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
         dest.writeString(this.nama);
-        dest.writeString(this.noTlp);
     }
 
     protected Konsumen(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.nama = in.readString();
-        this.noTlp = in.readString();
     }
 
     public static final Parcelable.Creator<Konsumen> CREATOR = new Parcelable.Creator<Konsumen>() {

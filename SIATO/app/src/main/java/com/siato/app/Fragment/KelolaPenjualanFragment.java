@@ -1,30 +1,27 @@
 package com.siato.app.Fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.siato.app.API;
 import com.siato.app.APIResponse;
-import com.siato.app.ListAdapter.KendaraanListAdapter;
 import com.siato.app.ListAdapter.PenjualanListAdapter;
 import com.siato.app.MainActivity;
-import com.siato.app.POJO.Kendaraan;
 import com.siato.app.POJO.Penjualan;
 import com.siato.app.R;
 import com.siato.app.RecyclerViewClickListener;
@@ -38,42 +35,29 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class KelolaPenjualanFragment extends Fragment {
+    public static final String TAG = KelolaPenjualanFragment.class.getSimpleName();
     private View view;
     private API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
     private PenjualanListAdapter adapter = null;
     private RecyclerView recyclerView;
-    private EditText etSearch;
-    private Button btnTambahPenjualan;
+    private FloatingActionButton btnTambah;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-     view = inflater.inflate(R.layout.fragment_kelola_penjualan, container, false);
-        etSearch = view.findViewById(R.id.etSearchPenjualan);
-        btnTambahPenjualan = view.findViewById(R.id.btnTambahPenjualan);
+        view = inflater.inflate(R.layout.fragment_kelola, container, false);
+
+        LinearLayout searchLayout = view.findViewById(R.id.searchLayout);
+        btnTambah = view.findViewById(R.id.btnTambah);
+
+        searchLayout.setVisibility(View.GONE);
+
         refreshList();
 
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        btnTambahPenjualan.setOnClickListener(new View.OnClickListener() {
+        btnTambah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).changeFragment(4);
+                ((MainActivity)getActivity()).changeFragment(6);
             }
         });
         return view;
@@ -99,10 +83,11 @@ public class KelolaPenjualanFragment extends Fragment {
     }
 
     private void generateDataList(List<Penjualan> penjualanList) {
-        recyclerView = view.findViewById(R.id.rvListPenjualan);
+        recyclerView = view.findViewById(R.id.rvList);
         adapter = new PenjualanListAdapter(getContext(), penjualanList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getContext(), recyclerView, new RecyclerViewClickListener() {
@@ -119,11 +104,11 @@ public class KelolaPenjualanFragment extends Fragment {
                         .setPositiveButton("Ubah", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Fragment fragment = new TamabahUbahPenjualanFragment();
+                                Fragment fragment = new TambahUbahPenjualanFragment();
                                 Bundle b = new Bundle();
                                 b.putParcelable("penjualan", selected);
                                 fragment.setArguments(b);
-                                ((MainActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+                                ((MainActivity)getActivity()).showFragment(fragment, TambahUbahPenjualanFragment.TAG);
                             }
                         })
                         .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
@@ -171,5 +156,13 @@ public class KelolaPenjualanFragment extends Fragment {
                         }).create().show();
             }
         }));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ((MainActivity) getActivity()).getSupportActionBar()
+                .setTitle(R.string.transaksi_penjualan);
     }
 }

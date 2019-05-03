@@ -51,7 +51,7 @@ public class PenjualanListAdapter extends RecyclerView.Adapter<PenjualanListAdap
     public void onBindViewHolder(@NonNull PenjualanViewHolder holder, int position) {
         final Penjualan current = penjualanListFiltered.get(position);
 
-        holder.tvPenjualanKode.setText(current.getId());
+        holder.tvPenjualanKode.setText(String.valueOf(current.getId()));
         holder.tvPenjualanNamaKonsumen.setText(current.getKonsumen().getNama());
     }
 

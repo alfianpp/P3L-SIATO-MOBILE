@@ -7,12 +7,14 @@ import com.siato.app.Fragment.DashboardFragment;
 import com.siato.app.Fragment.KelolaKendaraanFragment;
 import com.siato.app.Fragment.KelolaKonsumenFragment;
 import com.siato.app.Fragment.KelolaPengadaanBarangFragment;
+import com.siato.app.Fragment.KelolaPenjualanFragment;
 import com.siato.app.Fragment.KelolaSparepartsFragment;
 import com.siato.app.Fragment.KelolaSupplierFragment;
 import com.siato.app.Fragment.LoginFragment;
 import com.siato.app.Fragment.TambahUbahKendaraanFragment;
 import com.siato.app.Fragment.TambahUbahKonsumenFragment;
 import com.siato.app.Fragment.TambahUbahPengadaanBarangFragment;
+import com.siato.app.Fragment.TambahUbahPenjualanFragment;
 import com.siato.app.Fragment.TambahUbahSparepartsFragment;
 import com.siato.app.Fragment.TambahUbahSupplierFragment;
 import com.siato.app.POJO.Pegawai;
@@ -23,16 +25,34 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import java.util.HashMap;
+import java.util.Map;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
+    private DrawerLayout drawer;
+    private FragmentManager fragmentManager;
 
     public Pegawai logged_in_user;
 
+    private NavigationView navigationView;
     private Menu drawerMenu;
+
+    private int currentMenuItem;
+    private Fragment defaultFragment;
+    private Fragment currentFragment;
+    private String defaultFragmentTAG;
+    private String currentFragmentTAG;
+
+    private Map<String, Integer> fragmentMenuItemMap = new HashMap<>();
+
+    private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,29 +61,65 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        currentMenuItem = R.id.nav_dashboard;
+
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         drawerMenu = navigationView.getMenu();
 
         logged_inDrawer(false);
 
-        backToDashboard();
+
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.addOnBackStackChangedListener(this);
+
+        defaultFragment = new DashboardFragment();
+        currentFragment = defaultFragment;
+
+        defaultFragmentTAG = DashboardFragment.TAG;
+        currentFragmentTAG = defaultFragmentTAG;
+
+        addToFragmentMenuItemMap(currentFragmentTAG, currentMenuItem);
+
+        navigationView.setCheckedItem(currentMenuItem);
+        fragmentManager.beginTransaction()
+                .add(R.id.fragment_container, currentFragment, currentFragmentTAG)
+                .commit();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(fragmentManager.getBackStackEntryCount() == 1) {
+                currentFragment = defaultFragment;
+                currentFragmentTAG = defaultFragmentTAG;
+                currentMenuItem = R.id.nav_dashboard;
+                navigationView.setCheckedItem(currentMenuItem);
+            }
+
+            if (doubleBackToExitPressedOnce || fragmentManager.getBackStackEntryCount() != 0) {
+                super.onBackPressed();
+                return;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Tekan tombol 'Kembali' untuk keluar.", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
         }
     }
 
@@ -93,101 +149,139 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        changeFragment(item.getItemId());
+        int selectedMenuItem = item.getItemId();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if(currentMenuItem == selectedMenuItem) {
+            drawer.closeDrawer(GravityCompat.START);
+            return false;
+        }
+
+        currentMenuItem = selectedMenuItem;
+
+        changeFragment(selectedMenuItem);
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    @Override
+    public void onBackStackChanged() {
+        if(fragmentManager.getBackStackEntryCount() > 0) {
+            String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
+            currentFragment = fragmentManager.findFragmentByTag(fragmentTag);
+            currentFragmentTAG = fragmentTag;
+            currentMenuItem = fragmentMenuItemMap.get(fragmentTag);
+            navigationView.setCheckedItem(currentMenuItem);
+
+            if(currentFragmentTAG.equals(defaultFragmentTAG)) {
+                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+        }
+    }
+
     public void changeFragment(int id) {
         Fragment fragment = null;
-        String title = null;
+        String fragmentTAG = null;
 
         switch (id) {
             case R.id.nav_dashboard:
                 fragment = new DashboardFragment();
-                title = "SIATO";
+                fragmentTAG = DashboardFragment.TAG;
                 break;
 
             case R.id.nav_data_spareparts:
                 fragment = new KelolaSparepartsFragment();
-                title = "Kelola Data Spareparts";
+                fragmentTAG = KelolaSparepartsFragment.TAG;
                 break;
 
             case R.id.nav_data_supplier:
                 fragment = new KelolaSupplierFragment();
-                title = "Kelola Data Supplier";
+                fragmentTAG = KelolaSupplierFragment.TAG;
                 break;
 
             case R.id.nav_data_konsumen:
                 fragment = new KelolaKonsumenFragment();
-                title = "Kelola Data Konsumen";
+                fragmentTAG = KelolaKonsumenFragment.TAG;
                 break;
 
             case R.id.nav_data_kendaraan:
                 fragment = new KelolaKendaraanFragment();
-                title = "Kelola Data Kendaraan";
+                fragmentTAG = KelolaKendaraanFragment.TAG;
                 break;
 
             case R.id.nav_transaksi_pengadaan_barang:
                 fragment = new KelolaPengadaanBarangFragment();
-                title = "Kelola Pengadaan Barang";
+                fragmentTAG = KelolaPengadaanBarangFragment.TAG;
                 break;
 
-//            case R.id.nav_transaksi_penjualan:
-//                fragment = new KelolaPenjualanFragment();
-//                title = "Kelola Penjualan";
-//                break;
+            case R.id.nav_transaksi_penjualan:
+                fragment = new KelolaPenjualanFragment();
+                fragmentTAG = KelolaPenjualanFragment.TAG;
+                break;
 
             case R.id.nav_login:
                 fragment = new LoginFragment();
-                title = "Login";
+                fragmentTAG = LoginFragment.TAG;
                 break;
 
             case R.id.nav_logout:
-                fragment = new DashboardFragment();
-                title = "SIATO";
+                changeFragment(R.id.nav_dashboard);
                 logged_inDrawer(false);
-                break;
+                return;
 
             case 1:
                 fragment = new TambahUbahSparepartsFragment();
-                title = "Tambah Spareparts";
+                fragmentTAG = TambahUbahSparepartsFragment.TAG;
                 break;
+
             case 2:
                 fragment = new TambahUbahSupplierFragment();
-                title = "Tambah Supplier";
+                fragmentTAG = TambahUbahSupplierFragment.TAG;
                 break;
 
             case 3:
                 fragment = new TambahUbahKonsumenFragment();
-                title = "Tambah Konsumen";
+                fragmentTAG = TambahUbahKonsumenFragment.TAG;
                 break;
 
             case 4:
                 fragment = new TambahUbahKendaraanFragment();
-                title = "Tambah Kendaraan";
+                fragmentTAG = TambahUbahKendaraanFragment.TAG;
                 break;
 
             case 5:
                 fragment = new TambahUbahPengadaanBarangFragment();
-                title = "Tambah Pengadaan Barang";
+                fragmentTAG = TambahUbahPengadaanBarangFragment.TAG;
                 break;
 
-//            case 6:
-//                fragment = new TambahUbahPenjualanFragment();
-//                title = "Tambah Penjualan";
-//                break;
+            case 6:
+                fragment = new TambahUbahPenjualanFragment();
+                fragmentTAG = TambahUbahPenjualanFragment.TAG;
+                break;
         }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-        setActionBarTitle(title);
+        showFragment(fragment, fragmentTAG);
     }
 
-    public void backToDashboard() {
-        changeFragment(R.id.nav_dashboard);
-        drawerMenu.findItem(R.id.nav_dashboard).setChecked(true);
+    public void showFragment(Fragment fragment, String fragmentTAG) {
+        addToFragmentMenuItemMap(fragmentTAG, currentMenuItem);
+
+        currentFragment = fragment;
+        currentFragmentTAG = fragmentTAG;
+
+        if(currentFragmentTAG.equals(KelolaSparepartsFragment.TAG) ||
+                currentFragmentTAG.equals(KelolaSupplierFragment.TAG) ||
+                currentFragmentTAG.equals(KelolaKonsumenFragment.TAG) ||
+                currentFragmentTAG.equals(KelolaKendaraanFragment.TAG) ||
+                currentFragmentTAG.equals(KelolaPengadaanBarangFragment.TAG) ||
+                currentFragmentTAG.equals(KelolaPenjualanFragment.TAG)) {
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment, fragmentTAG)
+                .addToBackStack(fragmentTAG)
+                .commit();
     }
 
     public void logged_inDrawer(Boolean b) {
@@ -197,7 +291,9 @@ public class MainActivity extends AppCompatActivity
         drawerMenu.findItem(R.id.nav_logout).setVisible(b);
     }
 
-    public void setActionBarTitle(String title) {
-        getSupportActionBar().setTitle(title);
+    private void addToFragmentMenuItemMap(String fragmentTag, Integer menuItemID) {
+        if(!fragmentMenuItemMap.containsKey(fragmentTag)) {
+            fragmentMenuItemMap.put(fragmentTag, menuItemID);
+        }
     }
 }

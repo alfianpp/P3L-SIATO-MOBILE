@@ -1,13 +1,13 @@
 package com.siato.app.Fragment;
 
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,9 +17,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.siato.app.API;
 import com.siato.app.APIResponse;
 import com.siato.app.ListAdapter.KendaraanListAdapter;
@@ -35,20 +37,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class KelolaKendaraanFragment extends Fragment{
+    public static final String TAG = KelolaKendaraanFragment.class.getSimpleName();
     private View view;
     private API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
     private KendaraanListAdapter adapter = null;
     private RecyclerView recyclerView;
     private EditText etSearch;
-    private Button btnTambahKendaraan;
+    private FloatingActionButton btnTambah;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_kelola_kendaraan, container, false);
+        view = inflater.inflate(R.layout.fragment_kelola, container, false);
 
-        etSearch = view.findViewById(R.id.etSearchKendaraan);
-        btnTambahKendaraan = view.findViewById(R.id.btnTambahKendaraan);
+        etSearch = view.findViewById(R.id.etSearch);
+        btnTambah = view.findViewById(R.id.btnTambah);
 
         refreshList();
 
@@ -69,7 +72,7 @@ public class KelolaKendaraanFragment extends Fragment{
             }
         });
 
-        btnTambahKendaraan.setOnClickListener(new View.OnClickListener() {
+        btnTambah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((MainActivity)getActivity()).changeFragment(4);
@@ -97,10 +100,11 @@ public class KelolaKendaraanFragment extends Fragment{
         });
     }
     private void generateDataList(List<Kendaraan> kendaraanList) {
-        recyclerView = view.findViewById(R.id.rvListKendaraan);
+        recyclerView = view.findViewById(R.id.rvList);
         adapter = new KendaraanListAdapter(getContext(), kendaraanList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getContext(), recyclerView, new RecyclerViewClickListener() {
@@ -121,7 +125,7 @@ public class KelolaKendaraanFragment extends Fragment{
                                 Bundle b = new Bundle();
                                 b.putParcelable("kendaraan", selected);
                                 fragment.setArguments(b);
-                                ((MainActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+                                ((MainActivity)getActivity()).showFragment(fragment, TambahUbahKendaraanFragment.TAG);
                             }
                         })
                         .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
@@ -169,5 +173,13 @@ public class KelolaKendaraanFragment extends Fragment{
                         }).create().show();
             }
         }));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ((MainActivity) getActivity()).getSupportActionBar()
+                .setTitle(R.string.kelola_kendaraan);
     }
 }

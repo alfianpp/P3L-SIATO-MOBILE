@@ -24,6 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TambahUbahKonsumenFragment extends Fragment {
+    public static final String TAG = TambahUbahKonsumenFragment.class.getSimpleName();
     private String ACTION = "TAMBAH";
     private Integer IDKonsumen = null;
     private TextInputEditText etNama;
@@ -43,7 +44,6 @@ public class TambahUbahKonsumenFragment extends Fragment {
 
         if(getArguments() != null && getArguments().getParcelable("konsumen") != null) {
             ACTION = "UBAH";
-            ((MainActivity)getActivity()).setActionBarTitle("Ubah Konsumen");
             Konsumen konsumen = getArguments().getParcelable("konsumen");
             IDKonsumen = konsumen.getID();
             etNama.setText(konsumen.getNama());
@@ -114,5 +114,13 @@ public class TambahUbahKonsumenFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ((MainActivity) getActivity()).getSupportActionBar()
+                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + getResources().getString(R.string.data_konsumen));
     }
 }

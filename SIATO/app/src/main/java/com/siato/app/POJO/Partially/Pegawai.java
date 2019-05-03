@@ -10,7 +10,6 @@ public class Pegawai implements Parcelable{
     public Pegawai(Integer id, String nama) {
         this.id = id;
         this.nama = nama;
-
     }
 
 

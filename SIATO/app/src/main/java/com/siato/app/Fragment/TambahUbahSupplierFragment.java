@@ -24,6 +24,7 @@ import retrofit2.Response;
 
 
 public class TambahUbahSupplierFragment extends Fragment {
+    public static final String TAG = TambahUbahSupplierFragment.class.getSimpleName();
     private String ACTION = "TAMBAH";
     private Integer IDSupplier = null;
     private TextInputEditText etNama;
@@ -44,7 +45,6 @@ public class TambahUbahSupplierFragment extends Fragment {
 
         if(getArguments() != null && getArguments().getParcelable("supplier") != null) {
             ACTION = "UBAH";
-            ((MainActivity)getActivity()).setActionBarTitle("Ubah Supplier");
             Supplier supplier = getArguments().getParcelable("supplier");
             IDSupplier = supplier.getId();
             etNama.setText(supplier.getNama());
@@ -118,5 +118,13 @@ public class TambahUbahSupplierFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ((MainActivity) getActivity()).getSupportActionBar()
+                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + getResources().getString(R.string.data_supplier));
     }
 }

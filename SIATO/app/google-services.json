@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "493435965872",
+    "firebase_url": "https://p3l-siato.firebaseio.com",
+    "project_id": "p3l-siato",
+    "storage_bucket": "p3l-siato.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493435965872:android:a58bd582941aa8cb",
+        "android_client_info": {
+          "package_name": "com.siato.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493435965872-50bgd5qs3fph670hbcruhi8imll1k8hi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.siato.app",
+            "certificate_hash": "404c711ac52294bc38315d157d5730fc5e86b527"
+          }
+        },
+        {
+          "client_id": "493435965872-os039tit4g9ki8u2m7u0modtafdqcfat.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwwf4hVjAcoUCTummGMe_hbihqKsAOMh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493435965872-os039tit4g9ki8u2m7u0modtafdqcfat.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

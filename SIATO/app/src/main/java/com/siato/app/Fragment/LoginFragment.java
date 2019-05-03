@@ -1,5 +1,6 @@
 package com.siato.app.Fragment;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
+    public static final String TAG = LoginFragment.class.getSimpleName();
     private TextInputEditText etUsername;
     private TextInputEditText etPassword;
     private Button btnLogin;
@@ -52,7 +54,7 @@ public class LoginFragment extends Fragment {
                         if(!apiResponse.getError()) {
                             ((MainActivity)getActivity()).logged_in_user = apiResponse.getData();
                             ((MainActivity)getActivity()).logged_inDrawer(true);
-                            ((MainActivity)getActivity()).backToDashboard();
+                            ((MainActivity)getActivity()).changeFragment(R.id.nav_dashboard);
                         }
                         Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -66,5 +68,13 @@ public class LoginFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ((MainActivity) getActivity()).getSupportActionBar()
+                .setTitle(R.string.login);
     }
 }

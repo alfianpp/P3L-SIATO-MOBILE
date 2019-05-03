@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -12,24 +15,31 @@ import com.siato.app.API;
 import com.siato.app.APIResponse;
 import com.siato.app.MainActivity;
 import com.siato.app.POJO.Spareparts;
-import com.siato.app.POJO.Pegawai;
 import com.siato.app.R;
 import com.siato.app.RetrofitClientInstance;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TambahUbahSparepartsFragment extends Fragment {
+    public static final String TAG = TambahUbahSparepartsFragment.class.getSimpleName();
     private String ACTION = "TAMBAH";
     private TextInputEditText etKode;
     private TextInputEditText etNama;
     private TextInputEditText etMerk;
     private TextInputEditText etTipe;
-    private TextInputEditText etKodePeletakan;
+    private String kodePeletakan;
+    private Spinner spPeletakanLetak;
+    private Spinner spPeletakanRuang;
+    private EditText etPeletakanNomorUrut;
     private TextInputEditText etHargaJual;
     private TextInputEditText etHargaBeli;
     private TextInputEditText etStok;
@@ -45,7 +55,9 @@ public class TambahUbahSparepartsFragment extends Fragment {
         etNama = view.findViewById(R.id.etSparepartsNama);
         etMerk = view.findViewById(R.id.etSparepartsMerk);
         etTipe = view.findViewById(R.id.etSparepartsTipe);
-        etKodePeletakan = view.findViewById(R.id.etSparepartsKodePeletakan);
+        spPeletakanLetak = view.findViewById(R.id.spSparepartsPeletakanLetak);
+        spPeletakanRuang = view.findViewById(R.id.spSparepartsPeletakanRuang);
+        etPeletakanNomorUrut = view.findViewById(R.id.etSparepartsPeletakanNomorUrut);
         etHargaJual = view.findViewById(R.id.etSparepartsHargaJual);
         etHargaBeli = view.findViewById(R.id.etSparepartsHargaBeli);
         etStok = view.findViewById(R.id.etSparepartsStok);
@@ -54,18 +66,56 @@ public class TambahUbahSparepartsFragment extends Fragment {
 
         if(getArguments() != null && getArguments().getParcelable("spareparts") != null) {
             ACTION = "UBAH";
-            ((MainActivity)getActivity()).setActionBarTitle("Ubah Spareparts");
             Spareparts spareparts = getArguments().getParcelable("spareparts");
+            etKode.setEnabled(false);
             etKode.setText(spareparts.getKode());
             etNama.setText(spareparts.getNama());
             etMerk.setText(spareparts.getMerk());
             etTipe.setText(spareparts.getTipe());
-            etKodePeletakan.setText(spareparts.getKodePeletakan());
+            kodePeletakan = spareparts.getKodePeletakan();
             etHargaJual.setText(String.valueOf(spareparts.getHargaJual()).replace(".0", ""));
             etHargaBeli.setText(String.valueOf(spareparts.getHargaBeli()).replace(".0", ""));
+            etStok.setEnabled(false);
             etStok.setText(String.valueOf(spareparts.getStok()));
             etStokMinimal.setText(String.valueOf(spareparts.getStokMinimal()));
             btnTambahUbah.setText("Ubah");
+        }
+
+        final List<String> letakID = new ArrayList<>();
+        letakID.add("DPN");
+        letakID.add("TGH");
+        letakID.add("BLK");
+
+        List<String> letakValue = new ArrayList<>();
+        letakValue.add("Depan");
+        letakValue.add("Tengah");
+        letakValue.add("Belakang");
+
+        ArrayAdapter<String> letakAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, letakValue);
+        letakAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spPeletakanLetak.setAdapter(letakAdapter);
+
+        final List<String> ruangID = new ArrayList<>();
+        ruangID.add("KACA");
+        ruangID.add("DUS");
+        ruangID.add("BAN");
+        ruangID.add("KAYU");
+
+        List<String> ruangValue = new ArrayList<>();
+        ruangValue.add("Kaca");
+        ruangValue.add("Dus");
+        ruangValue.add("Ban");
+        ruangValue.add("Kayu");
+
+        ArrayAdapter<String> ruangAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, ruangValue);
+        ruangAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spPeletakanRuang.setAdapter(ruangAdapter);
+
+        if(ACTION.equals("UBAH")) {
+            String[] peletakan = kodePeletakan.split("-", 0);
+            spPeletakanLetak.setSelection(letakID.indexOf(peletakan[0]));
+            spPeletakanRuang.setSelection(ruangID.indexOf(peletakan[1]));
+            etPeletakanNomorUrut.setText(peletakan[2]);
         }
 
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +129,7 @@ public class TambahUbahSparepartsFragment extends Fragment {
                                 etNama.getText().toString(),
                                 etMerk.getText().toString(),
                                 etTipe.getText().toString(),
-                                etKodePeletakan.getText().toString(),
+                                letakID.get(spPeletakanLetak.getSelectedItemPosition()) + "-" + ruangID.get(spPeletakanRuang.getSelectedItemPosition()) + "-" + etPeletakanNomorUrut.getText().toString(),
                                 etHargaJual.getText().toString(),
                                 etHargaBeli.getText().toString(),
                                 etStok.getText().toString(),
@@ -111,7 +161,7 @@ public class TambahUbahSparepartsFragment extends Fragment {
                                 etNama.getText().toString(),
                                 etMerk.getText().toString(),
                                 etTipe.getText().toString(),
-                                etKodePeletakan.getText().toString(),
+                                letakID.get(spPeletakanLetak.getSelectedItemPosition()) + "-" + ruangID.get(spPeletakanRuang.getSelectedItemPosition()) + "-" + etPeletakanNomorUrut.getText().toString(),
                                 etHargaJual.getText().toString(),
                                 etHargaBeli.getText().toString(),
                                 etStokMinimal.getText().toString(),
@@ -140,5 +190,13 @@ public class TambahUbahSparepartsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ((MainActivity) getActivity()).getSupportActionBar()
+                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + getResources().getString(R.string.data_spareparts));
     }
 }
