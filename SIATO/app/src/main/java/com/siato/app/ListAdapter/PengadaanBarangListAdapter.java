@@ -17,7 +17,7 @@ import com.siato.app.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBarangListAdapter.PengadaanBarangViewHolder>
+public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBarangListAdapter.PengadaanBarangViewHolder> implements Filterable
 {
     private Context context;
     private List<PengadaanBarang> pengadaanBarangList;
@@ -63,5 +63,35 @@ public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBa
 
     public PengadaanBarang getItem(int position) {
         return pengadaanBarangListFiltered.get(position);
+    }
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String charString = constraint.toString();
+                if(charString.isEmpty()) {
+                    pengadaanBarangListFiltered = pengadaanBarangList;
+                }
+                else {
+                    List<PengadaanBarang> filteredList = new ArrayList<>();
+                    for(PengadaanBarang row : pengadaanBarangList) {
+                        if(row.getSupplier().getNama().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(row);
+                        }
+                    }
+
+                    pengadaanBarangListFiltered = filteredList;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = pengadaanBarangListFiltered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                pengadaanBarangListFiltered = (ArrayList<PengadaanBarang>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 }

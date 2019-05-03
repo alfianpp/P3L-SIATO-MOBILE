@@ -29,12 +29,12 @@ public class PenjualanListAdapter extends RecyclerView.Adapter<PenjualanListAdap
     }
 
     public class PenjualanViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvPenjualanKode;
+        private final TextView tvPenjualanJenis;
         private final TextView tvPenjualanNamaKonsumen;
 
         public PenjualanViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvPenjualanKode = itemView.findViewById(R.id.tvPenjualanKode);
+            tvPenjualanJenis = itemView.findViewById(R.id.tvPenjualanKode);
             tvPenjualanNamaKonsumen = itemView.findViewById(R.id.tvPenjualanNamaKonsumen);
         }
     }
@@ -51,7 +51,7 @@ public class PenjualanListAdapter extends RecyclerView.Adapter<PenjualanListAdap
     public void onBindViewHolder(@NonNull PenjualanViewHolder holder, int position) {
         final Penjualan current = penjualanListFiltered.get(position);
 
-        holder.tvPenjualanKode.setText(String.valueOf(current.getId()));
+        holder.tvPenjualanJenis.setText(current.getJenis());
         holder.tvPenjualanNamaKonsumen.setText(current.getKonsumen().getNama());
     }
 

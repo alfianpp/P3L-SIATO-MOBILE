@@ -42,7 +42,7 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
             ACTION = "UBAH";
             PengadaanBarang pengadaanBarang = getArguments().getParcelable("pengadaan_barang");
             IDPengadaanBarang = pengadaanBarang.getId();
-            etIdS.setText(String.valueOf(pengadaanBarang.getId()));
+            etIdS.setText(String.valueOf(pengadaanBarang.getSupplier().getNama()));
             btnTambahUbah.setText("Ubah");
         }
 
