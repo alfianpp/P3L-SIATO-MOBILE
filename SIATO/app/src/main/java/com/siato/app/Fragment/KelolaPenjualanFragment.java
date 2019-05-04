@@ -115,10 +115,32 @@ public class KelolaPenjualanFragment extends Fragment {
                                 ((MainActivity)getActivity()).showFragment(fragment, TambahUbahPenjualanFragment.TAG);
                             }
                         })
-                        .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Verifikasi", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                if(selected.getStatus() == 2) {
+                                    Toast.makeText(getContext(), "Penjualan sudah di verifikasi.", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Call<APIResponse> call = APIService.verifikasiPenjualan(selected.getId(), "2", ((MainActivity) getActivity()).logged_in_user.getApiKey());
+                                    call.enqueue(new Callback<APIResponse>() {
+                                        @Override
+                                        public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                                            APIResponse apiResponse = response.body();
 
+                                            if(!apiResponse.getError()) {
+                                                refreshList();
+                                            }
+
+                                            Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<APIResponse> call, Throwable t) {
+                                            Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
                             }
                         })
                         .setNeutralButton("Hapus", new DialogInterface.OnClickListener() {

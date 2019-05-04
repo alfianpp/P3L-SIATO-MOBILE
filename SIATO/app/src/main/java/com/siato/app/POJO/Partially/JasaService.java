@@ -6,26 +6,11 @@ import android.os.Parcelable;
 public class JasaService implements Parcelable {
     private Integer id;
     private String nama;
-    private Double harga;
 
-    public JasaService(Integer id, String nama, Double harga) {
+    public JasaService(Integer id, String nama) {
         this.id = id;
         this.nama = nama;
-        this.harga = harga;
     }
-
-
-    public static final Parcelable.Creator<JasaService> CREATOR = new Parcelable.Creator<JasaService>() {
-        @Override
-        public JasaService createFromParcel(Parcel in) {
-            return new JasaService(in);
-        }
-
-        @Override
-        public JasaService[] newArray(int size) {
-            return new JasaService[size];
-        }
-    };
 
     public Integer getId() {
         return id;
@@ -35,9 +20,6 @@ public class JasaService implements Parcelable {
         return nama;
     }
 
-    public Double getHarga() {
-        return harga;
-    }
 
     @Override
     public int describeContents() {
@@ -47,13 +29,23 @@ public class JasaService implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
-        dest.writeValue(this.nama);
-        dest.writeValue(this.harga);
+        dest.writeString(this.nama);
     }
+
     protected JasaService(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.nama = in.readString();
-        this.harga = (Double) in.readValue(Double.class.getClassLoader());
     }
 
+    public static final Creator<JasaService> CREATOR = new Creator<JasaService>() {
+        @Override
+        public JasaService createFromParcel(Parcel source) {
+            return new JasaService(source);
+        }
+
+        @Override
+        public JasaService[] newArray(int size) {
+            return new JasaService[size];
+        }
+    };
 }

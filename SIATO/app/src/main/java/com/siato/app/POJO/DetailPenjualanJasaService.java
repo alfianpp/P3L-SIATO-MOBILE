@@ -10,15 +10,15 @@ import com.siato.app.POJO.Partially.Penjualan;
 
 public class DetailPenjualanJasaService implements Parcelable {
     private Integer id;
-    private DetilPenjualan detilPenjualan;
-    private JasaService jasaService;
+    private Integer id_detail_penjualan;
+    private JasaService jasa_service;
     private Integer jumlah;
     private Double harga;
 
-    public DetailPenjualanJasaService(Integer id, DetilPenjualan detilPenjualan, JasaService jasaService, Integer jumlah, Double harga) {
+    public DetailPenjualanJasaService(Integer id, Integer id_detail_penjualan, JasaService jasa_service, Integer jumlah, Double harga) {
         this.id = id;
-        this.detilPenjualan = detilPenjualan;
-        this.jasaService = jasaService;
+        this.id_detail_penjualan = id_detail_penjualan;
+        this.jasa_service = jasa_service;
         this.jumlah = jumlah;
         this.harga = harga;
     }
@@ -27,12 +27,12 @@ public class DetailPenjualanJasaService implements Parcelable {
         return id;
     }
 
-    public DetilPenjualan getDetilPenjualan() {
-        return detilPenjualan;
+    public Integer getIdDetailPenjualan() {
+        return id_detail_penjualan;
     }
 
     public JasaService getJasaService() {
-        return jasaService;
+        return jasa_service;
     }
 
     public Integer getJumlah() {
@@ -43,29 +43,30 @@ public class DetailPenjualanJasaService implements Parcelable {
         return harga;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flag) {
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
-        dest.writeParcelable(this.detilPenjualan,flag);
-        dest.writeParcelable(this.jasaService,flag);
+        dest.writeValue(this.id_detail_penjualan);
+        dest.writeParcelable(this.jasa_service, flags);
         dest.writeValue(this.jumlah);
         dest.writeValue(this.harga);
     }
 
     protected DetailPenjualanJasaService(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.detilPenjualan = in.readParcelable(Penjualan.class.getClassLoader());
-        this.jasaService = in.readParcelable(Kendaraan.class.getClassLoader());
+        this.id_detail_penjualan = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.jasa_service = in.readParcelable(JasaService.class.getClassLoader());
         this.jumlah = (Integer) in.readValue(Integer.class.getClassLoader());
         this.harga = (Double) in.readValue(Double.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<DetailPenjualanJasaService> CREATOR = new Parcelable.Creator<DetailPenjualanJasaService>() {
+    public static final Creator<DetailPenjualanJasaService> CREATOR = new Creator<DetailPenjualanJasaService>() {
         @Override
         public DetailPenjualanJasaService createFromParcel(Parcel source) {
             return new DetailPenjualanJasaService(source);

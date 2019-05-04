@@ -2,6 +2,8 @@ package com.siato.app;
 
 import com.siato.app.POJO.DetailPengadaanBarang;
 import com.siato.app.POJO.DetailPenjualan;
+import com.siato.app.POJO.DetailPenjualanJasaService;
+import com.siato.app.POJO.DetailPenjualanSpareparts;
 import com.siato.app.POJO.Kendaraan;
 import com.siato.app.POJO.Konsumen;
 import com.siato.app.POJO.Pegawai;
@@ -270,6 +272,14 @@ public interface API {
     );
 
     @FormUrlEncoded
+    @HTTP(method = "PUT", path = "transaksi/penjualan/data/{id}", hasBody = true)
+    Call<APIResponse> verifikasiPenjualan(
+            @Path("id") Integer id,
+            @Field("status") String status,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
     @HTTP(method = "DELETE", path = "transaksi/penjualan/data/{id}", hasBody = true)
     Call<APIResponse> deletePenjualan(@Path("id") Integer id, @Field("api_key") String api_key);
 
@@ -309,6 +319,59 @@ public interface API {
 
     // --- CRUD DETAIL PENJUALAN SPAREPARTS
 
+    @FormUrlEncoded
+    @POST("transaksi/penjualan/detail/spareparts/{id_detail_penjualan}")
+    Call<APIResponse<List<DetailPenjualanSpareparts>>> getAllDetailPenjualanSpareparts(@Path("id_detail_penjualan") Integer id_detail_penjualan, @Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @POST("transaksi/penjualan/detail/spareparts/data")
+    Call<APIResponse> createDetailPenjualanSpareparts(
+            @Field("id_detail_penjualan") Integer id_detail_penjualan,
+            @Field("kode_spareparts") String kode_spareparts,
+            @Field("jumlah") String jumlah,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @POST("transaksi/penjualan/data/{id}")
+    Call<APIResponse<DetailPenjualanSpareparts>> getDetailPenjualanSpareparts(@Path("id") Integer id, @Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @HTTP(method = "PUT", path = "transaksi/penjualan/detail/spareparts/data/{id}", hasBody = true)
+    Call<APIResponse> updateDetailPenjualanSpareparts(
+            @Path("id") Integer id,
+            @Field("jumlah") String jumlah,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "transaksi/penjualan/detail/spareparts/data/{id}", hasBody = true)
+    Call<APIResponse> deleteDetailPenjualanSpareparts(@Path("id") Integer id, @Field("api_key") String api_key);
+
 
     // --- CRUD DETAIL PENJUALAN JASA SERVICE
+
+    @FormUrlEncoded
+    @POST("transaksi/penjualan/detail/jasaservice/{id_detail_penjualan}")
+    Call<APIResponse<List<DetailPenjualanJasaService>>> getAllDetailPenjualanJasaService(@Path("id_detail_penjualan") Integer id_detail_penjualan, @Field("api_key") String api_key);
+
+    @FormUrlEncoded
+    @POST("transaksi/penjualan/detail/jasaservice/data")
+    Call<APIResponse> createDetailPenjualanJasaService(
+            @Field("id_detail_penjualan") Integer id_detail_penjualan,
+            @Field("id_jasaservice") String kode_spareparts,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @HTTP(method = "PUT", path = "transaksi/penjualan/detail/jasaservice/data/{id}", hasBody = true)
+    Call<APIResponse> updateDetailPenjualanJasaService(
+            @Path("id") Integer id,
+            @Field("jumlah") String jumlah,
+            @Field("api_key") String api_key
+    );
+
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "transaksi/penjualan/detail/jasaservice/data/{id}", hasBody = true)
+    Call<APIResponse> deleteDetailPenjualanJasaService(@Path("id") Integer id, @Field("api_key") String api_key);
 }

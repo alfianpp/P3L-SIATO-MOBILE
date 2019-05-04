@@ -17,9 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.siato.app.API;
 import com.siato.app.APIResponse;
-import com.siato.app.ListAdapter.DetailPenjualanListAdapter;
+import com.siato.app.ListAdapter.DetailPenjualanJasaServiceListAdapter;
+import com.siato.app.ListAdapter.DetailPenjualanSparepartsListAdapter;
 import com.siato.app.MainActivity;
-import com.siato.app.POJO.DetailPenjualan;
+import com.siato.app.POJO.DetailPenjualanJasaService;
+import com.siato.app.POJO.DetailPenjualanSpareparts;
 import com.siato.app.R;
 import com.siato.app.RecyclerViewClickListener;
 import com.siato.app.RecyclerViewTouchListener;
@@ -32,14 +34,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class KelolaDetailPenjualanFragment extends Fragment {
-    public static final String TAG = KelolaDetailPenjualanFragment.class.getSimpleName();
+public class KelolaDetailPenjualanJasaServiceFragment extends Fragment {
+    public static final String TAG = KelolaDetailPenjualanJasaServiceFragment.class.getSimpleName();
     private View view;
     private API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
-    private DetailPenjualanListAdapter adapter = null;
+    private DetailPenjualanJasaServiceListAdapter adapter = null;
     private RecyclerView recyclerView;
     private FloatingActionButton btnTambah;
-    private Integer IDPenjualan = null;
+    private Integer IDDetailPenjualan = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +53,7 @@ public class KelolaDetailPenjualanFragment extends Fragment {
         searchLayout.setVisibility(View.GONE);
 
         if(getArguments() != null) {
-            IDPenjualan = getArguments().getInt("id_penjualan");
+            IDDetailPenjualan = getArguments().getInt("id_detail_penjualan");
         }
 
         refreshList();
@@ -59,12 +61,12 @@ public class KelolaDetailPenjualanFragment extends Fragment {
         btnTambah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new TambahUbahDetailPenjualanFragment();
+                Fragment fragment = new TambahUbahDetailPenjualanJasaServiceFragment();
                 Bundle b = new Bundle();
-                b.putBoolean("ubah_detail_penjualan", false);
-                b.putInt("id_penjualan", IDPenjualan);
+                b.putBoolean("ubah_detail_penjualan_jasaservice", false);
+                b.putInt("id_detail_penjualan", IDDetailPenjualan);
                 fragment.setArguments(b);
-                ((MainActivity)getActivity()).showFragment(fragment, TambahUbahDetailPenjualanFragment.TAG);
+                ((MainActivity) getActivity()).showFragment(fragment, TambahUbahDetailPenjualanJasaServiceFragment.TAG);
             }
         });
 
@@ -72,11 +74,11 @@ public class KelolaDetailPenjualanFragment extends Fragment {
     }
 
     private void refreshList() {
-        Call<APIResponse<List<DetailPenjualan>>> call = APIService.getAllDetailPenjualan(IDPenjualan, ((MainActivity)getActivity()).logged_in_user.getApiKey());
-        call.enqueue(new Callback<APIResponse<List<DetailPenjualan>>>() {
+        Call<APIResponse<List<DetailPenjualanJasaService>>> call = APIService.getAllDetailPenjualanJasaService(IDDetailPenjualan, ((MainActivity)getActivity()).logged_in_user.getApiKey());
+        call.enqueue(new Callback<APIResponse<List<DetailPenjualanJasaService>>>() {
             @Override
-            public void onResponse(Call<APIResponse<List<DetailPenjualan>>> call, Response<APIResponse<List<DetailPenjualan>>> response) {
-                APIResponse<List<DetailPenjualan>> apiResponse = response.body();
+            public void onResponse(Call<APIResponse<List<DetailPenjualanJasaService>>> call, Response<APIResponse<List<DetailPenjualanJasaService>>> response) {
+                APIResponse<List<DetailPenjualanJasaService>> apiResponse = response.body();
 
                 if(!apiResponse.getError()) {
                     generateDataList(apiResponse.getData(), view);
@@ -84,15 +86,15 @@ public class KelolaDetailPenjualanFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<APIResponse<List<DetailPenjualan>>> call, Throwable t) {
+            public void onFailure(Call<APIResponse<List<DetailPenjualanJasaService>>> call, Throwable t) {
                 Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void generateDataList(List<DetailPenjualan> detailPenjualan, View view) {
+    private void generateDataList(List<DetailPenjualanJasaService> detailPenjualanJasaServiceList, View view) {
         recyclerView = view.findViewById(R.id.rvList);
-        adapter = new DetailPenjualanListAdapter(getContext(), detailPenjualan);
+        adapter = new DetailPenjualanJasaServiceListAdapter(getContext(), detailPenjualanJasaServiceList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
@@ -101,63 +103,24 @@ public class KelolaDetailPenjualanFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(getContext(), recyclerView, new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                final DetailPenjualan selected = adapter.getItem(position);
-                mBuilder.setTitle("Detail Penjualan")
-                        .setPositiveButton("Spareparts", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Fragment fragment = new KelolaDetailPenjualanSparepartsFragment();
-                                Bundle b = new Bundle();
-                                b.putInt("id_detail_penjualan", selected.getId());
-                                fragment.setArguments(b);
-                                ((MainActivity)getActivity()).showFragment(fragment, KelolaDetailPenjualanSparepartsFragment.TAG);
-                            }
-                        })
-                        .setNeutralButton("Jasa Service", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Fragment fragment = new KelolaDetailPenjualanJasaServiceFragment();
-                                Bundle b = new Bundle();
-                                b.putInt("id_detail_penjualan", selected.getId());
-                                fragment.setArguments(b);
-                                ((MainActivity)getActivity()).showFragment(fragment, KelolaDetailPenjualanJasaServiceFragment.TAG);
-                            }
-                        }).create().show();
+
             }
 
             @Override
             public void onLongClick(final View view, int position) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                final DetailPenjualan selected = adapter.getItem(position);
+                final DetailPenjualanJasaService selected = adapter.getItem(position);
                 mBuilder.setTitle("Pilih Aksi")
-                        .setPositiveButton("Ubah", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Fragment fragment = new TambahUbahDetailPenjualanFragment();
-                                Bundle b = new Bundle();
-                                b.putBoolean("ubah_detail_penjualan", true);
-                                b.putParcelable("detail_penjualan", selected);
-                                fragment.setArguments(b);
-                                ((MainActivity) getActivity()).showFragment(fragment, TambahUbahDetailPenjualanFragment.TAG);
-                            }
-                        })
-                        .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        })
-                        .setNeutralButton("Hapus", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Hapus", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
                                 mBuilder.setTitle("Hapus Detail")
-                                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus detail penjualan ini?")
+                                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus penjualan jasa service ini?")
                                         .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
-                                                Call<APIResponse> call = APIService.deleteDetailPenjualan(selected.getId(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
+                                                Call<APIResponse> call = APIService.deleteDetailPenjualanJasaService(selected.getId(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
                                                 call.enqueue(new Callback<APIResponse>() {
                                                     @Override
                                                     public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
@@ -183,6 +146,12 @@ public class KelolaDetailPenjualanFragment extends Fragment {
 
                                             }
                                         }).create().show();
+                            }
+                        })
+                        .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
                             }
                         }).create().show();
             }

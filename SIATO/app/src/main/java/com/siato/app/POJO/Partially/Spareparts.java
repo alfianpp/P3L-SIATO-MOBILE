@@ -6,11 +6,12 @@ import android.os.Parcelable;
 public class Spareparts implements Parcelable {
     private String kode;
     private String nama;
+    private String merk;
 
-    public Spareparts(String kode, String nama) {
+    public Spareparts(String kode, String nama, String merk) {
         this.kode = kode;
         this.nama = nama;
-
+        this.merk = merk;
     }
 
     public String getKode() {
@@ -19,6 +20,10 @@ public class Spareparts implements Parcelable {
 
     public String getNama() {
         return nama;
+    }
+
+    public String getMerk() {
+        return merk;
     }
 
 
@@ -31,14 +36,16 @@ public class Spareparts implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.kode);
         dest.writeString(this.nama);
+        dest.writeString(this.merk);
     }
 
     protected Spareparts(Parcel in) {
         this.kode = in.readString();
         this.nama = in.readString();
+        this.merk = in.readString();
     }
 
-    public static final Creator<Spareparts> CREATOR = new Creator<Spareparts>() {
+    public static final Parcelable.Creator<Spareparts> CREATOR = new Parcelable.Creator<Spareparts>() {
         @Override
         public Spareparts createFromParcel(Parcel source) {
             return new Spareparts(source);

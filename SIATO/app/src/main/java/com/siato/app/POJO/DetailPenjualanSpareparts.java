@@ -8,14 +8,14 @@ import com.siato.app.POJO.Partially.Spareparts;
 
 public class DetailPenjualanSpareparts implements Parcelable {
     private Integer id;
-    private DetilPenjualan detilPenjualan;
+    private Integer id_detail_penjualan;
     private Spareparts spareparts;
     private Integer jumlah;
     private Double harga;
 
-    public DetailPenjualanSpareparts(Integer id, DetilPenjualan detilPenjualan, Spareparts spareparts, Integer jumlah, Double harga) {
+    public DetailPenjualanSpareparts(Integer id, Integer id_detail_penjualan, Spareparts spareparts, Integer jumlah, Double harga) {
         this.id = id;
-        this.detilPenjualan = detilPenjualan;
+        this.id_detail_penjualan = id_detail_penjualan;
         this.spareparts = spareparts;
         this.jumlah = jumlah;
         this.harga = harga;
@@ -25,8 +25,8 @@ public class DetailPenjualanSpareparts implements Parcelable {
         return id;
     }
 
-    public DetilPenjualan getDetilPenjualan() {
-        return detilPenjualan;
+    public Integer getIdDetailPenjualan() {
+        return id_detail_penjualan;
     }
 
     public Spareparts getSpareparts() {
@@ -41,6 +41,7 @@ public class DetailPenjualanSpareparts implements Parcelable {
         return harga;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -49,7 +50,7 @@ public class DetailPenjualanSpareparts implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
-        dest.writeParcelable(this.detilPenjualan, flags);
+        dest.writeValue(this.id_detail_penjualan);
         dest.writeParcelable(this.spareparts, flags);
         dest.writeValue(this.jumlah);
         dest.writeValue(this.harga);
@@ -57,7 +58,7 @@ public class DetailPenjualanSpareparts implements Parcelable {
 
     protected DetailPenjualanSpareparts(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.detilPenjualan = in.readParcelable(DetilPenjualan.class.getClassLoader());
+        this.id_detail_penjualan = (Integer) in.readValue(Integer.class.getClassLoader());
         this.spareparts = in.readParcelable(Spareparts.class.getClassLoader());
         this.jumlah = (Integer) in.readValue(Integer.class.getClassLoader());
         this.harga = (Double) in.readValue(Double.class.getClassLoader());
