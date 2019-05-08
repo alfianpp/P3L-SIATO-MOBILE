@@ -242,6 +242,15 @@ public interface API {
     @HTTP(method = "DELETE", path = "transaksi/pengadaan/detail/{id}", hasBody = true)
     Call<APIResponse> deleteDetailPengadaanBarang(@Path("id") Integer id, @Field("api_key") String api_key);
 
+    @FormUrlEncoded
+    @HTTP(method = "PUT", path = "transaksi/pengadaan/detail/{id}", hasBody = true)
+    Call<APIResponse> verifikasiDetailPengadaanBarang(
+            @Path("id") Integer id,
+            @Field("jumlah_datang") String jumlah_datang,
+            @Field("harga") String harga,
+            @Field("api_key") String api_key
+    );
+
 
     // --- CRUD PENJUALAN
 

@@ -121,10 +121,14 @@ public class KelolaDetailPengadaanBarangFragment extends Fragment {
                                 ((MainActivity) getActivity()).showFragment(fragment, TambahUbahDetailPengadaanBarangFragment.TAG);
                             }
                         })
-                        .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Verifikasi", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                Fragment fragment = new VerifikasiPengadaanBarangFragment();
+                                Bundle b = new Bundle();
+                                b.putInt("id_detail_pengadaan_barang", selected.getId());
+                                fragment.setArguments(b);
+                                ((MainActivity) getActivity()).showFragment(fragment, VerifikasiPengadaanBarangFragment.TAG);
                             }
                         })
                         .setNeutralButton("Hapus", new DialogInterface.OnClickListener() {

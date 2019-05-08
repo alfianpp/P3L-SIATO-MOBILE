@@ -2,7 +2,11 @@ package com.siato.app;
 
 import android.os.Bundle;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.siato.app.Fragment.DashboardFragment;
 import com.siato.app.Fragment.KelolaKendaraanFragment;
 import com.siato.app.Fragment.KelolaKonsumenFragment;
@@ -21,6 +25,7 @@ import com.siato.app.Fragment.TambahUbahSparepartsFragment;
 import com.siato.app.Fragment.TambahUbahSupplierFragment;
 import com.siato.app.POJO.Pegawai;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -30,6 +35,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -38,6 +44,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
+    public static final String TAG = MainActivity.class.getSimpleName();
+
     private DrawerLayout drawer;
     private FragmentManager fragmentManager;
 
@@ -94,6 +102,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_container, currentFragment, currentFragmentTAG)
                 .commit();
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+
+                        String token = task.getResult().getToken();
+                        String msg = "App token: " + token;
+                        Log.d(TAG, msg);
+                    }
+                });
     }
 
     @Override
