@@ -1,13 +1,18 @@
 package com.siato.mysiato;
 
+import com.siato.mysiato.POJO.Penjualan;
+import com.siato.mysiato.POJO.Spareparts;
+
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface API {
     @FormUrlEncoded
@@ -15,6 +20,18 @@ public interface API {
     Call<APIResponse> login(
             @Field("nomor_polisi") String nomor_polisi,
             @Field("nomor_telepon") String nomor_telepon
+    );
+
+    @GET("data/spareparts/index/search")
+    Call<APIResponse<List<Spareparts>>> listRepos(
+        @Query("name") String name,
+        @Query("order_by") String order_by
+    );
+
+    @FormUrlEncoded
+    @POST("riwayat/index")
+    Call<APIResponse<List<Penjualan>>> index(
+            @Field("nomor_polisi") String nomor_polisi
     );
 
     // --- CRUD SPAREPARTS

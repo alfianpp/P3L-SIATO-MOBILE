@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 import com.siato.mysiato.Fragment.HomeFragment;
+import com.siato.mysiato.Fragment.KelolaPenjualanFragment;
 import com.siato.mysiato.Fragment.LoginFragment;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         addToFragmentMenuItemMap(currentFragmentTAG, currentMenuItem);
 
         fragmentManager.beginTransaction()
-                .add(R.id.fragment_container, currentFragment, currentFragmentTAG)
+                .add(R.id.fragment_container, new KelolaPenjualanFragment(), KelolaPenjualanFragment.TAG)
                 .commit();
     }
 
