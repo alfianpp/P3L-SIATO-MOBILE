@@ -31,11 +31,15 @@ public class SparepartsListAdapter extends RecyclerView.Adapter<SparepartsListAd
     public class SparepartsViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvKodeSpareparts;
         private final TextView tvNamaSpareparts;
+        private final TextView tvStokSpareparts;
+        private final TextView tvHargaSpareparts;
 
         public SparepartsViewHolder(@NonNull View itemView) {
             super(itemView);
             tvKodeSpareparts = itemView.findViewById(R.id.tvSparepartsKode);
             tvNamaSpareparts = itemView.findViewById(R.id.tvSparepartsNama);
+            tvStokSpareparts = itemView.findViewById(R.id.tvSparepartsStok);
+            tvHargaSpareparts = itemView.findViewById(R.id.tvSparepartsHarga);
         }
     }
 
@@ -53,6 +57,8 @@ public class SparepartsListAdapter extends RecyclerView.Adapter<SparepartsListAd
 
         holder.tvKodeSpareparts.setText(current.getKode());
         holder.tvNamaSpareparts.setText(current.getNama());
+        holder.tvHargaSpareparts.setText(String.valueOf(current.getHargaJual()));
+        holder.tvStokSpareparts.setText(String.valueOf(current.getStok()));
     }
 
     @Override

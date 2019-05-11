@@ -13,4 +13,12 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+
+    <string-array name="list_pengurutan">
+        <item>urutkan stok dari terkecil</item>
+        <item>urutkan stok dari terbesar</item>
+        <item>urutkan harga dari terkecil</item>
+        <item>urutkan harga dari terbesar</item>
+    </string-array>
 </resources>

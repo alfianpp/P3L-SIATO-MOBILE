@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         addToFragmentMenuItemMap(currentFragmentTAG, currentMenuItem);
 
         fragmentManager.beginTransaction()
-                .add(R.id.fragment_container, new KelolaPenjualanFragment(), KelolaPenjualanFragment.TAG)
+                .add(R.id.fragment_container, new HomeFragment(), HomeFragment.TAG)
                 .commit();
     }
 

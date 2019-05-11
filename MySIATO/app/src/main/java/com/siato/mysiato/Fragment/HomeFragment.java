@@ -6,8 +6,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.List;
@@ -38,8 +40,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private EditText etSearch;
     private String sortBy;
-    private Button sortByHarga;
-    private Button sortByStok;
+    private Spinner sort;
 
     @Nullable
     @Override
@@ -47,8 +48,7 @@ public class HomeFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_spareparts, container, false);
 
         etSearch = view.findViewById(R.id.etSearch);
-        sortByHarga = view.findViewById(R.id.sortByHarga);
-        sortByStok = view.findViewById(R.id.sortByStok);
+        sort = view.findViewById(R.id.spinnerSort);
 
         refreshList();
 
@@ -69,19 +69,28 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        sortByHarga.setOnClickListener(new View.OnClickListener() {
+        sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                sortBy = "harga_jual|asc";
-                refreshList();
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String firstItem = String.valueOf(sort.getSelectedItem());
+                if (firstItem.equals("urutkan stok dari terkecil")){
+                    sortBy = "stok|asc";
+                    refreshList();
+                }else if(firstItem.equals("urutkan stok dari terbesar")){
+                    sortBy = "stok|desc";
+                    refreshList();
+                }else if(firstItem.equals("urutkan harga dari terkecil")){
+                    sortBy = "harga_jual|asc";
+                    refreshList();
+                }else if(firstItem.equals("urutkan harga dari terbesar")){
+                    sortBy = "harga_jual|desc";
+                    refreshList();
+                }
             }
-        });
 
-        sortByStok.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                sortBy = "stok|asc";
-                refreshList();
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
