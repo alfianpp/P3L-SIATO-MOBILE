@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -15,8 +17,12 @@ import com.siato.app.API;
 import com.siato.app.APIResponse;
 import com.siato.app.MainActivity;
 import com.siato.app.POJO.DetailPenjualanSpareparts;
+import com.siato.app.POJO.Spareparts;
 import com.siato.app.R;
 import com.siato.app.RetrofitClientInstance;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,15 +34,17 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
     private Integer IDDetailPenjualan;
     private Integer IDDetailPenjualanSpareparts;
     private TextInputEditText etSpareparts;
+    private Spinner btnSpinnerSparepart;
     private TextInputEditText etJumlah;
     private Button btnTambahUbah;
+    private List<Spareparts> listSparepart;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tambah_ubah_detail_penjualan_spareparts, container, false);
 
-        etSpareparts = view.findViewById(R.id.etDetailPenjualanSparepartsKode);
+        btnSpinnerSparepart = view.findViewById(R.id.spSparepartPenjualanDetail);
         etJumlah = view.findViewById(R.id.etDetailPenjualanSparepartsJumlah);
         btnTambahUbah = view.findViewById(R.id.btnTambahUbahDetailPenjualanSpareparts);
 
@@ -54,6 +62,8 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
             }
         }
 
+        spinnerSparepart();
+
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,7 +72,7 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
                     case "TAMBAH":
                         Call<APIResponse> create = APIService.createDetailPenjualanSpareparts(
                                 IDDetailPenjualan,
-                                etSpareparts.getText().toString(),
+                                String.valueOf(listSparepart.get(btnSpinnerSparepart.getSelectedItemPosition()).getKode()),
                                 etJumlah.getText().toString(),
                                 ((MainActivity) getActivity()).logged_in_user.getApiKey()
                         );
@@ -114,6 +124,35 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void spinnerSparepart() {
+        API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+        Call<APIResponse<List<Spareparts>>> call = APIService.getAllSpareparts(((MainActivity)getActivity()).logged_in_user.getApiKey());
+        call.enqueue(new Callback<APIResponse<List<Spareparts>>>(){
+            @Override
+            public void onResponse(Call<APIResponse<List<Spareparts>>> call, Response<APIResponse<List<Spareparts>>> response) {
+                APIResponse<List<Spareparts>> apiResponse = response.body();
+
+                if (!apiResponse.getError()){
+                    listSparepart = apiResponse.getData();
+                    List<String> listSparepart = new ArrayList<>();
+
+                    for (int i = 0; i < apiResponse.getData().size(); i++){
+                        listSparepart.add(apiResponse.getData().get(i).getNama());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_dropdown_item,listSparepart);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    btnSpinnerSparepart.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse<List<Spareparts>>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

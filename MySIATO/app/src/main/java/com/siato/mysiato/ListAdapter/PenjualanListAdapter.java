@@ -31,6 +31,7 @@ public class PenjualanListAdapter extends RecyclerView.Adapter<PenjualanListAdap
             super(itemView);
             tvPenjualanJenis = itemView.findViewById(R.id.tvPenjualanKode);
             tvPenjualanNamaKonsumen = itemView.findViewById(R.id.tvPenjualanNamaKonsumen);
+
         }
     }
 

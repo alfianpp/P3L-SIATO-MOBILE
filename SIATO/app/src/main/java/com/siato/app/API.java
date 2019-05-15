@@ -6,6 +6,8 @@ import com.siato.app.POJO.DetailPenjualanJasaService;
 import com.siato.app.POJO.DetailPenjualanSpareparts;
 import com.siato.app.POJO.Kendaraan;
 import com.siato.app.POJO.Konsumen;
+import com.siato.app.POJO.Partially.Cabang;
+import com.siato.app.POJO.Partially.JasaService;
 import com.siato.app.POJO.Pegawai;
 import com.siato.app.POJO.Penjualan;
 import com.siato.app.POJO.Spareparts;
@@ -22,6 +24,24 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface API {
+
+    // --- CABANG
+
+    @FormUrlEncoded
+    @POST("data/cabang/index")
+    Call<APIResponse<List<Cabang>>> getAllCabang(@Field("api_key") String api_key);
+
+    // --- MONTIR
+
+    @FormUrlEncoded
+    @POST("data/pegawai/index/role/3")
+    Call<APIResponse<List<Pegawai>>> getAllMontir(@Field("api_key") String api_key);
+
+    // --- JASA SERVICE
+
+    @FormUrlEncoded
+    @POST("data/jasaservice/index")
+    Call<APIResponse<List<JasaService>>> getAllJasaService(@Field("api_key") String api_key);
 
     // --- CRUD SPAREPARTS
 

@@ -47,7 +47,7 @@ public class KelolaPenjualanFragment extends Fragment {
     }
 
     private void refreshList() {
-        Call<APIResponse<List<Penjualan>>> call = APIService.index("AB1234BA");
+        Call<APIResponse<List<Penjualan>>> call = APIService.index(String.valueOf(getArguments().getString("nomor_polisi")));
         call.enqueue(new Callback<APIResponse<List<Penjualan>>>() {
             @Override
             public void onResponse(Call<APIResponse<List<Penjualan>>> call, Response<APIResponse<List<Penjualan>>> response) {

@@ -7,22 +7,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etDetailPenjualanKendaraan"
+        <Spinner
+            android:id="@+id/spKendaraanPenjualanDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Kendaraan" />
+            android:layout_weight="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etDetailPenjualanMontir"
+        <Spinner
+            android:id="@+id/spMontirPenjualanDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Montir" />
+            android:layout_weight="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

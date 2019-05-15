@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="69dp"
+        android:text="INFORMASI BENGKEL"
+        android:textAlignment="center"
+        android:textSize="36sp" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="248dp"
+        android:textAlignment="center"
+        android:text="SIATO adalah bengkel yang di dirikan pada tahun 2019. Bengkel ini menyediakan beberapa layanan seperti jual spareparts dan jasa service. Kami mempunyai visi yaitu ingin menekankan segi kualitas dengan motto utama SIATO, yaitu cepat dan akurat."
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@2019"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+</LinearLayout>

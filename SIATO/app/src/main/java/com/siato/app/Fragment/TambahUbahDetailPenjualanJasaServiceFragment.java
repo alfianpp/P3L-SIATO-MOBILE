@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -16,8 +18,12 @@ import com.siato.app.APIResponse;
 import com.siato.app.MainActivity;
 import com.siato.app.POJO.DetailPenjualanJasaService;
 import com.siato.app.POJO.DetailPenjualanSpareparts;
+import com.siato.app.POJO.Partially.JasaService;
 import com.siato.app.R;
 import com.siato.app.RetrofitClientInstance;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,14 +35,16 @@ public class TambahUbahDetailPenjualanJasaServiceFragment extends Fragment {
     private Integer IDDetailPenjualan;
     private Integer IDDetailPenjualanSpareparts;
     private TextInputEditText etJasaService;
+    private Spinner btnSpinnerJasaService;
     private Button btnTambahUbah;
+    private List<JasaService> listJasa;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tambah_ubah_detail_penjualan_jasaservice, container, false);
 
-        etJasaService = view.findViewById(R.id.etDetailPenjualanJasaService);
+        btnSpinnerJasaService = view.findViewById(R.id.spJasaServicePenjualanDetail);
         btnTambahUbah = view.findViewById(R.id.btnTambahUbahDetailPenjualanJasaService);
 
         if(getArguments() != null) {
@@ -52,6 +60,8 @@ public class TambahUbahDetailPenjualanJasaServiceFragment extends Fragment {
             }
         }
 
+        spinnerJasaService();
+
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,7 +70,7 @@ public class TambahUbahDetailPenjualanJasaServiceFragment extends Fragment {
                     case "TAMBAH":
                         Call<APIResponse> create = APIService.createDetailPenjualanJasaService(
                                 IDDetailPenjualan,
-                                etJasaService.getText().toString(),
+                                String.valueOf(listJasa.get(btnSpinnerJasaService.getSelectedItemPosition()).getId()),
                                 ((MainActivity) getActivity()).logged_in_user.getApiKey()
                         );
                         create.enqueue(new Callback<APIResponse>() {
@@ -86,6 +96,35 @@ public class TambahUbahDetailPenjualanJasaServiceFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void spinnerJasaService() {
+        API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+        Call<APIResponse<List<JasaService>>> call = APIService.getAllJasaService(((MainActivity)getActivity()).logged_in_user.getApiKey());
+        call.enqueue(new Callback<APIResponse<List<JasaService>>>(){
+            @Override
+            public void onResponse(Call<APIResponse<List<JasaService>>> call, Response<APIResponse<List<JasaService>>> response) {
+                APIResponse<List<JasaService>> apiResponse = response.body();
+
+                if (!apiResponse.getError()){
+                    listJasa = apiResponse.getData();
+                    List<String> listJasa = new ArrayList<>();
+
+                    for (int i = 0; i < apiResponse.getData().size(); i++){
+                        listJasa.add(apiResponse.getData().get(i).getNama());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_dropdown_item,listJasa);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    btnSpinnerJasaService.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse<List<JasaService>>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

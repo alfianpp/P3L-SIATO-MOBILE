@@ -16,6 +16,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.siato.mysiato.Fragment.HomeFragment;
 import com.siato.mysiato.Fragment.KelolaPenjualanFragment;
 import com.siato.mysiato.Fragment.LoginFragment;
+import com.siato.mysiato.Fragment.informasiFragment;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 

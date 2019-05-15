@@ -27,33 +27,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPenjualanJenis"
+                <Spinner
+                    android:id="@+id/spJenisPenjualan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Jenis" />
+                    android:layout_weight="1"
+                    android:entries="@array/list_jenis_pembelian" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPenjualanCabang"
+                <Spinner
+                    android:id="@+id/spCabangPenjualan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Cabang" />
+                    android:layout_weight="1" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPenjualanKonsumen"
+                <Spinner
+                    android:id="@+id/spKonsumenPenjualan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Konsumen" />
+                    android:layout_weight="1" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button

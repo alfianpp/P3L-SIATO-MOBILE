@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -14,8 +16,13 @@ import com.siato.app.API;
 import com.siato.app.APIResponse;
 import com.siato.app.MainActivity;
 import com.siato.app.POJO.DetailPenjualan;
+import com.siato.app.POJO.Kendaraan;
+import com.siato.app.POJO.Pegawai;
 import com.siato.app.R;
 import com.siato.app.RetrofitClientInstance;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,14 +36,18 @@ public class TambahUbahDetailPenjualanFragment extends Fragment {
     private Integer IDDetailPenjualan = null;
     private TextInputEditText etKendaraan;
     private TextInputEditText etMontir;
+    private Spinner btnSpinnerKendaraan;
+    private Spinner btnSpinnerMontir;
     private Button btnTambahUbah;
+    private List<Kendaraan> listKendaraan;
+    private List<Pegawai> listMontir;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tambah_ubah_detail_penjualan, container, false);
 
-        etKendaraan = view.findViewById(R.id.etDetailPenjualanKendaraan);
-        etMontir = view.findViewById(R.id.etDetailPenjualanMontir);
+        btnSpinnerKendaraan = view.findViewById(R.id.spKendaraanPenjualanDetail);
+        btnSpinnerMontir = view.findViewById(R.id.spMontirPenjualanDetail);
         btnTambahUbah = view.findViewById(R.id.btnTambahUbahDetailPenjualan);
 
         if(getArguments() != null) {
@@ -53,6 +64,9 @@ public class TambahUbahDetailPenjualanFragment extends Fragment {
             }
         }
 
+        spinnerKendaraan();
+        spinnerMontir();
+
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,8 +75,8 @@ public class TambahUbahDetailPenjualanFragment extends Fragment {
                     case "TAMBAH":
                         Call<APIResponse> create = APIService.createDetailPenjualan(
                                 IDPenjualan,
-                                etKendaraan.getText().toString(),
-                                etMontir.getText().toString(),
+                                String.valueOf(listKendaraan.get(btnSpinnerKendaraan.getSelectedItemPosition()).getNomorPolisi()),
+                                String.valueOf(listMontir.get(btnSpinnerMontir.getSelectedItemPosition()).getId()),
                                 ((MainActivity) getActivity()).logged_in_user.getApiKey()
                         );
                         create.enqueue(new Callback<APIResponse>() {
@@ -87,7 +101,7 @@ public class TambahUbahDetailPenjualanFragment extends Fragment {
                     case "UBAH":
                         Call<APIResponse> update = APIService.updateDetailPengadaanBarang(
                                 IDDetailPenjualan,
-                                etMontir.getText().toString(),
+                                String.valueOf(listMontir.get(btnSpinnerMontir.getSelectedItemPosition()).getId()),
                                 ((MainActivity) getActivity()).logged_in_user.getApiKey()
                         );
                         update.enqueue(new Callback<APIResponse>() {
@@ -113,6 +127,64 @@ public class TambahUbahDetailPenjualanFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void spinnerMontir() {
+        API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+        Call<APIResponse<List<Pegawai>>> call = APIService.getAllMontir(((MainActivity)getActivity()).logged_in_user.getApiKey());
+        call.enqueue(new Callback<APIResponse<List<Pegawai>>>(){
+            @Override
+            public void onResponse(Call<APIResponse<List<Pegawai>>> call, Response<APIResponse<List<Pegawai>>> response) {
+                APIResponse<List<Pegawai>> apiResponse = response.body();
+
+                if (!apiResponse.getError()){
+                    listMontir = apiResponse.getData();
+                    List<String> listMontir = new ArrayList<>();
+
+                    for (int i = 0; i < apiResponse.getData().size(); i++){
+                        listMontir.add(apiResponse.getData().get(i).getNama());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_dropdown_item,listMontir);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    btnSpinnerMontir.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse<List<Pegawai>>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void spinnerKendaraan() {
+        API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+        Call<APIResponse<List<Kendaraan>>> call = APIService.getAllKendaraan(((MainActivity)getActivity()).logged_in_user.getApiKey());
+        call.enqueue(new Callback<APIResponse<List<Kendaraan>>>(){
+            @Override
+            public void onResponse(Call<APIResponse<List<Kendaraan>>> call, Response<APIResponse<List<Kendaraan>>> response) {
+                APIResponse<List<Kendaraan>> apiResponse = response.body();
+
+                if (!apiResponse.getError()){
+                    listKendaraan = apiResponse.getData();
+                    List<String> listKendaraan = new ArrayList<>();
+
+                    for (int i = 0; i < apiResponse.getData().size(); i++){
+                        listKendaraan.add(apiResponse.getData().get(i).getNomorPolisi());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_dropdown_item,listKendaraan);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    btnSpinnerKendaraan.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse<List<Kendaraan>>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

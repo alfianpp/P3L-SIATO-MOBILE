@@ -7,11 +7,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etDetailPenjualanJasaService"
+        <Spinner
+            android:id="@+id/spJasaServicePenjualanDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Jasa Service" />
+            android:layout_weight="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

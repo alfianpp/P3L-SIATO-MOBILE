@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,8 +18,12 @@ import com.siato.app.API;
 import com.siato.app.APIResponse;
 import com.siato.app.MainActivity;
 import com.siato.app.POJO.Kendaraan;
+import com.siato.app.POJO.Konsumen;
 import com.siato.app.R;
 import com.siato.app.RetrofitClientInstance;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,8 +36,9 @@ public class TambahUbahKendaraanFragment extends Fragment {
     private TextInputEditText etNomorPolisi;
     private TextInputEditText etMerk;
     private TextInputEditText etTipe;
-    private TextInputEditText etPemilik;
+    private Spinner spPemilik;
     private Button btnTambahUbah;
+    private List<Konsumen> listPemilik;
 
     @Nullable
     @Override
@@ -41,7 +48,7 @@ public class TambahUbahKendaraanFragment extends Fragment {
         etNomorPolisi = view.findViewById(R.id.etKendaraanNomorPolisi);
         etMerk = view.findViewById(R.id.etKendaraanMerk);
         etTipe = view.findViewById(R.id.etKendaraanTipe);
-        etPemilik = view.findViewById(R.id.etKendaraanPemilik);
+        spPemilik = view.findViewById(R.id.spKendaraanPemilik);
         btnTambahUbah = view.findViewById(R.id.btnTambahUbahKendaraan);
 
         if(getArguments() != null && getArguments().getParcelable("kendaraan") != null) {
@@ -50,9 +57,10 @@ public class TambahUbahKendaraanFragment extends Fragment {
             etNomorPolisi.setText(kendaraan.getNomorPolisi());
             etMerk.setText(kendaraan.getMerk());
             etTipe.setText(kendaraan.getTipe());
-            etPemilik.setText(String.valueOf(kendaraan.getPemilik().getId()));
             btnTambahUbah.setText("Ubah");
         }
+
+        setSpinerPemilik();
 
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +72,7 @@ public class TambahUbahKendaraanFragment extends Fragment {
                                 etNomorPolisi.getText().toString(),
                                 etMerk.getText().toString(),
                                 etTipe.getText().toString(),
-                                etPemilik.getText().toString(),
+                                String.valueOf(listPemilik.get(spPemilik.getSelectedItemPosition()).getID()),
                                 ((MainActivity)getActivity()).logged_in_user.getApiKey()
                         );
                         create.enqueue(new Callback<APIResponse>() {
@@ -91,7 +99,7 @@ public class TambahUbahKendaraanFragment extends Fragment {
                                 etNomorPolisi.getText().toString(),
                                 etMerk.getText().toString(),
                                 etTipe.getText().toString(),
-                                etPemilik.getText().toString(),
+                                String.valueOf(listPemilik.get(spPemilik.getSelectedItemPosition()).getID()),
                                 ((MainActivity)getActivity()).logged_in_user.getApiKey()
                         );
                         update.enqueue(new Callback<APIResponse>() {
@@ -117,6 +125,34 @@ public class TambahUbahKendaraanFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void setSpinerPemilik() {
+        API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+        Call<APIResponse<List<Konsumen>>> call = APIService.getAllKonsumen(((MainActivity) getActivity()).logged_in_user.getApiKey());
+        call.enqueue(new Callback<APIResponse<List<Konsumen>>>() {
+            @Override
+            public void onResponse(Call<APIResponse<List<Konsumen>>> call, Response<APIResponse<List<Konsumen>>> response) {
+                APIResponse<List<Konsumen>> apiResponse = response.body();
+
+                if(!apiResponse.getError()) {
+                    List<String> listPemilik = new ArrayList<>();
+
+                    for(int i=0; i<apiResponse.getData().size(); i++) {
+                        listPemilik.add(apiResponse.getData().get(i).getNama());
+                    }
+
+                    ArrayAdapter<String> listPemilikAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listPemilik);
+                    listPemilikAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spPemilik.setAdapter(listPemilikAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse<List<Konsumen>>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
