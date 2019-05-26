@@ -3,7 +3,6 @@ package com.siato.app.POJO;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.siato.app.POJO.Partially.DetilPenjualan;
 import com.siato.app.POJO.Partially.Spareparts;
 
 public class DetailPenjualanSpareparts implements Parcelable {

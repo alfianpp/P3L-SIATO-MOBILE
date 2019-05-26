@@ -1,6 +1,5 @@
 package com.siato.app.Fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,13 +9,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.siato.app.API;
 import com.siato.app.APIResponse;
 import com.siato.app.MainActivity;
@@ -37,25 +34,27 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
     private String ACTION = "TAMBAH";
     private Integer IDPengadaanBarang = null;
     private Button btnTambahUbah;
-    private Spinner spinner;
+    private Spinner spSupplier;
+
     private List<Supplier> listSupplier;
+    private Integer currentSupplierID;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tambah_ubah_pengadaan_barang, container, false);
 
         btnTambahUbah = view.findViewById(R.id.btnTambahUbahPengadaanBarang);
-        spinner = view.findViewById(R.id.btnSpinner);
-
+        spSupplier = view.findViewById(R.id.spPengadaanBarangSupplier);
 
         if(getArguments() != null && getArguments().getParcelable("pengadaan_barang") != null) {
             ACTION = "UBAH";
             PengadaanBarang pengadaanBarang = getArguments().getParcelable("pengadaan_barang");
             IDPengadaanBarang = pengadaanBarang.getId();
+            currentSupplierID = pengadaanBarang.getSupplier().getId();
             btnTambahUbah.setText("Ubah");
         }
 
-        initSupplier();
+        setSupplier();
 
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +63,7 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
                 switch (ACTION) {
                     case "TAMBAH":
                     Call<APIResponse> create = APIService.createPengadaanBarang(
-                            String.valueOf(listSupplier.get(spinner.getSelectedItemPosition()).getId()),
+                            String.valueOf(listSupplier.get(spSupplier.getSelectedItemPosition()).getId()),
                             ((MainActivity) getActivity()).logged_in_user.getApiKey()
                     );
                     create.enqueue(new Callback<APIResponse>() {
@@ -89,7 +88,7 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
                     case "UBAH":
                         Call<APIResponse> update = APIService.updatePengadaanBarang(
                                 IDPengadaanBarang,
-                                String.valueOf(listSupplier.get(spinner.getSelectedItemPosition()).getId()),
+                                String.valueOf(listSupplier.get(spSupplier.getSelectedItemPosition()).getId()),
                                 ((MainActivity) getActivity()).logged_in_user.getApiKey()
                         );
                         update.enqueue(new Callback<APIResponse>() {
@@ -117,7 +116,7 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
         return view;
     }
 
-    public void initSupplier(){
+    public void setSupplier(){
         API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
         Call<APIResponse<List<Supplier>>> call = APIService.getAllSupplier(((MainActivity)getActivity()).logged_in_user.getApiKey());
         call.enqueue(new Callback<APIResponse<List<Supplier>>>() {
@@ -127,15 +126,24 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
 
                 if (!apiResponse.getError()){
                     listSupplier = apiResponse.getData();
+
                     List<String> listSupplier = new ArrayList<>();
 
-                    for (int i = 0; i < apiResponse.getData().size(); i++){
-                        listSupplier.add(apiResponse.getData().get(i).getNama());
+                    for(Supplier supplier:apiResponse.getData()) {
+                        listSupplier.add(supplier.getNama());
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_dropdown_item,listSupplier);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner.setAdapter(adapter);
+                    spSupplier.setAdapter(adapter);
+
+                    if(ACTION.equals("UBAH")) {
+                        for(int i=0; i<apiResponse.getData().size(); i++) {
+                            if(apiResponse.getData().get(i).getId().equals(currentSupplierID)) {
+                                spSupplier.setSelection(i);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -151,6 +159,6 @@ public class TambahUbahPengadaanBarangFragment extends Fragment {
         super.onResume();
 
         ((MainActivity) getActivity()).getSupportActionBar()
-                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + getResources().getString(R.string.data_pengadaan_barang));
+                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + "Pengadaan Barang");
     }
 }

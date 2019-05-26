@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F5F5F7"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingTop="8dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/dialog_action_edit_delete_verify_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/dialog_action_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/dialog_action_edit_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="#484848"
+            app:srcCompat="@drawable/ic_edit" />
+
+        <TextView
+            android:id="@+id/dialog_action_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="Ubah"
+            android:textColor="#484848"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_action_verify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/dialog_action_verify_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="#484848"
+            app:srcCompat="@drawable/ic_check" />
+
+        <TextView
+            android:id="@+id/dialog_action_verify_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="Verifikasi"
+            android:textColor="#484848"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_action_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/dialog_action_delete_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="#484848"
+            app:srcCompat="@drawable/ic_delete" />
+
+        <TextView
+            android:id="@+id/dialog_action_delete_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="Hapus"
+            android:textColor="#484848"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

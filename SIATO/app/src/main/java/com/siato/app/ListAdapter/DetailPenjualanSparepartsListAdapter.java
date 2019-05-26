@@ -9,11 +9,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.siato.app.POJO.DetailPenjualan;
 import com.siato.app.POJO.DetailPenjualanSpareparts;
 import com.siato.app.R;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class DetailPenjualanSparepartsListAdapter extends RecyclerView.Adapter<DetailPenjualanSparepartsListAdapter.DetilPenjualanViewHolder>{
     private Context context;
@@ -25,14 +28,18 @@ public class DetailPenjualanSparepartsListAdapter extends RecyclerView.Adapter<D
     }
 
     public class DetilPenjualanViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvSpareparts;
-        private final TextView tvJumlah;
+        private final TextView tvNamaSpareparts;
+        private final TextView tvMerkSpareparts;
+        private final TextView tvHargaSpareparts;
+        private final TextView tvJumlahBeli;
 
         public DetilPenjualanViewHolder(View itemView) {
             super(itemView);
 
-            tvSpareparts = itemView.findViewById(R.id.tvDetailPenjualanSpareparts);
-            tvJumlah = itemView.findViewById(R.id.tvDetailPenjualanJumlahSpareparts);
+            tvNamaSpareparts = itemView.findViewById(R.id.tvDetailPenjualanSpareparts);
+            tvMerkSpareparts = itemView.findViewById(R.id.tvDetailPenjualanSparepartsMerk);
+            tvHargaSpareparts = itemView.findViewById(R.id.tvDetailPenjualanSparepartsHarga);
+            tvJumlahBeli = itemView.findViewById(R.id.tvDetailPenjualanSparepartsJumlah);
         }
     }
 
@@ -48,8 +55,15 @@ public class DetailPenjualanSparepartsListAdapter extends RecyclerView.Adapter<D
     public void onBindViewHolder(@NonNull DetilPenjualanViewHolder holder, int position) {
         final DetailPenjualanSpareparts current = detailPenjualanSpareparts.get(position);
 
-        holder.tvSpareparts.setText(current.getSpareparts().getKode());
-        holder.tvJumlah.setText(String.valueOf(current.getJumlah()));
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+        NumberFormat numberFormat = new DecimalFormat("#,###", symbols);
+
+        holder.tvNamaSpareparts.setText(current.getSpareparts().getNama());
+        holder.tvMerkSpareparts.setText(current.getSpareparts().getMerk());
+        holder.tvHargaSpareparts.setText("Rp" + numberFormat.format(current.getHarga()));
+        holder.tvJumlahBeli.setText(String.valueOf(current.getJumlah()));
     }
 
     @Override

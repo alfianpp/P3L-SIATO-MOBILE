@@ -14,11 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.siato.app.POJO.PengadaanBarang;
 import com.siato.app.R;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBarangListAdapter.PengadaanBarangViewHolder> implements Filterable
-{
+public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBarangListAdapter.PengadaanBarangViewHolder> {
     private Context context;
     private List<PengadaanBarang> pengadaanBarangList;
     private List<PengadaanBarang> pengadaanBarangListFiltered;
@@ -31,12 +34,16 @@ public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBa
 
     public class PengadaanBarangViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvNamaSupplier;
+        private final TextView tvTotal;
         private final TextView tvTanggalTransaksi;
+        private final TextView tvStatus;
 
         public PengadaanBarangViewHolder(@NonNull View itemView) {
             super(itemView);
             tvNamaSupplier = itemView.findViewById(R.id.tvPengadaanNamaSupplier);
+            tvTotal = itemView.findViewById(R.id.tvPengadaanBarangTotal);
             tvTanggalTransaksi = itemView.findViewById(R.id.tvPengadaanTanggalTransaksi);
+            tvStatus = itemView.findViewById(R.id.tvPengadaanBarangStatus);
         }
     }
 
@@ -52,8 +59,30 @@ public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBa
     public void onBindViewHolder(@NonNull PengadaanBarangViewHolder holder, int position) {
         final PengadaanBarang current = pengadaanBarangListFiltered.get(position);
 
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+        NumberFormat numberFormat = new DecimalFormat("#,###", symbols);
+
+        String statusTransaksi = null;
+        switch(current.getStatus()) {
+            case 1:
+                statusTransaksi = "Terbuka";
+                break;
+
+            case 2:
+                statusTransaksi = "Menunggu verifikasi";
+                break;
+
+            case 3:
+                statusTransaksi = "Selesai";
+                break;
+        }
+
         holder.tvNamaSupplier.setText(current.getSupplier().getNama());
+        holder.tvTotal.setText("Rp" + numberFormat.format((current.getTotal() != null) ? current.getTotal() : 0));
         holder.tvTanggalTransaksi.setText(current.getTglTransaksi());
+        holder.tvStatus.setText(statusTransaksi);
     }
 
     @Override
@@ -63,35 +92,5 @@ public class PengadaanBarangListAdapter extends RecyclerView.Adapter<PengadaanBa
 
     public PengadaanBarang getItem(int position) {
         return pengadaanBarangListFiltered.get(position);
-    }
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                String charString = constraint.toString();
-                if(charString.isEmpty()) {
-                    pengadaanBarangListFiltered = pengadaanBarangList;
-                }
-                else {
-                    List<PengadaanBarang> filteredList = new ArrayList<>();
-                    for(PengadaanBarang row : pengadaanBarangList) {
-                        if(row.getSupplier().getNama().toLowerCase().contains(charString.toLowerCase())) {
-                            filteredList.add(row);
-                        }
-                    }
-
-                    pengadaanBarangListFiltered = filteredList;
-                }
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = pengadaanBarangListFiltered;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                pengadaanBarangListFiltered = (ArrayList<PengadaanBarang>) results.values;
-                notifyDataSetChanged();
-            }
-        };
     }
 }

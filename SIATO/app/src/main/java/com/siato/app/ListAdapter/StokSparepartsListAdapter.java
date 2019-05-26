@@ -29,13 +29,17 @@ public class StokSparepartsListAdapter extends RecyclerView.Adapter<StokSparepar
     }
 
     public class StokViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvKodeSpareparts;
         private final TextView tvNamaSpareparts;
+        private final TextView tvMerkSpareparts;
         private final TextView tvStokSpareparts;
         private final TextView tvStokMinimalSpareparts;
 
         public StokViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvKodeSpareparts = itemView.findViewById(R.id.tvStokSparepartsKode);
             tvNamaSpareparts = itemView.findViewById(R.id.tvStokSparepartsNama);
+            tvMerkSpareparts = itemView.findViewById(R.id.tvStokSparepartsMerk);
             tvStokSpareparts = itemView.findViewById(R.id.tvStokSparepartsStok);
             tvStokMinimalSpareparts = itemView.findViewById(R.id.tvStokSparepartsStokMinimal);
         }
@@ -53,7 +57,9 @@ public class StokSparepartsListAdapter extends RecyclerView.Adapter<StokSparepar
     public void onBindViewHolder(@NonNull StokViewHolder holder, int position) {
         final Spareparts current = StokSparepartsListFiltered.get(position);
 
+        holder.tvKodeSpareparts.setText(current.getKode());
         holder.tvNamaSpareparts.setText(current.getNama());
+        holder.tvMerkSpareparts.setText(current.getMerk());
         holder.tvStokSpareparts.setText(String.valueOf(current.getStok()));
         holder.tvStokMinimalSpareparts.setText(String.valueOf(current.getStokMinimal()));
     }
@@ -79,7 +85,7 @@ public class StokSparepartsListAdapter extends RecyclerView.Adapter<StokSparepar
                 else {
                     List<Spareparts> filteredList = new ArrayList<>();
                     for(Spareparts row : StokSparepartsList) {
-                        if(row.getNama().toLowerCase().contains(charString.toLowerCase())) {
+                        if(row.getKode().toLowerCase().contains(charString.toLowerCase()) || row.getNama().toLowerCase().contains(charString.toLowerCase()) || row.getMerk().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
                     }

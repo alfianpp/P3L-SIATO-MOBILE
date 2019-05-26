@@ -10,10 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.siato.app.POJO.DetailPenjualanJasaService;
-import com.siato.app.POJO.DetailPenjualanSpareparts;
 import com.siato.app.R;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class DetailPenjualanJasaServiceListAdapter extends RecyclerView.Adapter<DetailPenjualanJasaServiceListAdapter.DetilPenjualanViewHolder>{
     private Context context;
@@ -25,12 +28,14 @@ public class DetailPenjualanJasaServiceListAdapter extends RecyclerView.Adapter<
     }
 
     public class DetilPenjualanViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvJasaService;
+        private final TextView tvNamaJasaService;
+        private final TextView tvHargaJasaService;
 
         public DetilPenjualanViewHolder(View itemView) {
             super(itemView);
 
-            tvJasaService = itemView.findViewById(R.id.tvDetailPenjualanJasaService);
+            tvNamaJasaService = itemView.findViewById(R.id.tvDetailPenjualanJasaService);
+            tvHargaJasaService = itemView.findViewById(R.id.tvDetailPenjualanJasaServiceHarga);
         }
     }
 
@@ -46,7 +51,13 @@ public class DetailPenjualanJasaServiceListAdapter extends RecyclerView.Adapter<
     public void onBindViewHolder(@NonNull DetilPenjualanViewHolder holder, int position) {
         final DetailPenjualanJasaService current = detailPenjualanJasaServiceList.get(position);
 
-        holder.tvJasaService.setText(current.getJasaService().getNama());
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+        NumberFormat numberFormat = new DecimalFormat("#,###", symbols);
+
+        holder.tvNamaJasaService.setText(current.getJasaService().getNama());
+        holder.tvHargaJasaService.setText("Rp" + numberFormat.format(current.getHarga()));
     }
 
     @Override

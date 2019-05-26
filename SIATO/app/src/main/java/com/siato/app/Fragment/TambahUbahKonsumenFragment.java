@@ -45,7 +45,7 @@ public class TambahUbahKonsumenFragment extends Fragment {
         if(getArguments() != null && getArguments().getParcelable("konsumen") != null) {
             ACTION = "UBAH";
             Konsumen konsumen = getArguments().getParcelable("konsumen");
-            IDKonsumen = konsumen.getID();
+            IDKonsumen = konsumen.getId();
             etNama.setText(konsumen.getNama());
             etNomorTelepon.setText(konsumen.getNomorTelepon());
             etAlamat.setText(konsumen.getAlamat());

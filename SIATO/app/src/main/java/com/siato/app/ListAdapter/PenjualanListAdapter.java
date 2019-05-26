@@ -4,8 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.siato.app.POJO.Penjualan;
 import com.siato.app.R;
 
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-public class PenjualanListAdapter extends RecyclerView.Adapter<PenjualanListAdapter.PenjualanViewHolder> implements Filterable {
+public class PenjualanListAdapter extends RecyclerView.Adapter<PenjualanListAdapter.PenjualanViewHolder> {
     private Context context;
     private List<Penjualan> penjualanList;
     private List<Penjualan> penjualanListFiltered;
@@ -29,13 +29,19 @@ public class PenjualanListAdapter extends RecyclerView.Adapter<PenjualanListAdap
     }
 
     public class PenjualanViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvPenjualanJenis;
-        private final TextView tvPenjualanNamaKonsumen;
+        private final TextView tvNomorTransaksiPenjualan;
+        private final TextView tvNamaKonsumenPenjualan;
+        private final TextView tvNomorTeleponKonsumenPenjualan;
+        private final TextView tvTanggalTransaksiPenjualan;
+        private final TextView tvStatusPenjualan;
 
         public PenjualanViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvPenjualanJenis = itemView.findViewById(R.id.tvPenjualanKode);
-            tvPenjualanNamaKonsumen = itemView.findViewById(R.id.tvPenjualanNamaKonsumen);
+            tvNomorTransaksiPenjualan = itemView.findViewById(R.id.tvPenjualanNomorTransaksi);
+            tvNamaKonsumenPenjualan = itemView.findViewById(R.id.tvPenjualanNamaKonsumen);
+            tvNomorTeleponKonsumenPenjualan = itemView.findViewById(R.id.tvPenjualanNomorTeleponKonsumen);
+            tvTanggalTransaksiPenjualan = itemView.findViewById(R.id.tvPenjualanTanggalTransaksi);
+            tvStatusPenjualan = itemView.findViewById(R.id.tvPenjualanStatus);
         }
     }
 
@@ -51,46 +57,44 @@ public class PenjualanListAdapter extends RecyclerView.Adapter<PenjualanListAdap
     public void onBindViewHolder(@NonNull PenjualanViewHolder holder, int position) {
         final Penjualan current = penjualanListFiltered.get(position);
 
-        holder.tvPenjualanJenis.setText(current.getJenis());
-        holder.tvPenjualanNamaKonsumen.setText(current.getKonsumen().getNama());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = dateFormat.parse(current.getTglTransaksi());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        dateFormat.applyPattern("ddMMyy");
+        String nomorTransaksi = current.getJenis() + "-" + dateFormat.format(date) + "-" + current.getId();
+
+        String statusTransaksi = null;
+        switch(current.getStatus()) {
+            case 1:
+                statusTransaksi = "Terbuka";
+                break;
+
+            case 2:
+                statusTransaksi = "Menunggu pembayaran";
+                break;
+
+            case 3:
+                statusTransaksi = "Selesai";
+                break;
+        }
+
+        holder.tvNomorTransaksiPenjualan.setText(nomorTransaksi);
+        holder.tvNamaKonsumenPenjualan.setText(current.getKonsumen().getNama());
+        holder.tvNomorTeleponKonsumenPenjualan.setText(current.getKonsumen().getNomorTelepon());
+        holder.tvTanggalTransaksiPenjualan.setText(current.getTglTransaksi());
+        holder.tvStatusPenjualan.setText(statusTransaksi);
     }
 
     @Override
     public int getItemCount() {
        return penjualanListFiltered.size();
     }
+
     public Penjualan getItem(int position) {
         return penjualanListFiltered.get(position);
-    }
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                String charString = constraint.toString();
-                if(charString.isEmpty()) {
-                    penjualanListFiltered = penjualanList;
-                }
-                else {
-                    List<Penjualan> filteredList = new ArrayList<>();
-                    for(Penjualan row : penjualanList) {
-                        if(row.getKonsumen().getNama().toLowerCase().contains(charString.toLowerCase())) {
-                            filteredList.add(row);
-                        }
-                    }
-
-                    penjualanListFiltered = filteredList;
-                }
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = penjualanListFiltered;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                penjualanListFiltered = (ArrayList<Penjualan>) results.values;
-                notifyDataSetChanged();
-            }
-        };
     }
 }

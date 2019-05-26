@@ -1,12 +1,15 @@
 package com.siato.app.Fragment;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,11 +37,12 @@ public class TambahUbahKendaraanFragment extends Fragment {
     public static final String TAG = TambahUbahKendaraanFragment.class.getSimpleName();
     private String ACTION = "TAMBAH";
     private TextInputEditText etNomorPolisi;
-    private TextInputEditText etMerk;
-    private TextInputEditText etTipe;
-    private Spinner spPemilik;
+    private AutoCompleteTextView etMerk;
+    private AutoCompleteTextView etTipe;
+    private AutoCompleteTextView etPemilik;
     private Button btnTambahUbah;
-    private List<Konsumen> listPemilik;
+
+    private List<Konsumen> listKonsumen;
 
     @Nullable
     @Override
@@ -48,19 +52,65 @@ public class TambahUbahKendaraanFragment extends Fragment {
         etNomorPolisi = view.findViewById(R.id.etKendaraanNomorPolisi);
         etMerk = view.findViewById(R.id.etKendaraanMerk);
         etTipe = view.findViewById(R.id.etKendaraanTipe);
-        spPemilik = view.findViewById(R.id.spKendaraanPemilik);
+        etPemilik = view.findViewById(R.id.etKendaraanPemilik);
         btnTambahUbah = view.findViewById(R.id.btnTambahUbahKendaraan);
+
+        etPemilik.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() > 0) {
+                    API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+                    Call<APIResponse<List<Konsumen>>> call = APIService.searchKonsumen(s.toString());
+                    call.enqueue(new Callback<APIResponse<List<Konsumen>>>() {
+                        @Override
+                        public void onResponse(Call<APIResponse<List<Konsumen>>> call, Response<APIResponse<List<Konsumen>>> response) {
+                            APIResponse<List<Konsumen>> apiResponse = response.body();
+
+                            if(!apiResponse.getError()) {
+                                listKonsumen = apiResponse.getData();
+
+                                List<String> listPemilik = new ArrayList<>();
+
+                                for (Konsumen konsumen:apiResponse.getData()) {
+                                    listPemilik.add(konsumen.getNama());
+                                }
+
+                                ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, listPemilik);
+                                etPemilik.setAdapter(adapter);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<APIResponse<List<Konsumen>>> call, Throwable t) {
+                            Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         if(getArguments() != null && getArguments().getParcelable("kendaraan") != null) {
             ACTION = "UBAH";
             Kendaraan kendaraan = getArguments().getParcelable("kendaraan");
             etNomorPolisi.setText(kendaraan.getNomorPolisi());
+            etNomorPolisi.setEnabled(false);
             etMerk.setText(kendaraan.getMerk());
             etTipe.setText(kendaraan.getTipe());
+            etPemilik.setText(kendaraan.getPemilik().getNama());
             btnTambahUbah.setText("Ubah");
         }
 
-        setSpinerPemilik();
+        setAvailableMerkAndTipe();
 
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +122,7 @@ public class TambahUbahKendaraanFragment extends Fragment {
                                 etNomorPolisi.getText().toString(),
                                 etMerk.getText().toString(),
                                 etTipe.getText().toString(),
-                                String.valueOf(listPemilik.get(spPemilik.getSelectedItemPosition()).getID()),
+                                String.valueOf((!TextUtils.isEmpty(etPemilik.getText())) ? ((getSelectedKonsumen() != null) ? getSelectedKonsumen().getId() : null) : null),
                                 ((MainActivity)getActivity()).logged_in_user.getApiKey()
                         );
                         create.enqueue(new Callback<APIResponse>() {
@@ -99,7 +149,7 @@ public class TambahUbahKendaraanFragment extends Fragment {
                                 etNomorPolisi.getText().toString(),
                                 etMerk.getText().toString(),
                                 etTipe.getText().toString(),
-                                String.valueOf(listPemilik.get(spPemilik.getSelectedItemPosition()).getID()),
+                                String.valueOf((!TextUtils.isEmpty(etPemilik.getText())) ? ((getSelectedKonsumen() != null) ? getSelectedKonsumen().getId() : null) : null),
                                 ((MainActivity)getActivity()).logged_in_user.getApiKey()
                         );
                         update.enqueue(new Callback<APIResponse>() {
@@ -127,32 +177,53 @@ public class TambahUbahKendaraanFragment extends Fragment {
         return view;
     }
 
-    private void setSpinerPemilik() {
+    private void setAvailableMerkAndTipe() {
         API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
-        Call<APIResponse<List<Konsumen>>> call = APIService.getAllKonsumen(((MainActivity) getActivity()).logged_in_user.getApiKey());
-        call.enqueue(new Callback<APIResponse<List<Konsumen>>>() {
+        Call<APIResponse<List<String>>> availableMerk = APIService.listAvailableMerkKendaraan();
+        availableMerk.enqueue(new Callback<APIResponse<List<String>>>() {
             @Override
-            public void onResponse(Call<APIResponse<List<Konsumen>>> call, Response<APIResponse<List<Konsumen>>> response) {
-                APIResponse<List<Konsumen>> apiResponse = response.body();
+            public void onResponse(Call<APIResponse<List<String>>> call, Response<APIResponse<List<String>>> response) {
+                APIResponse<List<String>> apiResponse = response.body();
 
                 if(!apiResponse.getError()) {
-                    List<String> listPemilik = new ArrayList<>();
-
-                    for(int i=0; i<apiResponse.getData().size(); i++) {
-                        listPemilik.add(apiResponse.getData().get(i).getNama());
-                    }
-
-                    ArrayAdapter<String> listPemilikAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listPemilik);
-                    listPemilikAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spPemilik.setAdapter(listPemilikAdapter);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, apiResponse.getData());
+                    etMerk.setAdapter(adapter);
                 }
             }
 
             @Override
-            public void onFailure(Call<APIResponse<List<Konsumen>>> call, Throwable t) {
+            public void onFailure(Call<APIResponse<List<String>>> call, Throwable t) {
                 Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        Call<APIResponse<List<String>>> availableTipe = APIService.listAvailableTipeKendaraan();
+        availableTipe.enqueue(new Callback<APIResponse<List<String>>>() {
+            @Override
+            public void onResponse(Call<APIResponse<List<String>>> call, Response<APIResponse<List<String>>> response) {
+                APIResponse<List<String>> apiResponse = response.body();
+
+                if(!apiResponse.getError()) {
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, apiResponse.getData());
+                    etTipe.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse<List<String>>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private Konsumen getSelectedKonsumen() {
+        for (Konsumen konsumen:listKonsumen) {
+            if(konsumen.getNama().equals(etPemilik.getText().toString())) {
+                return konsumen;
+            }
+        }
+
+        return null;
     }
 
     @Override

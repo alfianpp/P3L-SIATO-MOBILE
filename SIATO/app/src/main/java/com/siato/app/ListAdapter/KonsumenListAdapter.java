@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.siato.app.POJO.Konsumen;
-import com.siato.app.POJO.Spareparts;
 import com.siato.app.R;
 
 import java.util.ArrayList;
@@ -30,13 +29,15 @@ public class KonsumenListAdapter extends RecyclerView.Adapter<KonsumenListAdapte
     }
 
     public class KonsumenViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvIDKonsumen;
         private final TextView tvNamaKonsumen;
+        private final TextView tvNomorTeleponKonsumen;
+        private final TextView tvAlamatKonsumen;
 
         public KonsumenViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvIDKonsumen = itemView.findViewById(R.id.tvKonsumenID);
             tvNamaKonsumen = itemView.findViewById(R.id.tvKonsumenNama);
+            tvNomorTeleponKonsumen = itemView.findViewById(R.id.tvKonsumenNomorTelepon);
+            tvAlamatKonsumen = itemView.findViewById(R.id.tvKonsumenAlamat);
         }
     }
 
@@ -52,8 +53,9 @@ public class KonsumenListAdapter extends RecyclerView.Adapter<KonsumenListAdapte
     public void onBindViewHolder(@NonNull KonsumenViewHolder holder, int position) {
         final Konsumen current = konsumenListFiltered.get(position);
 
-        holder.tvIDKonsumen.setText(current.getID().toString());
         holder.tvNamaKonsumen.setText(current.getNama());
+        holder.tvNomorTeleponKonsumen.setText(current.getNomorTelepon());
+        holder.tvAlamatKonsumen.setText(current.getAlamat());
     }
 
     @Override
@@ -77,7 +79,7 @@ public class KonsumenListAdapter extends RecyclerView.Adapter<KonsumenListAdapte
                 else {
                     List<Konsumen> filteredList = new ArrayList<>();
                     for(Konsumen row : konsumenList) {
-                        if(row.getNama().toLowerCase().contains(charString.toLowerCase())) {
+                        if(row.getNama().toLowerCase().contains(charString.toLowerCase()) || row.getAlamat().toLowerCase().contains(charString.toLowerCase()) || row.getNomorTelepon().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
                     }

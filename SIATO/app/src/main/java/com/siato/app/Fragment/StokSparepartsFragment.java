@@ -1,17 +1,22 @@
 package com.siato.app.Fragment;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.siato.app.API;
 import com.siato.app.APIResponse;
 import com.siato.app.ListAdapter.StokSparepartsListAdapter;
@@ -32,13 +37,36 @@ public class StokSparepartsFragment extends Fragment{
     private API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
     private StokSparepartsListAdapter adapter = null;
     private RecyclerView recyclerView;
+    private EditText etSearch;
+    private FloatingActionButton btnTambah;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_stok_spareparts, container, false);
+        view = inflater.inflate(R.layout.fragment_kelola, container, false);
+
+        etSearch = view.findViewById(R.id.etSearch);
+        btnTambah = view.findViewById(R.id.btnTambah);
+        btnTambah.hide();
 
         refreshList();
+
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         return view;
     }
@@ -61,10 +89,11 @@ public class StokSparepartsFragment extends Fragment{
         });
     }
     private void generateDataList(List<Spareparts> StokList) {
-        recyclerView = view.findViewById(R.id.rvListStokSpareparts);
+        recyclerView = view.findViewById(R.id.rvList);
         adapter = new StokSparepartsListAdapter(getContext(), StokList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
     }
 

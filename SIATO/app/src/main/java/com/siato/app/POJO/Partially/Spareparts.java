@@ -7,11 +7,15 @@ public class Spareparts implements Parcelable {
     private String kode;
     private String nama;
     private String merk;
+    private String tipe;
+    private String kode_peletakan;
 
-    public Spareparts(String kode, String nama, String merk) {
+    public Spareparts(String kode, String nama, String merk, String tipe, String kode_peletakan) {
         this.kode = kode;
         this.nama = nama;
         this.merk = merk;
+        this.tipe = tipe;
+        this.kode_peletakan = kode_peletakan;
     }
 
     public String getKode() {
@@ -26,6 +30,14 @@ public class Spareparts implements Parcelable {
         return merk;
     }
 
+    public String getTipe() {
+        return tipe;
+    }
+
+    public String getKodePeletakan() {
+        return kode_peletakan;
+    }
+
 
     @Override
     public int describeContents() {
@@ -37,15 +49,19 @@ public class Spareparts implements Parcelable {
         dest.writeString(this.kode);
         dest.writeString(this.nama);
         dest.writeString(this.merk);
+        dest.writeString(this.tipe);
+        dest.writeString(this.kode_peletakan);
     }
 
     protected Spareparts(Parcel in) {
         this.kode = in.readString();
         this.nama = in.readString();
         this.merk = in.readString();
+        this.tipe = in.readString();
+        this.kode_peletakan = in.readString();
     }
 
-    public static final Parcelable.Creator<Spareparts> CREATOR = new Parcelable.Creator<Spareparts>() {
+    public static final Creator<Spareparts> CREATOR = new Creator<Spareparts>() {
         @Override
         public Spareparts createFromParcel(Parcel source) {
             return new Spareparts(source);

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F5F5F7"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingTop="8dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/dialog_action_view_detail_penjualan_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/dialog_action_view_spareparts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/dialog_action_view_spareparts_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="#484848"
+            app:srcCompat="@drawable/ic_list" />
+
+        <TextView
+            android:id="@+id/dialog_action_view_spareparts_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="Spareparts"
+            android:textColor="#484848"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_action_view_jasaservice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/dialog_action_view_jasaservice_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="#484848"
+            app:srcCompat="@drawable/ic_list" />
+
+        <TextView
+            android:id="@+id/dialog_action_view_jasaservice_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="Jasa Service"
+            android:textColor="#484848"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

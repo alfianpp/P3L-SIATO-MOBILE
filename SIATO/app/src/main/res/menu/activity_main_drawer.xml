@@ -45,10 +45,6 @@
                 android:id="@+id/transaksi"
                 android:checkableBehavior="single">
                 <item
-                    android:id="@+id/nav_stok_spareparts"
-                    android:icon="@drawable/ic_database"
-                    android:title="Stok Spareparts" />
-                <item
                     android:id="@+id/nav_transaksi_pengadaan_barang"
                     android:icon="@drawable/ic_database"
                     android:title="Pengadaan Barang" />

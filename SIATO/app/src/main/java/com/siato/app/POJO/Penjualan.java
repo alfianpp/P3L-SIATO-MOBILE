@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.siato.app.POJO.Partially.Cabang;
-import com.siato.app.POJO.Partially.Konsumen;
 import com.siato.app.POJO.Partially.Pegawai;
 
 public class Penjualan implements Parcelable {

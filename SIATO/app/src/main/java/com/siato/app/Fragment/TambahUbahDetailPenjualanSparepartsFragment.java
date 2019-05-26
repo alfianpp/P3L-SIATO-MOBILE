@@ -31,20 +31,21 @@ import retrofit2.Response;
 public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
     public static final String TAG = TambahUbahDetailPenjualanSparepartsFragment.class.getSimpleName();
     private String ACTION = "TAMBAH";
-    private Integer IDDetailPenjualan;
-    private Integer IDDetailPenjualanSpareparts;
-    private TextInputEditText etSpareparts;
-    private Spinner btnSpinnerSparepart;
+    private Integer IDDetailPenjualan = null;
+    private Spinner spSpareparts;
     private TextInputEditText etJumlah;
     private Button btnTambahUbah;
+
+    private DetailPenjualanSpareparts selectedDetailPenjualanSpareparts = null;
     private List<Spareparts> listSparepart;
+    private String currentSparepartsKode;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tambah_ubah_detail_penjualan_spareparts, container, false);
 
-        btnSpinnerSparepart = view.findViewById(R.id.spSparepartPenjualanDetail);
+        spSpareparts = view.findViewById(R.id.spDetailPenjualanSpareparts);
         etJumlah = view.findViewById(R.id.etDetailPenjualanSparepartsJumlah);
         btnTambahUbah = view.findViewById(R.id.btnTambahUbahDetailPenjualanSpareparts);
 
@@ -52,8 +53,9 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
             if(getArguments().getBoolean("ubah_detail_penjualan_spareparts")) {
                 ACTION = "UBAH";
                 DetailPenjualanSpareparts detailPenjualanSpareparts = getArguments().getParcelable("detail_penjualan_spareparts");
-                IDDetailPenjualanSpareparts = detailPenjualanSpareparts.getId();
-                etSpareparts.setText(detailPenjualanSpareparts.getSpareparts().getKode());
+                selectedDetailPenjualanSpareparts = detailPenjualanSpareparts;
+                currentSparepartsKode = detailPenjualanSpareparts.getSpareparts().getKode();
+                spSpareparts.setEnabled(false);
                 etJumlah.setText(String.valueOf(detailPenjualanSpareparts.getJumlah()));
                 btnTambahUbah.setText("Ubah");
             }
@@ -62,7 +64,7 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
             }
         }
 
-        spinnerSparepart();
+        setSpareparts();
 
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +74,7 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
                     case "TAMBAH":
                         Call<APIResponse> create = APIService.createDetailPenjualanSpareparts(
                                 IDDetailPenjualan,
-                                String.valueOf(listSparepart.get(btnSpinnerSparepart.getSelectedItemPosition()).getKode()),
+                                String.valueOf(listSparepart.get(spSpareparts.getSelectedItemPosition()).getKode()),
                                 etJumlah.getText().toString(),
                                 ((MainActivity) getActivity()).logged_in_user.getApiKey()
                         );
@@ -97,7 +99,7 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
 
                     case "UBAH":
                         Call<APIResponse> update = APIService.updateDetailPenjualanSpareparts(
-                                IDDetailPenjualanSpareparts,
+                                selectedDetailPenjualanSpareparts.getId(),
                                 etJumlah.getText().toString(),
                                 ((MainActivity) getActivity()).logged_in_user.getApiKey()
                         );
@@ -126,7 +128,7 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
         return view;
     }
 
-    private void spinnerSparepart() {
+    private void setSpareparts() {
         API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
         Call<APIResponse<List<Spareparts>>> call = APIService.getAllSpareparts(((MainActivity)getActivity()).logged_in_user.getApiKey());
         call.enqueue(new Callback<APIResponse<List<Spareparts>>>(){
@@ -136,15 +138,24 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
 
                 if (!apiResponse.getError()){
                     listSparepart = apiResponse.getData();
+
                     List<String> listSparepart = new ArrayList<>();
 
-                    for (int i = 0; i < apiResponse.getData().size(); i++){
-                        listSparepart.add(apiResponse.getData().get(i).getNama());
+                    for(Spareparts spareparts:apiResponse.getData()) {
+                        listSparepart.add(spareparts.getNama());
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_dropdown_item,listSparepart);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    btnSpinnerSparepart.setAdapter(adapter);
+                    spSpareparts.setAdapter(adapter);
+
+                    if(ACTION.equals("UBAH")) {
+                        for(int i=0; i<apiResponse.getData().size(); i++) {
+                            if(apiResponse.getData().get(i).getKode().equals(currentSparepartsKode)) {
+                                spSpareparts.setSelection(i);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -160,6 +171,6 @@ public class TambahUbahDetailPenjualanSparepartsFragment extends Fragment {
         super.onResume();
 
         ((MainActivity) getActivity()).getSupportActionBar()
-                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + getResources().getString(R.string.transaksi_detail_pengadaan_barang));
+                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + "Spareparts");
     }
 }

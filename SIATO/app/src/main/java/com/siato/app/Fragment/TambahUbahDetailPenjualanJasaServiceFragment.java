@@ -12,12 +12,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.siato.app.API;
 import com.siato.app.APIResponse;
 import com.siato.app.MainActivity;
 import com.siato.app.POJO.DetailPenjualanJasaService;
-import com.siato.app.POJO.DetailPenjualanSpareparts;
 import com.siato.app.POJO.Partially.JasaService;
 import com.siato.app.R;
 import com.siato.app.RetrofitClientInstance;
@@ -32,27 +30,27 @@ import retrofit2.Response;
 public class TambahUbahDetailPenjualanJasaServiceFragment extends Fragment {
     public static final String TAG = TambahUbahDetailPenjualanJasaServiceFragment.class.getSimpleName();
     private String ACTION = "TAMBAH";
-    private Integer IDDetailPenjualan;
-    private Integer IDDetailPenjualanSpareparts;
-    private TextInputEditText etJasaService;
-    private Spinner btnSpinnerJasaService;
+    private Integer IDDetailPenjualan = null;
+    private Spinner spJasaService;
     private Button btnTambahUbah;
-    private List<JasaService> listJasa;
+
+    private DetailPenjualanJasaService selectedDetailPenjualanJasaService = null;
+    private List<JasaService> listJasaService;
+    private Integer currentJasaServiceID;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tambah_ubah_detail_penjualan_jasaservice, container, false);
 
-        btnSpinnerJasaService = view.findViewById(R.id.spJasaServicePenjualanDetail);
+        spJasaService = view.findViewById(R.id.spDetailPenjualanJasaService);
         btnTambahUbah = view.findViewById(R.id.btnTambahUbahDetailPenjualanJasaService);
 
         if(getArguments() != null) {
             if(getArguments().getBoolean("ubah_detail_penjualan_jasaservice")) {
                 ACTION = "UBAH";
                 DetailPenjualanJasaService detailPenjualanJasaService = getArguments().getParcelable("detail_penjualan_jasaservice");
-                IDDetailPenjualanSpareparts = detailPenjualanJasaService.getId();
-                etJasaService.setText(detailPenjualanJasaService.getJasaService().getNama());
+                selectedDetailPenjualanJasaService = detailPenjualanJasaService;
                 btnTambahUbah.setText("Ubah");
             }
             else {
@@ -60,7 +58,7 @@ public class TambahUbahDetailPenjualanJasaServiceFragment extends Fragment {
             }
         }
 
-        spinnerJasaService();
+        setJasaService();
 
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +68,7 @@ public class TambahUbahDetailPenjualanJasaServiceFragment extends Fragment {
                     case "TAMBAH":
                         Call<APIResponse> create = APIService.createDetailPenjualanJasaService(
                                 IDDetailPenjualan,
-                                String.valueOf(listJasa.get(btnSpinnerJasaService.getSelectedItemPosition()).getId()),
+                                String.valueOf(listJasaService.get(spJasaService.getSelectedItemPosition()).getId()),
                                 ((MainActivity) getActivity()).logged_in_user.getApiKey()
                         );
                         create.enqueue(new Callback<APIResponse>() {
@@ -98,7 +96,7 @@ public class TambahUbahDetailPenjualanJasaServiceFragment extends Fragment {
         return view;
     }
 
-    private void spinnerJasaService() {
+    private void setJasaService() {
         API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
         Call<APIResponse<List<JasaService>>> call = APIService.getAllJasaService(((MainActivity)getActivity()).logged_in_user.getApiKey());
         call.enqueue(new Callback<APIResponse<List<JasaService>>>(){
@@ -107,16 +105,25 @@ public class TambahUbahDetailPenjualanJasaServiceFragment extends Fragment {
                 APIResponse<List<JasaService>> apiResponse = response.body();
 
                 if (!apiResponse.getError()){
-                    listJasa = apiResponse.getData();
+                    listJasaService = apiResponse.getData();
+
                     List<String> listJasa = new ArrayList<>();
 
-                    for (int i = 0; i < apiResponse.getData().size(); i++){
-                        listJasa.add(apiResponse.getData().get(i).getNama());
+                    for(JasaService jasaService:apiResponse.getData()) {
+                        listJasa.add(jasaService.getNama());
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_dropdown_item,listJasa);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    btnSpinnerJasaService.setAdapter(adapter);
+                    spJasaService.setAdapter(adapter);
+
+                    if(ACTION.equals("UBAH")) {
+                        for(int i=0; i<apiResponse.getData().size(); i++) {
+                            if(apiResponse.getData().get(i).getId().equals(currentJasaServiceID)) {
+                                spJasaService.setSelection(i);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -132,6 +139,6 @@ public class TambahUbahDetailPenjualanJasaServiceFragment extends Fragment {
         super.onResume();
 
         ((MainActivity) getActivity()).getSupportActionBar()
-                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + getResources().getString(R.string.transaksi_detail_pengadaan_barang));
+                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + "Jasa Service");
     }
 }

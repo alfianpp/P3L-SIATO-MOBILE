@@ -13,12 +13,7 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/tvKendaraanMerk"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/tvKendaraanTipe"
+        android:id="@+id/tvKendaraanMerkTipe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -31,11 +31,17 @@ public class SparepartsListAdapter extends RecyclerView.Adapter<SparepartsListAd
     public class SparepartsViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvKodeSpareparts;
         private final TextView tvNamaSpareparts;
+        private final TextView tvMerkSpareparts;
+        private final TextView tvHargaBeliSpareparts;
+        private final TextView tvHargaJualSpareparts;
 
         public SparepartsViewHolder(@NonNull View itemView) {
             super(itemView);
             tvKodeSpareparts = itemView.findViewById(R.id.tvSparepartsKode);
             tvNamaSpareparts = itemView.findViewById(R.id.tvSparepartsNama);
+            tvMerkSpareparts = itemView.findViewById(R.id.tvSparepartsMerk);
+            tvHargaBeliSpareparts = itemView.findViewById(R.id.tvSparepartsHargaBeli);
+            tvHargaJualSpareparts = itemView.findViewById(R.id.tvSparepartsHargaJual);
         }
     }
 
@@ -53,6 +59,9 @@ public class SparepartsListAdapter extends RecyclerView.Adapter<SparepartsListAd
 
         holder.tvKodeSpareparts.setText(current.getKode());
         holder.tvNamaSpareparts.setText(current.getNama());
+        holder.tvMerkSpareparts.setText(current.getMerk());
+        holder.tvHargaBeliSpareparts.setText(String.valueOf(current.getHargaBeli()));
+        holder.tvHargaJualSpareparts.setText(String.valueOf(current.getHargaJual()));
     }
 
     @Override
@@ -76,7 +85,7 @@ public class SparepartsListAdapter extends RecyclerView.Adapter<SparepartsListAd
                 else {
                     List<Spareparts> filteredList = new ArrayList<>();
                     for(Spareparts row : sparepartsList) {
-                        if(row.getNama().toLowerCase().contains(charString.toLowerCase())) {
+                        if(row.getKode().toLowerCase().contains(charString.toLowerCase()) || row.getNama().toLowerCase().contains(charString.toLowerCase()) || row.getMerk().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
                     }

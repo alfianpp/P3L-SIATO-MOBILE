@@ -16,7 +16,7 @@ public class Konsumen implements Parcelable {
         this.alamat = alamat;
     }
 
-    public Integer getID() {
+    public Integer getId() {
         return id;
     }
 

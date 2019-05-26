@@ -18,7 +18,6 @@ import com.siato.app.APIResponse;
 import com.siato.app.MainActivity;
 import com.siato.app.POJO.DetailPengadaanBarang;
 import com.siato.app.POJO.Spareparts;
-import com.siato.app.POJO.Supplier;
 import com.siato.app.R;
 import com.siato.app.RetrofitClientInstance;
 
@@ -33,27 +32,30 @@ import retrofit2.Response;
 public class TambahUbahDetailPengadaanBarangFragment extends Fragment {
     public static final String TAG = TambahUbahDetailPengadaanBarangFragment.class.getSimpleName();
     private String ACTION = "TAMBAH";
-    private Integer IDPengadaanBarang;
+    private Integer IDPengadaanBarang = null;
     private Integer IDDetailPengadaanBarang = null;
-    private TextInputEditText etIdSparepart;
+    private Spinner spSpareparts;
     private TextInputEditText etjumlah;
     private Button btnTambahUbah;
-    private Spinner btnSpinner;
+
     private List<Spareparts> listSpareparts;
+    private String currenctSpareparts;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tambah_ubah_detail_pengadaan_barang, container, false);
 
-        btnSpinner = view.findViewById(R.id.spKodeBarang);
-        etjumlah = view.findViewById(R.id.etJumlah);
-        btnTambahUbah = view.findViewById(R.id.btnTambahUbahDetilPengadaanBarang);
+        spSpareparts = view.findViewById(R.id.spDetailPengadaanBarangSpareparts);
+        etjumlah = view.findViewById(R.id.etDetailPengadaanBarangJumlah);
+        btnTambahUbah = view.findViewById(R.id.btnTambahUbahDetailPengadaanBarang);
 
         if(getArguments() != null) {
             if(getArguments().getBoolean("ubah_detail_pengadaan_barang")) {
                 ACTION = "UBAH";
                 DetailPengadaanBarang detailPengadaanBarang = getArguments().getParcelable("detail_pengadaan_barang");
                 IDDetailPengadaanBarang = detailPengadaanBarang.getId();
+                currenctSpareparts = detailPengadaanBarang.getSpareparts().getKode();
+                spSpareparts.setEnabled(false);
                 etjumlah.setText(String.valueOf(detailPengadaanBarang.getJumlahPesan()));
                 btnTambahUbah.setText("Ubah");
             }
@@ -62,7 +64,7 @@ public class TambahUbahDetailPengadaanBarangFragment extends Fragment {
             }
         }
 
-        initSparepart();
+        setSpareparts();
 
         btnTambahUbah.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +74,7 @@ public class TambahUbahDetailPengadaanBarangFragment extends Fragment {
                     case "TAMBAH":
                         Call<APIResponse> create = APIService.createDetailPengadaanBarang(
                                 IDPengadaanBarang,
-                                String.valueOf(listSpareparts.get(btnSpinner.getSelectedItemPosition()).getKode()),
+                                String.valueOf(listSpareparts.get(spSpareparts.getSelectedItemPosition()).getKode()),
                                 etjumlah.getText().toString(),
                                 ((MainActivity) getActivity()).logged_in_user.getApiKey()
                         );
@@ -126,7 +128,7 @@ public class TambahUbahDetailPengadaanBarangFragment extends Fragment {
         return view;
     }
 
-    private void initSparepart() {
+    private void setSpareparts() {
         API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
         Call<APIResponse<List<Spareparts>>> call = APIService.getAllSpareparts(((MainActivity)getActivity()).logged_in_user.getApiKey());
         call.enqueue(new Callback<APIResponse<List<Spareparts>>>(){
@@ -136,15 +138,24 @@ public class TambahUbahDetailPengadaanBarangFragment extends Fragment {
 
                 if (!apiResponse.getError()){
                     listSpareparts = apiResponse.getData();
+
                     List<String> listSpareparts = new ArrayList<>();
 
-                    for (int i = 0; i < apiResponse.getData().size(); i++){
-                        listSpareparts.add(apiResponse.getData().get(i).getNama());
+                    for(Spareparts spareparts:apiResponse.getData()) {
+                        listSpareparts.add(spareparts.getNama());
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_dropdown_item,listSpareparts);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    btnSpinner.setAdapter(adapter);
+                    spSpareparts.setAdapter(adapter);
+
+                    if(ACTION.equals("UBAH")) {
+                        for(int i=0; i<apiResponse.getData().size(); i++) {
+                            if(apiResponse.getData().get(i).getKode().equals(currenctSpareparts)) {
+                                spSpareparts.setSelection(i);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -160,6 +171,6 @@ public class TambahUbahDetailPengadaanBarangFragment extends Fragment {
         super.onResume();
 
         ((MainActivity) getActivity()).getSupportActionBar()
-                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + getResources().getString(R.string.transaksi_detail_pengadaan_barang));
+                .setTitle(ACTION.substring(0, 1) + ACTION.substring(1).toLowerCase() + " " + "Barang");
     }
 }

@@ -47,7 +47,7 @@ public class DetailPenjualanListAdapter extends RecyclerView.Adapter<DetailPenju
     public void onBindViewHolder(@NonNull DetilPenjualanViewHolder holder, int position) {
         final DetailPenjualan current = detailPenjualanList.get(position);
 
-        holder.tvKendaraan.setText(current.getKendaraan().getNomorPolisi());
+        holder.tvKendaraan.setText(current.getKendaraan().getNomorPolisi() + " " + current.getKendaraan().getMerk() + " " + current.getKendaraan().getTipe());
         holder.tvMontir.setText(current.getMontir().getNama());
     }
 

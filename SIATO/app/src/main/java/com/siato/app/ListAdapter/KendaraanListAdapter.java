@@ -30,15 +30,13 @@ public class KendaraanListAdapter extends RecyclerView.Adapter<KendaraanListAdap
 
     public class KendaraanViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvNomorPolisiKendaraan;
-        private final TextView tvMerkKendaraan;
-        private final TextView tvTipeKendaraan;
+        private final TextView tvMerkTipeKendaraan;
         private final TextView tvNamaPemilikKendaraan;
 
         public KendaraanViewHolder(@NonNull View itemView) {
             super(itemView);
             tvNomorPolisiKendaraan = itemView.findViewById(R.id.tvKendaraanNomorPolisi);
-            tvMerkKendaraan = itemView.findViewById(R.id.tvKendaraanMerk);
-            tvTipeKendaraan = itemView.findViewById(R.id.tvKendaraanTipe);
+            tvMerkTipeKendaraan = itemView.findViewById(R.id.tvKendaraanMerkTipe);
             tvNamaPemilikKendaraan = itemView.findViewById(R.id.tvKendaraanNamaPemilik);
         }
     }
@@ -56,8 +54,7 @@ public class KendaraanListAdapter extends RecyclerView.Adapter<KendaraanListAdap
         final Kendaraan current = kendaraanListFiltered.get(position);
 
         holder.tvNomorPolisiKendaraan.setText(current.getNomorPolisi());
-        holder.tvMerkKendaraan.setText(current.getMerk());
-        holder.tvTipeKendaraan.setText(current.getTipe());
+        holder.tvMerkTipeKendaraan.setText(current.getMerk() + " " + current.getTipe());
         holder.tvNamaPemilikKendaraan.setText(current.getPemilik().getNama());
     }
 
@@ -82,7 +79,7 @@ public class KendaraanListAdapter extends RecyclerView.Adapter<KendaraanListAdap
                 else {
                     List<Kendaraan> filteredList = new ArrayList<>();
                     for(Kendaraan row : kendaraanList) {
-                        if(row.getNomorPolisi().toLowerCase().contains(charString.toLowerCase())) {
+                        if(row.getNomorPolisi().toLowerCase().contains(charString.toLowerCase()) || row.getMerk().toLowerCase().contains(charString.toLowerCase()) || row.getTipe().toLowerCase().contains(charString.toLowerCase()) || row.getPemilik().getNama().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
                     }

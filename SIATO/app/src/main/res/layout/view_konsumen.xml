@@ -8,12 +8,17 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/tvKonsumenID"
+        android:id="@+id/tvKonsumenNama"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/tvKonsumenNama"
+        android:id="@+id/tvKonsumenNomorTelepon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvKonsumenAlamat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

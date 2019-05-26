@@ -1,7 +1,7 @@
 package com.siato.app.Fragment;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.siato.app.API;
 import com.siato.app.APIResponse;
@@ -98,71 +99,92 @@ public class KelolaPengadaanBarangFragment extends Fragment {
             public void onClick(View view, int position) {
                 Fragment fragment = new KelolaDetailPengadaanBarangFragment();
                 Bundle b = new Bundle();
-                b.putInt("id_pengadaan_barang", adapter.getItem(position).getId());
+                b.putParcelable("pengadaan_barang", adapter.getItem(position));
                 fragment.setArguments(b);
                 ((MainActivity)getActivity()).showFragment(fragment, KelolaDetailPengadaanBarangFragment.TAG);
             }
 
             @Override
             public void onLongClick(final View view, int position) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
                 final PengadaanBarang selected = adapter.getItem(position);
-                mBuilder.setTitle("Pilih Aksi")
-                        .setPositiveButton("Ubah", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Fragment fragment = new TambahUbahPengadaanBarangFragment();
-                                Bundle b = new Bundle();
-                                b.putParcelable("pengadaan_barang", selected);
-                                fragment.setArguments(b);
-                                ((MainActivity)getActivity()).showFragment(fragment, TambahUbahPengadaanBarangFragment.TAG);
-                            }
-                        })
-                        .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        })
-                        .setNeutralButton("Hapus", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                                mBuilder.setTitle("Hapus Transaksi")
-                                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus transaksi pengadaan barang ini?")
-                                        .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                Call<APIResponse> call = APIService.deletePengadaanBarang(selected.getId(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
-                                                call.enqueue(new Callback<APIResponse>() {
-                                                    @Override
-                                                    public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                                                        APIResponse apiResponse = response.body();
-
-                                                        if(!apiResponse.getError()) {
-                                                            refreshList();
-                                                        }
-
-                                                        Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    }
-
-                                                    @Override
-                                                    public void onFailure(Call<APIResponse> call, Throwable t) {
-                                                        Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                            }
-                                        })
-                                        .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                            }
-                                        }).create().show();
-                            }
-                        }).create().show();
+                openEditDeleteVerifyActionDialog(selected);
             }
         }));
+    }
+
+    private void openEditDeleteVerifyActionDialog(final PengadaanBarang pengadaanBarang) {
+        View view = getLayoutInflater().inflate(R.layout.dialog_action_edit_verify_delete,null);
+
+        TextView dialog_title = view.findViewById(R.id.dialog_action_edit_delete_verify_title);
+        LinearLayout action_edit = view.findViewById(R.id.dialog_action_edit);
+        LinearLayout action_delete = view.findViewById(R.id.dialog_action_delete);
+        LinearLayout action_verify = view.findViewById(R.id.dialog_action_verify);
+
+        if(!pengadaanBarang.getStatus().equals(3)) {
+            dialog_title.setText(R.string.choose_an_action);
+        }
+        else {
+            dialog_title.setText(R.string.no_action_available);
+            action_delete.setVisibility(View.GONE);
+        }
+
+        if(!pengadaanBarang.getStatus().equals(1)) {
+            action_edit.setVisibility(View.GONE);
+        }
+
+        action_verify.setVisibility(View.GONE);
+
+        final Dialog dialog = new BottomSheetDialog(getActivity());
+        dialog.setContentView(view);
+
+        action_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Fragment fragment = new TambahUbahPengadaanBarangFragment();
+                Bundle b = new Bundle();
+                b.putParcelable("pengadaan_barang", pengadaanBarang);
+                fragment.setArguments(b);
+                ((MainActivity)getActivity()).showFragment(fragment, TambahUbahPengadaanBarangFragment.TAG);
+            }
+        });
+
+        action_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                AlertDialog confirm = new AlertDialog.Builder(getActivity())
+                        .setTitle("Hapus Pengadaan Barang")
+                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus pengadaan barang ini?")
+                        .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Call<APIResponse> call = APIService.deletePengadaanBarang(pengadaanBarang.getId(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
+                                call.enqueue(new Callback<APIResponse>() {
+                                    @Override
+                                    public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                                        APIResponse apiResponse = response.body();
+
+                                        if(!apiResponse.getError()) {
+                                            refreshList();
+                                        }
+
+                                        Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<APIResponse> call, Throwable t) {
+                                        Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("Tidak", null)
+                        .show();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override
@@ -170,6 +192,6 @@ public class KelolaPengadaanBarangFragment extends Fragment {
         super.onResume();
 
         ((MainActivity) getActivity()).getSupportActionBar()
-                .setTitle(R.string.transaksi_pengadaan_barang);
+                .setTitle("Pengadaan Barang");
     }
 }

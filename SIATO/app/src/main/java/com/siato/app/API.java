@@ -19,11 +19,28 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface API {
+
+    @GET("data/spareparts/index/merk")
+    Call<APIResponse<List<String>>> listAvailableMerkSpareparts();
+
+    @GET("data/spareparts/index/tipe")
+    Call<APIResponse<List<String>>> listAvailableTipeSpareparts();
+
+    @GET("data/kendaraan/index/merk")
+    Call<APIResponse<List<String>>> listAvailableMerkKendaraan();
+
+    @GET("data/kendaraan/index/tipe")
+    Call<APIResponse<List<String>>> listAvailableTipeKendaraan();
+
+    @GET("data/konsumen/index/search")
+    Call<APIResponse<List<Konsumen>>> searchKonsumen(@Query("nama") String nama);
 
     // --- CABANG
 
@@ -200,6 +217,10 @@ public interface API {
     @HTTP(method = "DELETE", path = "data/kendaraan/{nomor_polisi}", hasBody = true)
     Call<APIResponse> deleteKendaraan(@Path("nomor_polisi") String nomor_polisi, @Field("api_key") String api_key);
 
+    @FormUrlEncoded
+    @POST("data/kendaraan/index/id_pemilik/{id}")
+    Call<APIResponse<List<Kendaraan>>> getKendaraanByKonsumen(@Path("id") Integer id, @Field("api_key") String api_key);
+
 
     // --- CRUD PENGADAAN BARANG
 
@@ -333,16 +354,15 @@ public interface API {
     Call<APIResponse<DetailPenjualan>> getDetailPenjualan(@Path("id") Integer id, @Field("api_key") String api_key);
 
     @FormUrlEncoded
-    @HTTP(method = "PUT", path = "transaksi/penjualan/data/{id}", hasBody = true)
+    @HTTP(method = "PUT", path = "transaksi/penjualan/detail/{id}", hasBody = true)
     Call<APIResponse> updateDetailPenjualan(
             @Path("id") Integer id,
-            @Field("id_cabang") String id_cabang,
-            @Field("jenis") String jenis,
+            @Field("id_montir") String id_montir,
             @Field("api_key") String api_key
     );
 
     @FormUrlEncoded
-    @HTTP(method = "DELETE", path = "transaksi/penjualan/data/{id}", hasBody = true)
+    @HTTP(method = "DELETE", path = "transaksi/penjualan/detail/{id}", hasBody = true)
     Call<APIResponse> deleteDetailPenjualan(@Path("id") Integer id, @Field("api_key") String api_key);
 
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -34,8 +35,8 @@ public class TambahUbahSparepartsFragment extends Fragment {
     private String ACTION = "TAMBAH";
     private TextInputEditText etKode;
     private TextInputEditText etNama;
-    private TextInputEditText etMerk;
-    private TextInputEditText etTipe;
+    private AutoCompleteTextView etMerk;
+    private AutoCompleteTextView etTipe;
     private String kodePeletakan;
     private Spinner spPeletakanLetak;
     private Spinner spPeletakanRuang;
@@ -67,19 +68,21 @@ public class TambahUbahSparepartsFragment extends Fragment {
         if(getArguments() != null && getArguments().getParcelable("spareparts") != null) {
             ACTION = "UBAH";
             Spareparts spareparts = getArguments().getParcelable("spareparts");
-            etKode.setEnabled(false);
             etKode.setText(spareparts.getKode());
+            etKode.setEnabled(false);
             etNama.setText(spareparts.getNama());
             etMerk.setText(spareparts.getMerk());
             etTipe.setText(spareparts.getTipe());
             kodePeletakan = spareparts.getKodePeletakan();
             etHargaJual.setText(String.valueOf(spareparts.getHargaJual()).replace(".0", ""));
             etHargaBeli.setText(String.valueOf(spareparts.getHargaBeli()).replace(".0", ""));
-            etStok.setEnabled(false);
             etStok.setText(String.valueOf(spareparts.getStok()));
+            etStok.setEnabled(false);
             etStokMinimal.setText(String.valueOf(spareparts.getStokMinimal()));
             btnTambahUbah.setText("Ubah");
         }
+
+        setAvailavleMerkAndTipe();
 
         final List<String> letakID = new ArrayList<>();
         letakID.add("DPN");
@@ -190,6 +193,45 @@ public class TambahUbahSparepartsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void setAvailavleMerkAndTipe() {
+        API APIService = RetrofitClientInstance.getRetrofitInstance().create(API.class);
+        Call<APIResponse<List<String>>> availableMerk = APIService.listAvailableMerkSpareparts();
+        availableMerk.enqueue(new Callback<APIResponse<List<String>>>() {
+            @Override
+            public void onResponse(Call<APIResponse<List<String>>> call, Response<APIResponse<List<String>>> response) {
+                APIResponse<List<String>> apiResponse = response.body();
+
+                if(!apiResponse.getError()) {
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, apiResponse.getData());
+                    etMerk.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse<List<String>>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Call<APIResponse<List<String>>> availableTipe = APIService.listAvailableTipeSpareparts();
+        availableTipe.enqueue(new Callback<APIResponse<List<String>>>() {
+            @Override
+            public void onResponse(Call<APIResponse<List<String>>> call, Response<APIResponse<List<String>>> response) {
+                APIResponse<List<String>> apiResponse = response.body();
+
+                if(!apiResponse.getError()) {
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, apiResponse.getData());
+                    etTipe.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse<List<String>>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

@@ -15,8 +15,6 @@ import com.siato.app.Fragment.KelolaPenjualanFragment;
 import com.siato.app.Fragment.KelolaSparepartsFragment;
 import com.siato.app.Fragment.KelolaSupplierFragment;
 import com.siato.app.Fragment.LoginFragment;
-import com.siato.app.Fragment.StokSparepartsFragment;
-import com.siato.app.Fragment.TambahUbahDetailPengadaanBarangFragment;
 import com.siato.app.Fragment.TambahUbahKendaraanFragment;
 import com.siato.app.Fragment.TambahUbahKonsumenFragment;
 import com.siato.app.Fragment.TambahUbahPengadaanBarangFragment;
@@ -49,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private FragmentManager fragmentManager;
 
-    public Pegawai logged_in_user;
+    public Pegawai logged_in_user = null;
 
     private NavigationView navigationView;
     private Menu drawerMenu;
@@ -147,28 +145,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -233,11 +209,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentTAG = KelolaKendaraanFragment.TAG;
                 break;
 
-            case R.id.nav_stok_spareparts:
-                fragment = new StokSparepartsFragment();
-                fragmentTAG = StokSparepartsFragment.TAG;
-                break;
-
             case R.id.nav_transaksi_pengadaan_barang:
                 fragment = new KelolaPengadaanBarangFragment();
                 fragmentTAG = KelolaPengadaanBarangFragment.TAG;
@@ -287,16 +258,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new TambahUbahPenjualanFragment();
                 fragmentTAG = TambahUbahPenjualanFragment.TAG;
                 break;
-
-            case 7:
-                fragment = new TambahUbahDetailPengadaanBarangFragment();
-                fragmentTAG = TambahUbahDetailPengadaanBarangFragment.TAG;
-                break;
-
-//            case 8:
-//                fragment = new TambahUbahDetailPenjualan();
-//                fragmentTAG = TambahUbahDetailPenjualan.TAG;
-//                break;
         }
 
         showFragment(fragment, fragmentTAG);
@@ -324,8 +285,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void logged_inDrawer(Boolean b) {
-        drawerMenu.findItem(R.id.pengelolaan_data_menu).setVisible(b);
-        drawerMenu.findItem(R.id.transaksi_menu).setVisible(b);
+        if(logged_in_user != null) {
+            if(logged_in_user.getRole().equals(0) || logged_in_user.getRole().equals(1)) {
+                drawerMenu.findItem(R.id.pengelolaan_data_menu).setVisible(b);
+
+                if(logged_in_user.getRole().equals(1)) {
+                    drawerMenu.findItem(R.id.nav_data_spareparts).setVisible(false);
+                    drawerMenu.findItem(R.id.nav_data_supplier).setVisible(false);
+                }
+            }
+            else {
+                drawerMenu.findItem(R.id.pengelolaan_data_menu).setVisible(false);
+            }
+
+            if(logged_in_user.getRole().equals(0) || logged_in_user.getRole().equals(1)) {
+                drawerMenu.findItem(R.id.transaksi_menu).setVisible(b);
+
+                if(logged_in_user.getRole().equals(1) || logged_in_user.getRole().equals(2)) {
+                    drawerMenu.findItem(R.id.nav_stok_spareparts).setVisible(false);
+                    drawerMenu.findItem(R.id.nav_transaksi_pengadaan_barang).setVisible(false);
+                }
+
+                if(logged_in_user.getRole().equals(2)) {
+                    drawerMenu.findItem(R.id.nav_transaksi_penjualan).setVisible(false);
+                }
+            }
+            else {
+                drawerMenu.findItem(R.id.transaksi_menu).setVisible(false);
+            }
+        }
+        else {
+            drawerMenu.findItem(R.id.pengelolaan_data_menu).setVisible(b);
+            drawerMenu.findItem(R.id.transaksi_menu).setVisible(b);
+        }
+
         drawerMenu.findItem(R.id.nav_login).setVisible(!b);
         drawerMenu.findItem(R.id.nav_logout).setVisible(b);
     }

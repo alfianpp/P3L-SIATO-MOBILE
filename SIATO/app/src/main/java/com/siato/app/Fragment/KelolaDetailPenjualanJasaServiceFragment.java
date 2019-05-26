@@ -1,11 +1,13 @@
 package com.siato.app.Fragment;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -14,14 +16,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.siato.app.API;
 import com.siato.app.APIResponse;
 import com.siato.app.ListAdapter.DetailPenjualanJasaServiceListAdapter;
-import com.siato.app.ListAdapter.DetailPenjualanSparepartsListAdapter;
 import com.siato.app.MainActivity;
 import com.siato.app.POJO.DetailPenjualanJasaService;
-import com.siato.app.POJO.DetailPenjualanSpareparts;
+import com.siato.app.POJO.Penjualan;
 import com.siato.app.R;
 import com.siato.app.RecyclerViewClickListener;
 import com.siato.app.RecyclerViewTouchListener;
@@ -41,10 +43,17 @@ public class KelolaDetailPenjualanJasaServiceFragment extends Fragment {
     private DetailPenjualanJasaServiceListAdapter adapter = null;
     private RecyclerView recyclerView;
     private FloatingActionButton btnTambah;
+
+    private Penjualan selectedPenjualan;
     private Integer IDDetailPenjualan = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if(getArguments() != null) {
+            selectedPenjualan = getArguments().getParcelable("penjualan");
+            IDDetailPenjualan = getArguments().getInt("id_detail_penjualan");
+        }
+
         view = inflater.inflate(R.layout.fragment_kelola, container, false);
 
         LinearLayout searchLayout = view.findViewById(R.id.searchLayout);
@@ -52,8 +61,8 @@ public class KelolaDetailPenjualanJasaServiceFragment extends Fragment {
 
         searchLayout.setVisibility(View.GONE);
 
-        if(getArguments() != null) {
-            IDDetailPenjualan = getArguments().getInt("id_detail_penjualan");
+        if(!selectedPenjualan.getStatus().equals(1)) {
+            btnTambah.hide();
         }
 
         refreshList();
@@ -108,54 +117,71 @@ public class KelolaDetailPenjualanJasaServiceFragment extends Fragment {
 
             @Override
             public void onLongClick(final View view, int position) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
                 final DetailPenjualanJasaService selected = adapter.getItem(position);
-                mBuilder.setTitle("Pilih Aksi")
-                        .setPositiveButton("Hapus", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                                mBuilder.setTitle("Hapus Detail")
-                                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus penjualan jasa service ini?")
-                                        .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                Call<APIResponse> call = APIService.deleteDetailPenjualanJasaService(selected.getId(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
-                                                call.enqueue(new Callback<APIResponse>() {
-                                                    @Override
-                                                    public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-                                                        APIResponse apiResponse = response.body();
-
-                                                        if(!apiResponse.getError()) {
-                                                            refreshList();
-                                                        }
-
-                                                        Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    }
-
-                                                    @Override
-                                                    public void onFailure(Call<APIResponse> call, Throwable t) {
-                                                        Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                            }
-                                        })
-                                        .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                            }
-                                        }).create().show();
-                            }
-                        })
-                        .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        }).create().show();
+                openEditDeleteVerifyActionDialog(selected);
             }
         }));
+    }
+
+    private void openEditDeleteVerifyActionDialog(final DetailPenjualanJasaService detailPenjualanJasaService) {
+        View view = getLayoutInflater().inflate(R.layout.dialog_action_edit_verify_delete,null);
+
+        TextView dialog_title = view.findViewById(R.id.dialog_action_edit_delete_verify_title);
+        LinearLayout action_edit = view.findViewById(R.id.dialog_action_edit);
+        LinearLayout action_delete = view.findViewById(R.id.dialog_action_delete);
+        LinearLayout action_verify = view.findViewById(R.id.dialog_action_verify);
+
+        dialog_title.setText("Pilih aksi");
+        if(selectedPenjualan.getStatus().equals(1)) {
+            dialog_title.setText(R.string.choose_an_action);
+        }
+        else {
+            dialog_title.setText(R.string.no_action_available);
+            action_delete.setVisibility(View.GONE);
+        }
+
+        action_edit.setVisibility(View.GONE);
+        action_verify.setVisibility(View.GONE);
+
+        final Dialog dialog = new BottomSheetDialog(getActivity());
+        dialog.setContentView(view);
+
+        action_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                AlertDialog confirm = new AlertDialog.Builder(getActivity())
+                        .setTitle("Hapus Jasa Service")
+                        .setMessage("Apakah Anda ingin melanjutkan untuk menghapus jasa service ini?")
+                        .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Call<APIResponse> call = APIService.deleteDetailPenjualanJasaService(detailPenjualanJasaService.getId(), ((MainActivity)getActivity()).logged_in_user.getApiKey());
+                                call.enqueue(new Callback<APIResponse>() {
+                                    @Override
+                                    public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                                        APIResponse apiResponse = response.body();
+
+                                        if(!apiResponse.getError()) {
+                                            refreshList();
+                                        }
+
+                                        Toast.makeText(getContext(), apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<APIResponse> call, Throwable t) {
+                                        Toast.makeText(getContext(), "Error:" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("Tidak", null)
+                        .show();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override
@@ -163,6 +189,6 @@ public class KelolaDetailPenjualanJasaServiceFragment extends Fragment {
         super.onResume();
 
         ((MainActivity) getActivity()).getSupportActionBar()
-                .setTitle(R.string.transaksi_detail_pengadaan_barang);
+                .setTitle("Penjualan Jasa Service");
     }
 }
